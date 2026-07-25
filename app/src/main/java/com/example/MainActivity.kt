@@ -50,8 +50,12 @@ fun VirtualNumberWebView() {
         settings.databaseEnabled = true
         settings.allowFileAccess = true
         settings.allowContentAccess = true
-        settings.loadWithOverviewMode = true
-        settings.useWideViewPort = true
+        // Disable Zoom & Overview Mode to prevent zoom in/out
+        settings.setSupportZoom(false)
+        settings.builtInZoomControls = false
+        settings.displayZoomControls = false
+        settings.useWideViewPort = false
+        settings.loadWithOverviewMode = false
         settings.cacheMode = WebSettings.LOAD_DEFAULT
 
         webChromeClient = WebChromeClient()

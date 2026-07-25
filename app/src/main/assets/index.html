@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Virtual Number Hub - Premium Virtual Number & SMS Platform</title>
   <meta name="description" content="Buy virtual phone numbers instantly for Telegram, WhatsApp, Google, OpenAI and 200+ platforms across 100+ countries with instant OTP verification.">
   <meta name="keywords" content="virtual number, receive sms online, temp phone number, otp verification, online sim, virtual sms">
@@ -213,9 +213,25 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    img, video, canvas, svg, table, iframe, div, p, h1, h2, h3, h4, h5, h6, section, header, footer, main, nav, input, select, textarea, button {
+      max-width: 100%;
+    }
+
+    h1, h2, h3, h4, h5, h6, p, span, a, button, div, td, th {
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
     html {
       scroll-behavior: smooth;
       font-size: 16px;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      overflow-x: hidden !important;
+      touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     body {
@@ -223,9 +239,16 @@
       background-color: var(--bg);
       color: var(--text-main);
       line-height: 1.6;
-      overflow-x: hidden;
+      overflow-x: hidden !important;
+      width: 100%;
+      max-width: 100%;
       min-height: 100vh;
       position: relative;
+      touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     /* Custom Scrollbar */
@@ -908,8 +931,9 @@
     /* Grid Displays */
     .grid-display {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
       gap: 1.25rem;
+      width: 100%;
     }
 
     /* Number Card */
@@ -919,6 +943,26 @@
       flex-direction: column;
       justify-content: space-between;
       gap: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+      position: relative;
+      transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    }
+    .number-card.selected-card {
+      border: 2px solid var(--accent) !important;
+      background: rgba(59, 130, 246, 0.14) !important;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.35) !important;
+      transform: translateY(-2px);
+    }
+    .card-bulk-checkbox {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--accent);
+      border-radius: 4px;
+      margin: 0;
+      vertical-align: middle;
+      flex-shrink: 0;
     }
     .number-card-header {
       display: flex;
@@ -1197,6 +1241,37 @@
       background: rgba(34, 197, 94, 0.1);
       padding: 0.2rem 1rem;
       border-radius: var(--radius-sm);
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      will-change: transform, background-color, box-shadow;
+    }
+
+    /* Subtle Pulse Animation for OTP Display Refreshes */
+    @keyframes otpPulse {
+      0% {
+        transform: scale(1);
+        background: rgba(34, 197, 94, 0.15);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+      }
+      30% {
+        transform: scale(1.08);
+        background: rgba(34, 197, 94, 0.4);
+        box-shadow: 0 0 18px 4px rgba(34, 197, 94, 0.5);
+        color: #FFFFFF;
+      }
+      70% {
+        transform: scale(1.02);
+        background: rgba(34, 197, 94, 0.25);
+        box-shadow: 0 0 10px 2px rgba(34, 197, 94, 0.3);
+      }
+      100% {
+        transform: scale(1);
+        background: rgba(34, 197, 94, 0.1);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+      }
+    }
+
+    .otp-code.otp-pulse {
+      animation: otpPulse 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     /* Canvas Chart Container - Dynamic Responsive Sizing */
@@ -1356,28 +1431,64 @@
     /* Loading Screen Overlay */
     #loading-screen {
       position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 9999;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #0B132B;
+      z-index: 999999;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.5s ease;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+      will-change: opacity, visibility;
+    }
+    #loading-screen.dismissing {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    #loading-screen.dismissed {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      display: none !important;
+    }
+    .loading-logo-box {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.2rem;
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+      animation: pulseLogo 1.6s infinite ease-in-out;
+    }
+    @keyframes pulseLogo {
+      0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4); }
+      50% { transform: scale(1.08); box-shadow: 0 15px 40px rgba(59, 130, 246, 0.7); }
     }
     .loading-bar {
       width: 240px;
       height: 6px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.12);
       border-radius: var(--radius-full);
       overflow: hidden;
-      margin-top: 1.5rem;
+      margin-top: 1.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
     .loading-bar-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
-      transition: width 0.3s ease;
+      background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 50%, #22c55e 100%);
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* Confetti Canvas */
@@ -1446,97 +1557,170 @@
       }
     }
 
-    /* Tablet & Mobile Screens (Max 768px) */
-    @media (max-width: 768px) {
-      .nav-menu { display: none; }
-      .hamburger-btn { display: block; }
+    /* Tablet & Mobile Screens (Max 900px) */
+    @media (max-width: 900px) {
+      .container {
+        padding: 0 0.85rem;
+        max-width: 100%;
+      }
+      .nav-menu { display: none !important; }
+      .hamburger-btn { display: flex !important; align-items: center; justify-content: center; }
+
+      .server-time-chip,
+      .user-chip,
+      #admin-panel-btn,
+      #notification-bell-btn,
+      #price-alert-bell-btn {
+        display: none !important;
+      }
 
       .app-header {
-        height: 66px;
+        height: 60px;
+        width: 100%;
+        max-width: 100%;
       }
       .header-inner {
-        height: 66px;
+        height: 60px;
+        padding: 0;
+        gap: 0.5rem;
+        max-width: 100%;
       }
       .logo {
-        font-size: 1.1rem;
-        gap: 0.5rem;
+        font-size: 1rem;
+        gap: 0.35rem;
+        min-width: 0;
+      }
+      .logo span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .logo-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1rem;
+        width: 32px;
+        height: 32px;
+        font-size: 0.95rem;
+        flex-shrink: 0;
       }
 
       .header-actions {
-        gap: 0.5rem;
+        gap: 0.35rem;
+        flex-shrink: 0;
       }
-      .wallet-chip, .user-chip, .server-time-chip {
-        padding: 0.35rem 0.6rem;
+      .wallet-chip {
+        padding: 0.3rem 0.6rem;
         font-size: 0.78rem;
+        gap: 0.35rem;
       }
 
       .hero-section {
-        padding: 3.5rem 0 2.5rem 0;
+        padding: 2.5rem 0 2rem 0;
       }
-      .hero-stats {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
+      .hero-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem;
+        width: 100%;
       }
       .hero-title {
-        font-size: clamp(2rem, 5.5vw, 2.5rem);
+        font-size: clamp(1.75rem, 5.5vw, 2.25rem);
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
       .hero-subtitle {
-        font-size: 1.05rem;
-        margin-bottom: 1.5rem;
+        font-size: clamp(0.9rem, 3.2vw, 1.05rem);
+        line-height: 1.5;
+        margin-bottom: 1.25rem;
+        max-width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
       .hero-cta {
-        gap: 0.75rem;
-        margin-bottom: 2rem;
+        gap: 0.65rem;
+        margin-bottom: 1.75rem;
+        width: 100%;
       }
+      .hero-cta .btn {
+        flex: 1;
+        min-width: 0;
+      }
+      .hero-stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.6rem !important;
+        width: 100%;
+      }
+      .stat-card {
+        padding: 0.85rem 0.5rem !important;
+        min-width: 0;
+        overflow: hidden;
+        word-break: break-word;
+      }
+      .stat-number {
+        font-size: clamp(1.2rem, 5vw, 1.6rem) !important;
+      }
+      .stat-label {
+        font-size: 0.75rem !important;
+      }
+
+      .hero-preview-card {
+        padding: 1.25rem !important;
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+
       .section-title {
-        font-size: 1.85rem;
+        font-size: clamp(1.5rem, 5vw, 1.85rem);
+        word-wrap: break-word;
       }
 
       .search-filter-box {
-        padding: 1.25rem;
-        gap: 1rem;
+        padding: 1rem;
+        gap: 0.85rem;
+        width: 100%;
       }
       .filter-row {
-        gap: 0.6rem;
+        gap: 0.5rem;
+        width: 100%;
       }
       .select-input, .auto-refresh-control {
         flex: 1 1 calc(50% - 0.5rem);
-        min-width: 140px;
+        min-width: 0;
+        max-width: 100%;
       }
 
       .grid-display {
-        grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+        gap: 0.85rem;
+        width: 100%;
       }
 
       .dash-stats-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.85rem;
+        gap: 0.75rem;
+        width: 100%;
       }
       .dash-stat-card {
-        padding: 1rem;
+        padding: 0.85rem;
+        min-width: 0;
       }
       .dash-stat-number {
-        font-size: 1.65rem;
+        font-size: 1.45rem;
       }
 
       .modal-box {
-        padding: 1.5rem;
-        max-width: 92vw;
+        padding: 1.25rem;
+        max-width: min(94vw, 560px);
         max-height: 88vh;
         overflow-y: auto;
+        box-sizing: border-box;
       }
 
       #toast-container {
-        bottom: 1.25rem;
-        right: 1rem;
-        left: 1rem;
-        max-width: calc(100vw - 2rem);
+        bottom: 5rem;
+        right: 0.85rem;
+        left: 0.85rem;
+        max-width: calc(100% - 1.7rem);
       }
       .toast-msg {
         width: 100%;
@@ -1545,35 +1729,36 @@
       }
 
       .floating-fab {
-        bottom: 1.25rem;
-        left: 1.25rem;
-        width: 46px;
-        height: 46px;
-        font-size: 1.2rem;
+        bottom: 5.2rem;
+        left: 1rem;
+        width: 44px;
+        height: 44px;
+        font-size: 1.15rem;
       }
     }
 
     /* Small Mobile Phones (Max 480px) */
     @media (max-width: 480px) {
       .container {
-        padding: 0 0.85rem;
+        padding: 0 0.65rem;
+      }
+
+      .logo span {
+        font-size: 0.88rem;
       }
 
       .user-chip span, .server-time-chip span:not(#header-utc-clock) {
         display: none;
       }
-      .server-time-chip {
-        padding: 0.35rem 0.5rem;
-      }
-      .user-chip {
-        padding: 0.35rem 0.5rem;
+      .server-time-chip, .user-chip {
+        padding: 0.3rem 0.45rem;
       }
 
       .hero-title {
-        font-size: 1.85rem;
+        font-size: 1.65rem;
       }
       .hero-subtitle {
-        font-size: 0.925rem;
+        font-size: 0.88rem;
       }
       .hero-cta {
         flex-direction: column;
@@ -1584,13 +1769,13 @@
       }
 
       .stat-card {
-        padding: 0.85rem 0.5rem;
+        padding: 0.65rem 0.35rem !important;
       }
       .stat-number {
-        font-size: 1.45rem;
+        font-size: 1.3rem !important;
       }
       .stat-label {
-        font-size: 0.725rem;
+        font-size: 0.7rem !important;
       }
 
       .filter-row {
@@ -1602,11 +1787,16 @@
         flex: 1 1 100%;
       }
 
+      .grid-display {
+        grid-template-columns: 1fr !important;
+      }
+
       .number-card {
-        padding: 1rem;
+        padding: 0.85rem;
       }
       .phone-number-display {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
+        word-break: break-all;
       }
 
       .dash-stats-grid {
@@ -1614,25 +1804,130 @@
       }
 
       .otp-code {
-        font-size: 1.4rem;
-        letter-spacing: 2px;
-        padding: 0.2rem 0.6rem;
+        font-size: 1.25rem;
+        letter-spacing: 1.5px;
+        padding: 0.2rem 0.5rem;
       }
 
       .modal-box {
-        padding: 1.15rem 0.9rem;
+        padding: 1rem 0.75rem;
         border-radius: var(--radius-md);
+        width: 95vw !important;
       }
       .modal-close {
-        top: 0.85rem;
-        right: 0.85rem;
-        font-size: 1.1rem;
+        top: 0.75rem;
+        right: 0.75rem;
+        font-size: 1rem;
       }
 
       .mobile-sidebar {
         width: min(290px, 85vw);
-        padding: 1.5rem 1rem;
+        padding: 1.25rem 0.85rem;
       }
+    }
+
+    /* Mobile Bottom Navigation Bar */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 998;
+      height: 64px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-color);
+      box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+      padding: 0 0.25rem;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .light-theme .mobile-bottom-nav {
+      background: rgba(255, 255, 255, 0.95);
+      border-top-color: rgba(226, 232, 240, 0.9);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    @media (max-width: 900px) {
+      .mobile-bottom-nav {
+        display: flex;
+      }
+      body {
+        padding-bottom: 64px;
+      }
+      .floating-fab {
+        bottom: 5.2rem !important;
+      }
+      #floating-bulk-bar {
+        bottom: 5rem !important;
+      }
+      #toast-container {
+        bottom: 5rem !important;
+      }
+    }
+
+    .mobile-bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.35rem 0.4rem;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      flex: 1;
+      text-align: center;
+      user-select: none;
+    }
+
+    .mobile-bottom-nav-item:hover,
+    .mobile-bottom-nav-item.active {
+      color: var(--accent);
+    }
+
+    .mobile-bottom-nav-item.mob-nav-active-numbers-btn {
+      color: var(--accent-light, #3b82f6);
+    }
+
+    .mobile-bottom-nav-item.mob-nav-active-numbers-btn.active {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border-radius: var(--radius-md);
+    }
+
+    .mobile-bottom-nav-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-nav-badge {
+      position: absolute;
+      top: -6px;
+      right: -12px;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      font-size: 0.6rem;
+      font-weight: 800;
+      padding: 0.1rem 0.35rem;
+      border-radius: 10px;
+      min-width: 16px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
   </style>
 </head>
@@ -1646,11 +1941,11 @@
 
   <!-- Initial Loading Screen -->
   <div id="loading-screen">
-    <div class="logo-icon" style="width: 64px; height: 64px; font-size: 2rem;">
+    <div class="loading-logo-box">
       <i class="fa-solid fa-sim-card"></i>
     </div>
-    <h2 style="margin-top: 1rem; font-weight: 800; letter-spacing: -0.5px;">Virtual Number Hub</h2>
-    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;" id="loading-status">Loading Platform Assets...</p>
+    <h2 style="margin-top: 1.25rem; font-weight: 800; letter-spacing: -0.5px; color: #F8FAFC;">Virtual Number Hub</h2>
+    <p style="color: #94A3B8; font-size: 0.9rem; margin-top: 0.35rem; font-weight: 500;" id="loading-status">Initializing Platform Assets...</p>
     <div class="loading-bar">
       <div class="loading-bar-fill" id="loading-fill"></div>
     </div>
@@ -1673,6 +1968,7 @@
         <li><a href="#platforms" class="nav-link"><i class="fa-solid fa-layer-group"></i> Platforms</a></li>
         <li><a href="#pricing" class="nav-link"><i class="fa-solid fa-tags"></i> Pricing</a></li>
         <li><a href="#dashboard" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+        <li><a href="#dashboard" onclick="switchDashboardTab('referrals')" class="nav-link"><i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn</a></li>
         <li><a href="#faq" class="nav-link"><i class="fa-solid fa-circle-question"></i> FAQ</a></li>
       </ul>
 
@@ -1720,21 +2016,58 @@
   <!-- Mobile Sidebar Overlay -->
   <div class="mobile-sidebar-backdrop" id="sidebar-backdrop"></div>
   <div class="mobile-sidebar" id="mobile-sidebar">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
       <div class="logo">
         <div class="logo-icon"><i class="fa-solid fa-sim-card"></i></div>
         <span>Virtual Hub</span>
       </div>
       <button class="btn btn-secondary btn-icon" id="close-sidebar-btn"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <ul style="list-style: none; display: flex; flex-direction: column; gap: 1.25rem;">
+
+    <!-- Mobile User Profile & Wallet Quick Card -->
+    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 1rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;" onclick="openModal('user-modal'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');">
+          <i class="fa-solid fa-circle-user" style="color: var(--accent); font-size: 1.2rem;"></i>
+          <div>
+            <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">Alex (User)</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Standard Plan</div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openModal('topup-modal'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">
+          <i class="fa-solid fa-plus"></i> Top Up
+        </button>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 0.5rem; border-top: 1px dashed var(--border-color); font-size: 0.8rem;">
+        <span style="color: var(--text-muted);">Wallet Balance:</span>
+        <span style="font-weight: 800; color: var(--success);" id="mobile-sidebar-wallet">₹500.00</span>
+      </div>
+    </div>
+
+    <!-- Quick Action Grid in Sidebar -->
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 1.25rem;">
+      <button class="btn btn-secondary btn-sm" onclick="openModal('admin-modal'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');" style="justify-content: center; font-size: 0.78rem; padding: 0.4rem;">
+        <i class="fa-solid fa-user-shield" style="color: var(--accent);"></i> Admin
+      </button>
+      <button class="btn btn-secondary btn-sm" onclick="openModal('server-time-modal'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');" style="justify-content: center; font-size: 0.78rem; padding: 0.4rem;">
+        <i class="fa-solid fa-clock" style="color: var(--accent);"></i> UTC Clock
+      </button>
+      <button class="btn btn-secondary btn-sm" onclick="openModal('price-alerts-modal'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');" style="justify-content: center; font-size: 0.78rem; padding: 0.4rem;">
+        <i class="fa-solid fa-bell-concierge" style="color: var(--accent);"></i> Alerts
+      </button>
+      <button class="btn btn-secondary btn-sm" onclick="openModal('user-modal'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');" style="justify-content: center; font-size: 0.78rem; padding: 0.4rem;">
+        <i class="fa-solid fa-sliders" style="color: var(--accent);"></i> Settings
+      </button>
+    </div>
+
+    <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem;">
       <li><a href="#hero" class="nav-link mobile-nav-item"><i class="fa-solid fa-house"></i> Home</a></li>
       <li><a href="#numbers" class="nav-link mobile-nav-item"><i class="fa-solid fa-phone"></i> Numbers</a></li>
       <li><a href="#countries" class="nav-link mobile-nav-item"><i class="fa-solid fa-globe"></i> Countries</a></li>
       <li><a href="#platforms" class="nav-link mobile-nav-item"><i class="fa-solid fa-layer-group"></i> Platforms</a></li>
       <li><a href="#pricing" class="nav-link mobile-nav-item"><i class="fa-solid fa-tags"></i> Pricing</a></li>
-      <li><a href="javascript:void(0)" onclick="openModal('price-alerts-modal')" class="nav-link mobile-nav-item"><i class="fa-solid fa-bell-concierge"></i> Price Alerts</a></li>
       <li><a href="#dashboard" class="nav-link mobile-nav-item"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+      <li><a href="#dashboard" onclick="switchDashboardTab('referrals'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');" class="nav-link mobile-nav-item"><i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn</a></li>
       <li><a href="#faq" class="nav-link mobile-nav-item"><i class="fa-solid fa-circle-question"></i> FAQ</a></li>
     </ul>
   </div>
@@ -1811,11 +2144,14 @@
           </div>
 
           <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-            <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="copyText('483920', 'OTP Copied!')">
+            <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="copyText(document.getElementById('hero-demo-otp')?.innerText || '483920', 'OTP Copied!')">
               <i class="fa-solid fa-copy"></i> Copy OTP
             </button>
-            <button class="btn btn-outline btn-sm" id="hero-refresh-otp-btn">
+            <button class="btn btn-outline btn-sm" id="hero-refresh-otp-btn" title="Generate New OTP">
               <i class="fa-solid fa-rotate"></i> Refresh
+            </button>
+            <button class="btn btn-secondary btn-sm otp-audio-toggle-btn" onclick="toggleOtpAudioMute()" title="Toggle Web Audio Sound Notification">
+              <i class="fa-solid fa-volume-high"></i> Sound Alert Active
             </button>
           </div>
         </div>
@@ -1884,7 +2220,7 @@
         <div class="section-header">
           <span class="section-subtitle">Live Inventory</span>
           <h2 class="section-title">Virtual Number Marketplace</h2>
-          <p class="section-desc">Search through 500+ active virtual numbers ready for instant purchase.</p>
+          <p class="section-desc">Search through 2,000+ active virtual numbers ready for instant purchase.</p>
         </div>
 
         <!-- Search & Filter Controls -->
@@ -1934,6 +2270,32 @@
                 <i class="fa-solid fa-rotate"></i>
               </button>
             </div>
+          </div>
+        </div>
+
+        <!-- Bulk Selection Action Bar -->
+        <div id="marketplace-bulk-toolbar" style="background: rgba(30, 41, 59, 0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.75rem 1.25rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 700; cursor: pointer; user-select: none;">
+              <input type="checkbox" id="bulk-select-all-checkbox" class="card-bulk-checkbox" onchange="toggleSelectAllVisible(this.checked)">
+              <span>Select All Visible</span>
+            </label>
+            <span class="badge badge-primary" id="bulk-selected-count-badge" style="font-size: 0.75rem; font-weight: 700;">0 Selected</span>
+            <span id="bulk-total-price-display" style="font-family: var(--font-mono); font-weight: 800; font-size: 0.95rem; color: var(--success); display: none;">
+              Total: ₹0
+            </span>
+            <span class="badge badge-warning" id="bulk-discount-badge" style="display: none; font-size: 0.7rem; font-weight: 700;">
+              🎁 10% Bulk Discount Applied!
+            </span>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button class="btn btn-secondary btn-sm" id="bulk-clear-btn" onclick="clearBulkSelection()" style="display: none;">
+              <i class="fa-solid fa-xmark"></i> Clear Selection
+            </button>
+            <button class="btn btn-primary btn-sm" id="bulk-buy-btn" onclick="openBulkPurchaseModal()" disabled style="opacity: 0.5; font-weight: 700; padding: 0.45rem 1rem;">
+              <i class="fa-solid fa-layer-group"></i> Bulk Buy Selected <span id="bulk-buy-btn-count">(0)</span>
+            </button>
           </div>
         </div>
 
@@ -2084,6 +2446,24 @@
               </div>
             </div>
 
+            <!-- Refer & Earn Left Column Card -->
+            <div class="glass-card" style="padding: 1.5rem; background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%); border: 1px solid rgba(245, 158, 11, 0.3);">
+              <div class="widget-title">
+                <span><i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn Credits</span>
+                <span class="badge badge-warning" style="font-size: 0.68rem; font-weight: 700;">10% Cashback</span>
+              </div>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.85rem;">Earn 10% instant cash credits whenever friends join & rent numbers using your link.</p>
+              <div style="background: rgba(0, 0, 0, 0.25); border: 1px dashed rgba(245, 158, 11, 0.4); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;">
+                <span style="font-family: var(--font-mono); font-weight: 700; color: #f59e0b; font-size: 0.85rem;" id="widget-ref-code">VNH-ALEX-8829</span>
+                <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="copyReferralLink()">
+                  <i class="fa-solid fa-copy"></i> Copy Link
+                </button>
+              </div>
+              <button class="btn btn-primary btn-sm" style="width: 100%; font-weight: 700;" onclick="scrollToSection('dashboard'); switchDashboardTab('referrals');">
+                <i class="fa-solid fa-chart-pie"></i> View Referral Program
+              </button>
+            </div>
+
             <!-- Auto OTP Refresh Toggle Card -->
             <div class="glass-card" style="padding: 1.5rem;">
               <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -2118,12 +2498,15 @@
             <div class="glass-card" style="padding: 1.5rem;">
               <!-- Dashboard Section Tabs -->
               <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.85rem; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; gap: 0.5rem;" id="dashboard-tabs">
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;" id="dashboard-tabs">
                   <button class="btn btn-primary btn-sm" id="dash-tab-purchases" onclick="switchDashboardTab('purchases')">
                     <i class="fa-solid fa-clock-rotate-left"></i> Purchased Numbers
                   </button>
                   <button class="btn btn-secondary btn-sm" id="dash-tab-favorites" onclick="switchDashboardTab('favorites')">
                     <i class="fa-solid fa-heart" style="color: #ef4444;"></i> Saved Favorites <span class="badge badge-primary" id="favorites-count-badge" style="margin-left: 0.25rem; font-size: 0.65rem;">0</span>
+                  </button>
+                  <button class="btn btn-secondary btn-sm" id="dash-tab-referrals" onclick="switchDashboardTab('referrals')">
+                    <i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn <span class="badge badge-warning" id="referral-earnings-badge" style="margin-left: 0.25rem; font-size: 0.65rem; background: rgba(245, 158, 11, 0.2); color: #f59e0b;">₹175.00</span>
                   </button>
                 </div>
                 <button class="btn btn-secondary btn-sm" id="refresh-history-btn"><i class="fa-solid fa-rotate"></i> Sync</button>
@@ -2135,6 +2518,10 @@
 
               <div id="favorites-tab-list" style="display: none; flex-direction: column; gap: 1rem;">
                 <!-- Dynamically Rendered Favorites -->
+              </div>
+
+              <div id="referral-tab-content" style="display: none; flex-direction: column; gap: 1.25rem;">
+                <!-- Dynamically Rendered Referral Section -->
               </div>
             </div>
           </div>
@@ -2271,6 +2658,62 @@
     </div>
   </footer>
 
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="#numbers" class="mobile-bottom-nav-item active" id="mob-nav-marketplace" onclick="setActiveMobileBottomNav(this); scrollToSection('numbers');">
+      <div class="mobile-bottom-nav-icon"><i class="fa-solid fa-store"></i></div>
+      <span class="mobile-bottom-nav-label">Marketplace</span>
+    </a>
+    
+    <a href="#dashboard" class="mobile-bottom-nav-item mob-nav-active-numbers-btn" id="mob-nav-active-numbers" onclick="setActiveMobileBottomNav(this); scrollToSection('dashboard'); switchDashboardTab('purchases');">
+      <div class="mobile-bottom-nav-icon">
+        <i class="fa-solid fa-sim-card"></i>
+        <span class="mobile-nav-badge" id="mob-nav-active-count-badge">0</span>
+      </div>
+      <span class="mobile-bottom-nav-label" style="font-weight: 700;">Active Numbers</span>
+    </a>
+
+    <a href="#dashboard" class="mobile-bottom-nav-item" id="mob-nav-favorites" onclick="setActiveMobileBottomNav(this); scrollToSection('dashboard'); switchDashboardTab('favorites');">
+      <div class="mobile-bottom-nav-icon">
+        <i class="fa-solid fa-heart" style="color: #ef4444;"></i>
+      </div>
+      <span class="mobile-bottom-nav-label">Saved</span>
+    </a>
+
+    <button type="button" class="mobile-bottom-nav-item" id="mob-nav-topup" onclick="openModal('topup-modal');">
+      <div class="mobile-bottom-nav-icon">
+        <i class="fa-solid fa-wallet" style="color: var(--success);"></i>
+      </div>
+      <span class="mobile-bottom-nav-label">Wallet</span>
+    </button>
+
+    <button type="button" class="mobile-bottom-nav-item" id="mob-nav-menu" onclick="document.getElementById('mobile-sidebar')?.classList.add('open'); document.getElementById('sidebar-backdrop')?.classList.add('open');">
+      <div class="mobile-bottom-nav-icon">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+      <span class="mobile-bottom-nav-label">Menu</span>
+    </button>
+  </nav>
+
+  <!-- Floating Sticky Bulk Buy Bar -->
+  <div id="floating-bulk-bar" style="position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%); border: 1px solid rgba(59, 130, 246, 0.5); backdrop-filter: blur(12px); border-radius: var(--radius-lg); padding: 0.85rem 1.25rem; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.2); display: none; align-items: center; gap: 1rem; transform: translateY(100px); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease; opacity: 0;">
+    <div>
+      <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Bulk Cart</div>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-weight: 800; font-size: 1.1rem; color: var(--text-main);" id="floating-bulk-count">0 Numbers</span>
+        <span style="font-family: var(--font-mono); font-weight: 800; font-size: 1.1rem; color: var(--success);" id="floating-bulk-price">₹0</span>
+      </div>
+    </div>
+    <div style="display: flex; gap: 0.5rem;">
+      <button class="btn btn-secondary btn-sm" onclick="clearBulkSelection()" title="Clear Selection">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="openBulkPurchaseModal()" style="font-weight: 800; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 0.5rem 1.1rem;">
+        <i class="fa-solid fa-cart-shopping"></i> Checkout Now
+      </button>
+    </div>
+  </div>
+
   <!-- Floating Help Action Button -->
   <div class="floating-fab" id="help-fab" title="Need Help? Chat Support">
     <i class="fa-solid fa-headset"></i>
@@ -2366,6 +2809,58 @@
         <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal('purchase-modal')">Cancel</button>
         <button class="btn btn-primary" style="flex: 1;" id="confirm-proceed-pay-btn">
           <i class="fa-solid fa-shield-halved"></i> Proceed to Pay
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Purchase Modal -->
+  <div class="modal-backdrop" id="bulk-purchase-modal">
+    <div class="modal-box" style="max-width: 620px;">
+      <button class="modal-close" onclick="closeModal('bulk-purchase-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.25rem;">
+        <span class="badge badge-primary" style="font-size: 0.75rem;"><i class="fa-solid fa-layer-group"></i> Bulk Checkout</span>
+        <h3 style="font-size: 1.35rem; font-weight: 800; margin: 0;">Bulk Number Order</h3>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Review selected numbers and complete single-click batch purchase</p>
+
+      <!-- Selected Numbers Itemized List -->
+      <div style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: var(--radius-md); max-height: 220px; overflow-y: auto; padding: 0.75rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem;" id="bulk-items-list-container">
+        <!-- Dynamically populated selected items list -->
+      </div>
+
+      <!-- Price Breakdown & Discounts -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.88rem;">
+          <span style="color: var(--text-muted);">Total Selected Items:</span>
+          <strong id="bulk-modal-count-text">0 Numbers</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.88rem;">
+          <span style="color: var(--text-muted);">Subtotal Price:</span>
+          <span style="font-family: var(--font-mono); font-weight: 700;" id="bulk-modal-subtotal-text">₹0.00</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.88rem; color: #f59e0b;" id="bulk-modal-discount-row">
+          <span><i class="fa-solid fa-gift"></i> Bulk Tier Discount:</span>
+          <strong style="font-family: var(--font-mono);" id="bulk-modal-discount-text">-₹0.00</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.88rem;">
+          <span style="color: var(--text-muted);">Your Wallet Balance:</span>
+          <strong style="font-family: var(--font-mono); color: var(--accent);" id="bulk-modal-wallet-balance">₹500.00</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 0.75rem; font-size: 1.05rem;">
+          <span style="font-weight: 700;">Final Payable Amount:</span>
+          <strong style="font-size: 1.3rem; color: var(--success); font-family: var(--font-mono);" id="bulk-modal-final-total">₹0.00</strong>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <button class="btn btn-secondary" style="flex: 1; min-width: 120px;" onclick="closeModal('bulk-purchase-modal')">Cancel</button>
+        <button class="btn btn-primary" style="flex: 2; min-width: 180px; font-weight: 800;" id="bulk-pay-wallet-btn" onclick="executeBulkPurchaseFromWallet()">
+          <i class="fa-solid fa-wallet"></i> Pay from Wallet & Activate All
+        </button>
+        <button class="btn btn-warning" style="flex: 2; min-width: 180px; font-weight: 800; display: none;" id="bulk-pay-upi-btn" onclick="executeBulkPurchaseViaUPI()">
+          <i class="fa-solid fa-qrcode"></i> Pay via UPI QR / UTR
         </button>
       </div>
     </div>
@@ -2494,14 +2989,34 @@
   <div class="modal-backdrop" id="topup-modal">
     <div class="modal-box">
       <button class="modal-close" onclick="closeModal('topup-modal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.5rem;">Add Funds to Wallet</h3>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem;">Select top-up amount</p>
+      <h3 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.5rem;"><i class="fa-solid fa-wallet" style="color: var(--accent); margin-right: 0.4rem;"></i>Add Funds to Wallet</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem;">Select a quick top-up amount or enter custom value</p>
 
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.5rem;">
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Quick Amounts:</div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.25rem;">
         <button class="btn btn-secondary" onclick="addDemoWalletFunds(100)">+ ₹100</button>
         <button class="btn btn-secondary" onclick="addDemoWalletFunds(500)">+ ₹500</button>
         <button class="btn btn-secondary" onclick="addDemoWalletFunds(1000)">+ ₹1000</button>
       </div>
+
+      <div style="display: flex; align-items: center; margin: 1.25rem 0; color: var(--text-muted); font-size: 0.78rem;">
+        <div style="flex: 1; border-bottom: 1px solid var(--border-color);"></div>
+        <span style="padding: 0 0.6rem; font-weight: 600;">OR ENTER CUSTOM AMOUNT</span>
+        <div style="flex: 1; border-bottom: 1px solid var(--border-color);"></div>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem;">Custom Amount (₹):</label>
+        <div style="position: relative; display: flex; align-items: center;">
+          <span style="position: absolute; left: 0.9rem; color: var(--accent); font-weight: 800; font-size: 1.1rem; pointer-events: none;">₹</span>
+          <input type="number" id="custom-wallet-amount-input" class="search-input" placeholder="e.g. 250" min="10" max="100000" style="padding-left: 2.2rem; font-weight: 700; font-size: 1rem;" onkeydown="if(event.key==='Enter') submitCustomWalletFunds()">
+        </div>
+        <div id="custom-amount-val-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; margin-top: 0.35rem; display: none;"></div>
+      </div>
+
+      <button class="btn btn-primary" style="width: 100%; font-size: 0.95rem; padding: 0.75rem;" onclick="submitCustomWalletFunds()">
+        <i class="fa-solid fa-plus-circle"></i> Add Custom Amount
+      </button>
     </div>
   </div>
 
@@ -2762,10 +3277,63 @@
     /* ==========================================
        DATA GENERATORS & APPLICATION STATE
        ========================================== */
+    const seedNow = Date.now();
+    const defaultSeedPurchases = [
+      {
+        id: 'p_seed_1',
+        phone: '+1 415 892 3012',
+        country: 'United States',
+        flag: '🇺🇸',
+        platform: 'WhatsApp',
+        price: 49,
+        orderId: 'ORD-2026-881920',
+        latestOtp: '849201',
+        time: new Date(seedNow - 2 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        createdAt: seedNow - 2 * 60 * 1000,
+        expiresAt: seedNow + 18 * 60 * 1000 + 45 * 1000
+      },
+      {
+        id: 'p_seed_2',
+        phone: '+44 7911 123456',
+        country: 'United Kingdom',
+        flag: '🇬🇧',
+        platform: 'Telegram',
+        price: 39,
+        orderId: 'ORD-2026-773109',
+        latestOtp: '391048',
+        time: new Date(seedNow - 8 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        createdAt: seedNow - 8 * 60 * 1000,
+        expiresAt: seedNow + 11 * 60 * 1000 + 20 * 1000
+      },
+      {
+        id: 'p_seed_3',
+        phone: '+91 98765 43210',
+        country: 'India',
+        flag: '🇮🇳',
+        platform: 'OpenAI / ChatGPT',
+        price: 29,
+        orderId: 'ORD-2026-551029',
+        latestOtp: '109283',
+        time: new Date(seedNow - 16 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        createdAt: seedNow - 16 * 60 * 1000,
+        expiresAt: seedNow + 3 * 60 * 1000 + 50 * 1000
+      }
+    ];
+
+    let storedPurchases = JSON.parse(localStorage.getItem('vnh_purchases'));
+    if (!storedPurchases || !Array.isArray(storedPurchases) || storedPurchases.length === 0) {
+      storedPurchases = defaultSeedPurchases;
+    } else {
+      storedPurchases.forEach(p => {
+        if (!p.createdAt) p.createdAt = Date.now() - 5 * 60 * 1000;
+        if (!p.expiresAt) p.expiresAt = p.createdAt + 20 * 60 * 1000;
+      });
+    }
+
     const AppState = {
       theme: localStorage.getItem('vnh_theme') || 'dark',
       walletBalance: parseFloat(localStorage.getItem('vnh_wallet')) || 500.00,
-      purchases: JSON.parse(localStorage.getItem('vnh_purchases')) || [],
+      purchases: storedPurchases,
       favorites: JSON.parse(localStorage.getItem('vnh_favorites')) || ['num_1', 'num_3', 'num_5'],
       priceAlerts: JSON.parse(localStorage.getItem('vnh_price_alerts')) || [
         {
@@ -2794,7 +3362,53 @@
         email: 'alex@virtualhub.io',
         tier: 'Pro VIP'
       },
+      referralCode: localStorage.getItem('vnh_ref_code') || 'VNH-ALEX-8829',
+      referralEarnings: parseFloat(localStorage.getItem('vnh_ref_earnings')) || 175.00,
+      referralFilter: 'ALL',
+      referralsList: JSON.parse(localStorage.getItem('vnh_ref_list')) || [
+        {
+          id: 'ref_101',
+          name: 'Rahul Sharma',
+          email: 'rahul.s@gmail.com',
+          date: '2026-07-22',
+          tier: 'Standard',
+          status: 'COMPLETED',
+          spent: 450.00,
+          reward: 45.00
+        },
+        {
+          id: 'ref_102',
+          name: 'Elena Rostova',
+          email: 'elena.r@tech.io',
+          date: '2026-07-20',
+          tier: 'Pro VIP',
+          status: 'COMPLETED',
+          spent: 800.00,
+          reward: 80.00
+        },
+        {
+          id: 'ref_103',
+          name: 'David Miller',
+          email: 'david.m@dev.co',
+          date: '2026-07-18',
+          tier: 'Standard',
+          status: 'COMPLETED',
+          spent: 500.00,
+          reward: 50.00
+        },
+        {
+          id: 'ref_104',
+          name: 'Priya Patel',
+          email: 'priya.p@outlook.com',
+          date: '2026-07-24',
+          tier: 'Pending',
+          status: 'PENDING',
+          spent: 0.00,
+          reward: 0.00
+        }
+      ],
       autoOtpEnabled: true,
+      selectedNumberIds: [],
       countries: [],
       platforms: [],
       numbers: [],
@@ -2875,9 +3489,9 @@
         });
       }
 
-      // Generate 500 Numbers
+      // Generate 2000 Numbers programmatically
       AppState.numbers = [];
-      for (let i = 0; i < 500; i++) {
+      for (let i = 0; i < 2000; i++) {
         const country = AppState.countries[i % AppState.countries.length];
         const platform = AppState.platforms[i % AppState.platforms.length];
         const randomDigits = Math.floor(100000000 + Math.random() * 900000000);
@@ -2958,11 +3572,93 @@
       container.innerHTML = skeletonCards;
     }
 
+    function buildNumberCardHTML(num) {
+      const isPurchased = num.status === 'PURCHASED';
+      const isFav = AppState.favorites.includes(num.id);
+      const isSelected = AppState.selectedNumberIds && AppState.selectedNumberIds.includes(num.id);
+
+      return `
+        <div class="glass-card number-card ${isSelected ? 'selected-card' : ''}" id="card-${num.id}">
+          <div>
+            <div class="number-card-header">
+              <div class="country-info" style="gap: 0.6rem;">
+                ${!isPurchased ? `
+                  <input type="checkbox" class="card-bulk-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleNumberSelection('${num.id}', this.checked, event)" title="Select for Bulk Purchase">
+                ` : ''}
+                <span class="flag-icon">${num.flag}</span>
+                <span>${num.countryName}</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <button class="btn btn-secondary btn-icon" style="width: 30px; height: 30px; font-size: 0.85rem; border-radius: 50%; ${isFav ? 'background: rgba(239, 68, 68, 0.2); border-color: #ef4444;' : ''}" title="${isFav ? 'Remove from Favorites' : 'Add to Favorites'}" onclick="toggleFavorite('${num.id}')">
+                  <i class="${isFav ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}" style="${isFav ? 'color: #ef4444;' : 'color: var(--text-muted);'}"></i>
+                </button>
+                <span class="badge ${isPurchased ? 'badge-warning' : 'badge-success'}">${num.status}</span>
+              </div>
+            </div>
+            <div class="phone-number-display" style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+              <span>${num.phone}</span>
+              <button class="btn btn-secondary btn-icon" style="width: 28px; height: 28px; font-size: 0.75rem; border-radius: var(--radius-sm); padding: 0; flex-shrink: 0;" title="Copy Phone Number" onclick="copyText('${num.phone}', 'Copied ${num.phone} to clipboard!')">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+              <i class="${num.platformIcon}"></i> ${num.platformName}
+            </div>
+          </div>
+
+          <div class="number-card-footer">
+            <div class="price-tag">₹${num.price}</div>
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+              <button class="btn btn-secondary btn-sm" style="padding: 0.4rem 0.6rem;" title="View 7-day price trend" onclick="openPurchaseModal('${num.id}')">
+                <i class="fa-solid fa-chart-line" style="color: var(--accent);"></i>
+              </button>
+              <button class="btn btn-secondary btn-sm" style="padding: 0.4rem 0.6rem;" title="Set price alert for ${num.countryName}" onclick="openQuickAlertModal('${num.countryName}', 'country', ${num.price})">
+                <i class="fa-solid fa-bell"></i>
+              </button>
+              ${isPurchased ? `
+                <button class="btn btn-secondary btn-sm" onclick="scrollToSection('dashboard')">
+                  <i class="fa-solid fa-eye"></i> View OTP
+                </button>
+              ` : `
+                <button class="btn btn-warning btn-sm" style="padding: 0.4rem 0.65rem; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b; font-weight: 700;" title="Quick Buy via UPI (Skip details)" onclick="quickBuyNumber('${num.id}')">
+                  <i class="fa-solid fa-bolt"></i> Quick Buy
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openPurchaseModal('${num.id}')">
+                  <i class="fa-solid fa-cart-plus"></i> Buy Now
+                </button>
+              `}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    let currentMarketplaceRenderToken = 0;
+
     function renderMarketplace() {
       const container = document.getElementById('numbers-grid-container');
       if (!container) return;
 
+      const totalFiltered = AppState.filteredNumbers.length;
       const itemsToShow = AppState.filteredNumbers.slice(0, AppState.visibleCount);
+      const loadMoreBtn = document.getElementById('load-more-btn');
+
+      // Update Load More Button UI
+      if (loadMoreBtn) {
+        if (itemsToShow.length === 0) {
+          loadMoreBtn.style.display = 'none';
+        } else if (itemsToShow.length >= totalFiltered) {
+          loadMoreBtn.style.display = 'inline-flex';
+          loadMoreBtn.innerHTML = `<i class="fa-solid fa-check"></i> All ${totalFiltered.toLocaleString()} Virtual Numbers Loaded`;
+          loadMoreBtn.disabled = true;
+          loadMoreBtn.style.opacity = '0.7';
+        } else {
+          loadMoreBtn.style.display = 'inline-flex';
+          loadMoreBtn.innerHTML = `<i class="fa-solid fa-angles-down"></i> Showing ${itemsToShow.length.toLocaleString()} of ${totalFiltered.toLocaleString()} Numbers (Load More)`;
+          loadMoreBtn.disabled = false;
+          loadMoreBtn.style.opacity = '1';
+        }
+      }
 
       if (itemsToShow.length === 0) {
         container.innerHTML = `
@@ -2972,64 +3668,365 @@
             <p style="color: var(--text-muted);">Try resetting your search query or filters.</p>
           </div>
         `;
+        updateBulkToolbarUI();
         return;
       }
 
-      container.innerHTML = itemsToShow.map(num => {
-        const isPurchased = num.status === 'PURCHASED';
-        const isFav = AppState.favorites.includes(num.id);
-        return `
-          <div class="glass-card number-card">
-            <div>
-              <div class="number-card-header">
-                <div class="country-info">
-                  <span class="flag-icon">${num.flag}</span>
-                  <span>${num.countryName}</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 0.4rem;">
-                  <button class="btn btn-secondary btn-icon" style="width: 30px; height: 30px; font-size: 0.85rem; border-radius: 50%; ${isFav ? 'background: rgba(239, 68, 68, 0.2); border-color: #ef4444;' : ''}" title="${isFav ? 'Remove from Favorites' : 'Add to Favorites'}" onclick="toggleFavorite('${num.id}')">
-                    <i class="${isFav ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}" style="${isFav ? 'color: #ef4444;' : 'color: var(--text-muted);'}"></i>
-                  </button>
-                  <span class="badge ${isPurchased ? 'badge-warning' : 'badge-success'}">${num.status}</span>
-                </div>
-              </div>
-              <div class="phone-number-display" style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
-                <span>${num.phone}</span>
-                <button class="btn btn-secondary btn-icon" style="width: 28px; height: 28px; font-size: 0.75rem; border-radius: var(--radius-sm); padding: 0; flex-shrink: 0;" title="Copy Phone Number" onclick="copyText('${num.phone}', 'Copied ${num.phone} to clipboard!')">
-                  <i class="fa-solid fa-copy"></i>
-                </button>
-              </div>
-              <div style="font-size: 0.85rem; color: var(--text-muted);">
-                <i class="${num.platformIcon}"></i> ${num.platformName}
+      // Fast Chunked Progressive Rendering Engine
+      currentMarketplaceRenderToken++;
+      const activeToken = currentMarketplaceRenderToken;
+      const chunkSize = 20;
+
+      // Render initial chunk immediately for 0ms visual response
+      const firstChunk = itemsToShow.slice(0, chunkSize);
+      container.innerHTML = firstChunk.map(num => buildNumberCardHTML(num)).join('');
+
+      // If more items, append progressively via requestAnimationFrame
+      if (itemsToShow.length > chunkSize) {
+        let currentIndex = chunkSize;
+        function renderRemainingChunks() {
+          if (activeToken !== currentMarketplaceRenderToken) return; // Stale render token cancelled
+          const chunk = itemsToShow.slice(currentIndex, currentIndex + chunkSize);
+          if (chunk.length > 0) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = chunk.map(num => buildNumberCardHTML(num)).join('');
+            while (tempDiv.firstChild) {
+              container.appendChild(tempDiv.firstChild);
+            }
+            currentIndex += chunkSize;
+            if (currentIndex < itemsToShow.length) {
+              requestAnimationFrame(renderRemainingChunks);
+            }
+          }
+        }
+        requestAnimationFrame(renderRemainingChunks);
+      }
+
+      updateBulkToolbarUI();
+    }
+
+    /* ==========================================
+       BULK SELECTION & BULK BUY CONTROLLER
+       ========================================== */
+    function toggleNumberSelection(numId, isChecked, event) {
+      if (event) event.stopPropagation();
+      if (!AppState.selectedNumberIds) AppState.selectedNumberIds = [];
+
+      if (isChecked) {
+        if (!AppState.selectedNumberIds.includes(numId)) {
+          AppState.selectedNumberIds.push(numId);
+        }
+      } else {
+        AppState.selectedNumberIds = AppState.selectedNumberIds.filter(id => id !== numId);
+      }
+
+      const card = document.getElementById(`card-${numId}`);
+      if (card) {
+        if (isChecked) card.classList.add('selected-card');
+        else card.classList.remove('selected-card');
+        const chk = card.querySelector('.card-bulk-checkbox');
+        if (chk) chk.checked = isChecked;
+      }
+
+      updateBulkToolbarUI();
+    }
+
+    function toggleSelectAllVisible(isChecked) {
+      if (!AppState.selectedNumberIds) AppState.selectedNumberIds = [];
+      const availableVisible = AppState.filteredNumbers
+        .slice(0, AppState.visibleCount)
+        .filter(n => n.status !== 'PURCHASED');
+
+      if (isChecked) {
+        availableVisible.forEach(n => {
+          if (!AppState.selectedNumberIds.includes(n.id)) {
+            AppState.selectedNumberIds.push(n.id);
+          }
+        });
+      } else {
+        const visibleIds = availableVisible.map(n => n.id);
+        AppState.selectedNumberIds = AppState.selectedNumberIds.filter(id => !visibleIds.includes(id));
+      }
+
+      renderMarketplace();
+      updateBulkToolbarUI();
+    }
+
+    function clearBulkSelection() {
+      AppState.selectedNumberIds = [];
+      const selectAllChk = document.getElementById('bulk-select-all-checkbox');
+      if (selectAllChk) selectAllChk.checked = false;
+      renderMarketplace();
+      updateBulkToolbarUI();
+      showToast('Bulk selection cleared.', 'info');
+    }
+
+    function updateBulkToolbarUI() {
+      const selectedIds = AppState.selectedNumberIds || [];
+      const count = selectedIds.length;
+      const selectedItems = AppState.numbers.filter(n => selectedIds.includes(n.id));
+
+      const rawTotal = selectedItems.reduce((sum, n) => sum + (n.price || 0), 0);
+      
+      let discountPercent = 0;
+      if (count >= 5) discountPercent = 10;
+      else if (count >= 3) discountPercent = 5;
+
+      const discountAmt = Math.round((rawTotal * discountPercent) / 100);
+      const finalTotal = rawTotal - discountAmt;
+
+      const countBadge = document.getElementById('bulk-selected-count-badge');
+      if (countBadge) countBadge.innerText = `${count} Selected`;
+
+      const priceDisplay = document.getElementById('bulk-total-price-display');
+      if (priceDisplay) {
+        if (count > 0) {
+          priceDisplay.style.display = 'inline-block';
+          priceDisplay.innerHTML = `Total: ₹${finalTotal}${discountAmt > 0 ? ` <span style="font-size: 0.75rem; text-decoration: line-through; color: var(--text-muted);">₹${rawTotal}</span>` : ''}`;
+        } else {
+          priceDisplay.style.display = 'none';
+        }
+      }
+
+      const discountBadge = document.getElementById('bulk-discount-badge');
+      if (discountBadge) {
+        if (discountPercent > 0) {
+          discountBadge.style.display = 'inline-block';
+          discountBadge.innerText = `🎁 ${discountPercent}% Bulk Discount Applied! (-₹${discountAmt})`;
+        } else {
+          discountBadge.style.display = 'none';
+        }
+      }
+
+      const clearBtn = document.getElementById('bulk-clear-btn');
+      if (clearBtn) clearBtn.style.display = count > 0 ? 'inline-flex' : 'none';
+
+      const bulkBuyBtn = document.getElementById('bulk-buy-btn');
+      const bulkBuyCount = document.getElementById('bulk-buy-btn-count');
+      if (bulkBuyBtn) {
+        bulkBuyBtn.disabled = count === 0;
+        bulkBuyBtn.style.opacity = count === 0 ? '0.5' : '1';
+      }
+      if (bulkBuyCount) bulkBuyCount.innerText = `(${count})`;
+
+      // Floating Action Bar UI
+      const floatingBar = document.getElementById('floating-bulk-bar');
+      const floatCount = document.getElementById('floating-bulk-count');
+      const floatPrice = document.getElementById('floating-bulk-price');
+
+      if (floatingBar) {
+        if (count > 0) {
+          floatingBar.style.display = 'flex';
+          requestAnimationFrame(() => {
+            floatingBar.style.transform = 'translateY(0)';
+            floatingBar.style.opacity = '1';
+          });
+          if (floatCount) floatCount.innerText = `${count} ${count === 1 ? 'Number' : 'Numbers'}`;
+          if (floatPrice) floatPrice.innerText = `₹${finalTotal}`;
+        } else {
+          floatingBar.style.transform = 'translateY(100px)';
+          floatingBar.style.opacity = '0';
+          setTimeout(() => {
+            if ((AppState.selectedNumberIds || []).length === 0) {
+              floatingBar.style.display = 'none';
+            }
+          }, 300);
+        }
+      }
+
+      // Sync Select All checkbox state
+      const selectAllChk = document.getElementById('bulk-select-all-checkbox');
+      if (selectAllChk) {
+        const availableVisible = AppState.filteredNumbers
+          .slice(0, AppState.visibleCount)
+          .filter(n => n.status !== 'PURCHASED');
+        if (availableVisible.length > 0) {
+          const allVisSelected = availableVisible.every(n => selectedIds.includes(n.id));
+          selectAllChk.checked = allVisSelected;
+        } else {
+          selectAllChk.checked = false;
+        }
+      }
+    }
+
+    function openBulkPurchaseModal() {
+      const selectedIds = AppState.selectedNumberIds || [];
+      if (selectedIds.length === 0) {
+        showToast('Please select at least one virtual number to bulk buy.', 'warning');
+        return;
+      }
+
+      const selectedItems = AppState.numbers.filter(n => selectedIds.includes(n.id) && n.status !== 'PURCHASED');
+      if (selectedItems.length === 0) {
+        showToast('Selected numbers are no longer available.', 'warning');
+        return;
+      }
+
+      const listContainer = document.getElementById('bulk-items-list-container');
+      if (listContainer) {
+        listContainer.innerHTML = selectedItems.map((num, idx) => `
+          <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.5rem 0.75rem; font-size: 0.82rem;">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); min-width: 18px;">#${idx + 1}</span>
+              <span style="font-size: 1.1rem;">${num.flag}</span>
+              <div>
+                <strong style="color: var(--text-main); font-family: var(--font-mono);">${num.phone}</strong>
+                <div style="font-size: 0.72rem; color: var(--text-muted);">${num.countryName} • <i class="${num.platformIcon}"></i> ${num.platformName}</div>
               </div>
             </div>
-
-            <div class="number-card-footer">
-              <div class="price-tag">₹${num.price}</div>
-              <div style="display: flex; gap: 0.4rem; align-items: center;">
-                <button class="btn btn-secondary btn-sm" style="padding: 0.4rem 0.6rem;" title="View 7-day price trend" onclick="openPurchaseModal('${num.id}')">
-                  <i class="fa-solid fa-chart-line" style="color: var(--accent);"></i>
-                </button>
-                <button class="btn btn-secondary btn-sm" style="padding: 0.4rem 0.6rem;" title="Set price alert for ${num.countryName}" onclick="openQuickAlertModal('${num.countryName}', 'country', ${num.price})">
-                  <i class="fa-solid fa-bell"></i>
-                </button>
-                ${isPurchased ? `
-                  <button class="btn btn-secondary btn-sm" onclick="scrollToSection('dashboard')">
-                    <i class="fa-solid fa-eye"></i> View OTP
-                  </button>
-                ` : `
-                  <button class="btn btn-warning btn-sm" style="padding: 0.4rem 0.65rem; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b; font-weight: 700;" title="Quick Buy via UPI (Skip details)" onclick="quickBuyNumber('${num.id}')">
-                    <i class="fa-solid fa-bolt"></i> Quick Buy
-                  </button>
-                  <button class="btn btn-primary btn-sm" onclick="openPurchaseModal('${num.id}')">
-                    <i class="fa-solid fa-cart-plus"></i> Buy Now
-                  </button>
-                `}
-              </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <strong style="font-family: var(--font-mono); color: var(--success); font-size: 0.95rem;">₹${num.price}</strong>
+              <button class="btn btn-secondary btn-icon" style="width: 24px; height: 24px; font-size: 0.7rem; border-radius: 50%; padding: 0;" onclick="toggleNumberSelection('${num.id}', false); openBulkPurchaseModal();" title="Remove from selection">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
             </div>
           </div>
-        `;
-      }).join('');
+        `).join('');
+      }
+
+      const rawSubtotal = selectedItems.reduce((acc, item) => acc + (item.price || 0), 0);
+      let discountPercent = 0;
+      if (selectedItems.length >= 5) discountPercent = 10;
+      else if (selectedItems.length >= 3) discountPercent = 5;
+
+      const discountAmt = Math.round((rawSubtotal * discountPercent) / 100);
+      const finalTotal = rawSubtotal - discountAmt;
+
+      document.getElementById('bulk-modal-count-text').innerText = `${selectedItems.length} Virtual Numbers`;
+      document.getElementById('bulk-modal-subtotal-text').innerText = `₹${rawSubtotal.toFixed(2)}`;
+      
+      const discRow = document.getElementById('bulk-modal-discount-row');
+      const discText = document.getElementById('bulk-modal-discount-text');
+      if (discRow && discText) {
+        if (discountPercent > 0) {
+          discRow.style.display = 'flex';
+          discText.innerText = `-₹${discountAmt.toFixed(2)} (${discountPercent}%)`;
+        } else {
+          discRow.style.display = 'none';
+        }
+      }
+
+      document.getElementById('bulk-modal-wallet-balance').innerText = `₹${AppState.walletBalance.toFixed(2)}`;
+      document.getElementById('bulk-modal-final-total').innerText = `₹${finalTotal.toFixed(2)}`;
+
+      const payWalletBtn = document.getElementById('bulk-pay-wallet-btn');
+      const payUpiBtn = document.getElementById('bulk-pay-upi-btn');
+
+      if (AppState.walletBalance >= finalTotal) {
+        if (payWalletBtn) payWalletBtn.style.display = 'inline-flex';
+        if (payUpiBtn) payUpiBtn.style.display = 'none';
+      } else {
+        if (payWalletBtn) payWalletBtn.style.display = 'none';
+        if (payUpiBtn) {
+          payUpiBtn.style.display = 'inline-flex';
+          payUpiBtn.innerText = `Top Up Wallet / Pay ₹${finalTotal.toFixed(2)} via UPI`;
+        }
+      }
+
+      openModal('bulk-purchase-modal');
+    }
+
+    function executeBulkPurchaseFromWallet() {
+      const selectedIds = AppState.selectedNumberIds || [];
+      const selectedItems = AppState.numbers.filter(n => selectedIds.includes(n.id) && n.status !== 'PURCHASED');
+
+      if (selectedItems.length === 0) {
+        showToast('No valid available numbers selected.', 'error');
+        closeModal('bulk-purchase-modal');
+        return;
+      }
+
+      const rawSubtotal = selectedItems.reduce((acc, item) => acc + (item.price || 0), 0);
+      let discountPercent = 0;
+      if (selectedItems.length >= 5) discountPercent = 10;
+      else if (selectedItems.length >= 3) discountPercent = 5;
+
+      const discountAmt = Math.round((rawSubtotal * discountPercent) / 100);
+      const finalTotal = rawSubtotal - discountAmt;
+
+      if (AppState.walletBalance < finalTotal) {
+        showToast('Insufficient wallet balance. Redirecting to UPI payment.', 'warning');
+        executeBulkPurchaseViaUPI();
+        return;
+      }
+
+      // Deduct Wallet Balance
+      AppState.walletBalance -= finalTotal;
+      localStorage.setItem('vnh_wallet', AppState.walletBalance);
+
+      // Batch convert all selected items to PURCHASES
+      selectedItems.forEach(num => {
+        num.status = 'PURCHASED';
+        const initialOtp = Math.floor(100000 + Math.random() * 900000).toString();
+        const purchaseNow = Date.now();
+        const purchaseEntry = {
+          id: `p_${purchaseNow}_${Math.floor(100 + Math.random() * 899)}`,
+          phone: num.phone,
+          country: num.countryName,
+          flag: num.flag,
+          platform: num.platformName,
+          latestOtp: initialOtp,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          price: num.price,
+          createdAt: purchaseNow,
+          expiresAt: purchaseNow + 20 * 60 * 1000
+        };
+        AppState.purchases.unshift(purchaseEntry);
+      });
+
+      localStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
+
+      // Reset selection
+      AppState.selectedNumberIds = [];
+      closeModal('bulk-purchase-modal');
+
+      // Update UI & Animations
+      triggerConfetti();
+      playOtpSoundNotification();
+      updateWalletUI();
+      renderMarketplace();
+      renderPurchasesHistory();
+      updateBulkToolbarUI();
+
+      showToast(`🎉 Bulk Purchase Complete! Activated ${selectedItems.length} virtual numbers.`, 'success');
+
+      // Navigate to Dashboard tab
+      scrollToSection('dashboard');
+      switchDashboardTab('purchases');
+    }
+
+    function executeBulkPurchaseViaUPI() {
+      const selectedIds = AppState.selectedNumberIds || [];
+      const selectedItems = AppState.numbers.filter(n => selectedIds.includes(n.id) && n.status !== 'PURCHASED');
+      if (selectedItems.length === 0) return;
+
+      const rawSubtotal = selectedItems.reduce((acc, item) => acc + (item.price || 0), 0);
+      let discountPercent = 0;
+      if (selectedItems.length >= 5) discountPercent = 10;
+      else if (selectedItems.length >= 3) discountPercent = 5;
+
+      const discountAmt = Math.round((rawSubtotal * discountPercent) / 100);
+      const finalTotal = rawSubtotal - discountAmt;
+
+      closeModal('bulk-purchase-modal');
+
+      // Set up pending order for UPI modal
+      const orderId = `BULK-2026-${Math.floor(100000 + Math.random() * 900000)}`;
+      AppState.pendingOrder = {
+        isBulk: true,
+        items: selectedItems,
+        phone: `${selectedItems.length} Virtual Numbers`,
+        country: `Batch (${selectedItems.length})`,
+        platform: 'Multiple Services',
+        price: finalTotal,
+        orderId: orderId
+      };
+
+      document.getElementById('payment-summary-phone').innerText = `Bulk Purchase (${selectedItems.length} Numbers)`;
+      document.getElementById('payment-summary-meta').innerText = `Batch Order ${orderId}`;
+      document.getElementById('payment-summary-price').innerText = `₹${finalTotal.toFixed(2)}`;
+
+      openModal('payment-modal');
     }
 
     function toggleFavorite(numId) {
@@ -3048,21 +4045,326 @@
     function switchDashboardTab(tab) {
       const purchasesList = document.getElementById('purchased-history-list');
       const favoritesList = document.getElementById('favorites-tab-list');
+      const referralContent = document.getElementById('referral-tab-content');
+
       const tabPurchasesBtn = document.getElementById('dash-tab-purchases');
       const tabFavoritesBtn = document.getElementById('dash-tab-favorites');
+      const tabReferralsBtn = document.getElementById('dash-tab-referrals');
 
       if (tab === 'purchases') {
         if (purchasesList) purchasesList.style.display = 'flex';
         if (favoritesList) favoritesList.style.display = 'none';
+        if (referralContent) referralContent.style.display = 'none';
+
         if (tabPurchasesBtn) tabPurchasesBtn.className = 'btn btn-primary btn-sm';
         if (tabFavoritesBtn) tabFavoritesBtn.className = 'btn btn-secondary btn-sm';
-      } else {
+        if (tabReferralsBtn) tabReferralsBtn.className = 'btn btn-secondary btn-sm';
+        setActiveMobileBottomNav('mob-nav-active-numbers');
+      } else if (tab === 'favorites') {
         if (purchasesList) purchasesList.style.display = 'none';
         if (favoritesList) favoritesList.style.display = 'flex';
+        if (referralContent) referralContent.style.display = 'none';
+
         if (tabPurchasesBtn) tabPurchasesBtn.className = 'btn btn-secondary btn-sm';
         if (tabFavoritesBtn) tabFavoritesBtn.className = 'btn btn-primary btn-sm';
+        if (tabReferralsBtn) tabReferralsBtn.className = 'btn btn-secondary btn-sm';
+        setActiveMobileBottomNav('mob-nav-favorites');
         renderFavoritesTab();
+      } else if (tab === 'referrals') {
+        if (purchasesList) purchasesList.style.display = 'none';
+        if (favoritesList) favoritesList.style.display = 'none';
+        if (referralContent) referralContent.style.display = 'flex';
+
+        if (tabPurchasesBtn) tabPurchasesBtn.className = 'btn btn-secondary btn-sm';
+        if (tabFavoritesBtn) tabFavoritesBtn.className = 'btn btn-secondary btn-sm';
+        if (tabReferralsBtn) tabReferralsBtn.className = 'btn btn-primary btn-sm';
+        renderReferralTab();
       }
+    }
+
+    /* ==========================================
+       REFERRAL SECTION LOGIC & REWARDS ENGINE
+       ========================================== */
+    function renderReferralTab(filter = AppState.referralFilter || 'ALL') {
+      AppState.referralFilter = filter;
+      const container = document.getElementById('referral-tab-content');
+      if (!container) return;
+
+      const fullLink = `https://virtualnumberhub.app/register?ref=${AppState.referralCode}`;
+      
+      const totalEarned = AppState.referralEarnings;
+      const totalCount = AppState.referralsList.length;
+      const completedList = AppState.referralsList.filter(r => r.status === 'COMPLETED');
+      const pendingList = AppState.referralsList.filter(r => r.status === 'PENDING');
+      
+      let pendingValue = 0;
+      pendingList.forEach(p => pendingValue += (p.reward || 25.00));
+
+      const refBadge = document.getElementById('referral-earnings-badge');
+      if (refBadge) refBadge.innerText = `₹${totalEarned.toFixed(2)}`;
+
+      const widgetCode = document.getElementById('widget-ref-code');
+      if (widgetCode) widgetCode.innerText = AppState.referralCode;
+
+      let filteredList = [...AppState.referralsList];
+      if (filter === 'COMPLETED') {
+        filteredList = completedList;
+      } else if (filter === 'PENDING') {
+        filteredList = pendingList;
+      }
+
+      container.innerHTML = `
+        <!-- Top Banner & Link Generator -->
+        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(245, 158, 11, 0.15) 100%); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius-md); padding: 1.25rem; position: relative;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+            <div>
+              <span class="badge badge-warning" style="margin-bottom: 0.4rem; font-size: 0.7rem;"><i class="fa-solid fa-crown"></i> 10% LIFETIME REWARDS PROGRAM</span>
+              <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem;">Invite Friends, Earn Cash Credits!</h3>
+              <p style="font-size: 0.82rem; color: var(--text-muted);">Share your unique link. Earn 10% instant wallet cash every time your invited friend rents numbers or tops up.</p>
+            </div>
+            <button class="btn btn-warning btn-sm" onclick="simulateNewReferral()" style="font-weight: 700; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; color: white;">
+              <i class="fa-solid fa-user-plus"></i> Simulate Friend Joining
+            </button>
+          </div>
+
+          <!-- Unique Referral Link & Code Box -->
+          <div style="margin-top: 1rem; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+              <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Your Unique Referral Link</label>
+              <span style="font-size: 0.75rem; color: #f59e0b; font-weight: 700;">Code: <strong id="referral-code-display">${AppState.referralCode}</strong></span>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <input type="text" id="referral-link-input" readonly value="${fullLink}" class="search-input" style="flex: 1; min-width: 200px; font-family: var(--font-mono); font-size: 0.82rem; padding: 0.5rem 0.8rem; background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.1); color: var(--text-main);">
+              <button class="btn btn-primary btn-sm" onclick="copyReferralLink()" style="font-weight: 700; padding: 0.5rem 1rem;">
+                <i class="fa-solid fa-copy"></i> Copy Link
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="regenerateReferralCode()" title="Generate new code" style="padding: 0.5rem 0.75rem;">
+                <i class="fa-solid fa-arrows-rotate"></i>
+              </button>
+            </div>
+
+            <!-- Quick Share Buttons -->
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; align-items: center;">
+              <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Share via:</span>
+              <button class="btn btn-secondary btn-sm" onclick="shareReferral('whatsapp')" style="font-size: 0.75rem; padding: 0.25rem 0.6rem; color: #25D366; border-color: rgba(37, 211, 102, 0.3);">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="shareReferral('telegram')" style="font-size: 0.75rem; padding: 0.25rem 0.6rem; color: #229ED9; border-color: rgba(34, 158, 217, 0.3);">
+                <i class="fa-brands fa-telegram"></i> Telegram
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="shareReferral('x')" style="font-size: 0.75rem; padding: 0.25rem 0.6rem; color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">
+                <i class="fa-brands fa-x-twitter"></i> Twitter / X
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="shareReferral('native')" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">
+                <i class="fa-solid fa-share-nodes"></i> Share App
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat Row Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.85rem;">
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; display: block;">Total Earned</span>
+            <strong style="font-size: 1.25rem; font-weight: 800; color: #10b981; font-family: var(--font-mono);">₹${totalEarned.toFixed(2)}</strong>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; display: block;">Invited Users</span>
+            <strong style="font-size: 1.25rem; font-weight: 800; color: var(--accent); font-family: var(--font-mono);">${totalCount}</strong>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; display: block;">Pending Rewards</span>
+            <strong style="font-size: 1.25rem; font-weight: 800; color: #f59e0b; font-family: var(--font-mono);">₹${pendingValue.toFixed(2)}</strong>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; display: block;">Claim Rewards</span>
+            <button class="btn btn-success btn-sm" onclick="claimReferralRewardsToWallet()" style="padding: 0.25rem 0.6rem; font-size: 0.72rem; margin-top: 0.25rem; font-weight: 700;">
+              <i class="fa-solid fa-wallet"></i> Claim to Wallet
+            </button>
+          </div>
+        </div>
+
+        <!-- Rewards & Referred Users Activity Table -->
+        <div style="margin-top: 0.5rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+            <h4 style="font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem;">
+              <i class="fa-solid fa-list-check" style="color: var(--accent);"></i> Invited Users & Reward Logs
+            </h4>
+            <div style="display: flex; gap: 0.4rem;">
+              <button class="btn ${filter === 'ALL' ? 'btn-primary' : 'btn-secondary'} btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterReferralTable('ALL')">All (${totalCount})</button>
+              <button class="btn ${filter === 'COMPLETED' ? 'btn-primary' : 'btn-secondary'} btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterReferralTable('COMPLETED')">Completed (${completedList.length})</button>
+              <button class="btn ${filter === 'PENDING' ? 'btn-primary' : 'btn-secondary'} btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterReferralTable('PENDING')">Pending (${pendingList.length})</button>
+            </div>
+          </div>
+
+          <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: rgba(0, 0, 0, 0.15);">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+              <thead>
+                <tr style="background: rgba(255, 255, 255, 0.04); border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600;">
+                  <th style="padding: 0.65rem 0.85rem;">User</th>
+                  <th style="padding: 0.65rem 0.85rem;">Joined Date</th>
+                  <th style="padding: 0.65rem 0.85rem;">Status</th>
+                  <th style="padding: 0.65rem 0.85rem;">User Spent</th>
+                  <th style="padding: 0.65rem 0.85rem; text-align: right;">Your Earned Credit</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${filteredList.length === 0 ? `
+                  <tr>
+                    <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                      <i class="fa-solid fa-users-slash" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block; opacity: 0.5;"></i>
+                      No referral records found for this filter.
+                    </td>
+                  </tr>
+                ` : filteredList.map(ref => {
+                  const isComp = ref.status === 'COMPLETED';
+                  return `
+                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                      <td style="padding: 0.65rem 0.85rem;">
+                        <div style="font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.4rem;">
+                          <div style="width: 24px; height: 24px; border-radius: 50%; background: rgba(59, 130, 246, 0.2); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 800;">
+                            ${ref.name.charAt(0)}
+                          </div>
+                          <span>${ref.name}</span>
+                        </div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted); margin-left: 1.9rem;">${ref.email}</div>
+                      </td>
+                      <td style="padding: 0.65rem 0.85rem; color: var(--text-muted); font-size: 0.78rem;">
+                        ${ref.date}
+                      </td>
+                      <td style="padding: 0.65rem 0.85rem;">
+                        <span class="badge ${isComp ? 'badge-success' : 'badge-warning'}" style="font-size: 0.68rem;">
+                          ${isComp ? '<i class="fa-solid fa-check"></i> Active' : '<i class="fa-solid fa-clock"></i> Pending Topup'}
+                        </span>
+                      </td>
+                      <td style="padding: 0.65rem 0.85rem; font-family: var(--font-mono); font-weight: 600; color: var(--text-main);">
+                        ₹${(ref.spent || 0).toFixed(2)}
+                      </td>
+                      <td style="padding: 0.65rem 0.85rem; text-align: right; font-family: var(--font-mono); font-weight: 800; color: ${isComp ? '#10b981' : '#f59e0b'};">
+                        +₹${(ref.reward || 0).toFixed(2)}
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function copyReferralLink() {
+      const linkInput = document.getElementById('referral-link-input');
+      const textToCopy = linkInput ? linkInput.value : `https://virtualnumberhub.app/register?ref=${AppState.referralCode}`;
+      
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          showToast('Referral link copied to clipboard! 🎁', 'success');
+        }).catch(() => {
+          fallbackCopyText(textToCopy);
+        });
+      } else {
+        fallbackCopyText(textToCopy);
+      }
+    }
+
+    function fallbackCopyText(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showToast('Referral link copied to clipboard! 🎁', 'success');
+      } catch (err) {
+        showToast('Failed to copy link', 'error');
+      }
+      document.body.removeChild(textArea);
+    }
+
+    function regenerateReferralCode() {
+      const newCode = `VNH-ALEX-${Math.floor(1000 + Math.random() * 9000)}`;
+      AppState.referralCode = newCode;
+      localStorage.setItem('vnh_ref_code', newCode);
+      renderReferralTab();
+      showToast(`Generated new referral code: ${newCode}`, 'info');
+    }
+
+    function shareReferral(platform) {
+      const fullLink = `https://virtualnumberhub.app/register?ref=${AppState.referralCode}`;
+      const msg = `Hey! Join Virtual Number Hub using my link & get instant virtual numbers for WhatsApp, Telegram, Google & 200+ services: ${fullLink}`;
+
+      if (platform === 'whatsapp') {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+      } else if (platform === 'telegram') {
+        window.open(`https://t.me/share/url?url=${encodeURIComponent(fullLink)}&text=${encodeURIComponent('Join Virtual Number Hub for instant OTP verification!')}`, '_blank');
+      } else if (platform === 'x') {
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(msg)}`, '_blank');
+      } else if (platform === 'native') {
+        if (navigator.share) {
+          navigator.share({
+            title: 'Virtual Number Hub Referral',
+            text: msg,
+            url: fullLink
+          }).catch(() => {});
+        } else {
+          copyReferralLink();
+        }
+      }
+    }
+
+    function filterReferralTable(filter) {
+      renderReferralTab(filter);
+    }
+
+    function simulateNewReferral() {
+      const sampleNames = ['Vikram Roy', 'Sara Chen', 'Marcus Vance', 'Ananya Gupta', 'Leo Tanaka', 'Sophia Martinez', 'Karan Verma'];
+      const chosenName = sampleNames[Math.floor(Math.random() * sampleNames.length)];
+      const email = chosenName.toLowerCase().replace(' ', '.') + '@gmail.com';
+      const spent = [200, 350, 500, 800][Math.floor(Math.random() * 4)];
+      const reward = spent * 0.10;
+
+      const newRef = {
+        id: `ref_${Date.now()}`,
+        name: chosenName,
+        email: email,
+        date: new Date().toISOString().split('T')[0],
+        tier: 'Standard',
+        status: 'COMPLETED',
+        spent: spent,
+        reward: reward
+      };
+
+      AppState.referralsList.unshift(newRef);
+      AppState.referralEarnings += reward;
+
+      localStorage.setItem('vnh_ref_list', JSON.stringify(AppState.referralsList));
+      localStorage.setItem('vnh_ref_earnings', AppState.referralEarnings);
+
+      renderReferralTab();
+      triggerConfetti();
+      showToast(`🎁 ${chosenName} joined using your link & topped up ₹${spent}! Earned +₹${reward.toFixed(2)} reward credit!`, 'success');
+    }
+
+    function claimReferralRewardsToWallet() {
+      if (AppState.referralEarnings <= 0) {
+        showToast('No pending referral rewards to claim.', 'info');
+        return;
+      }
+
+      const claimedAmt = AppState.referralEarnings;
+      AppState.walletBalance += claimedAmt;
+      AppState.referralEarnings = 0;
+
+      localStorage.setItem('vnh_wallet', AppState.walletBalance);
+      localStorage.setItem('vnh_ref_earnings', AppState.referralEarnings);
+
+      updateWalletUI();
+      renderReferralTab();
+      triggerConfetti();
+      showToast(`🎉 Claimed ₹${claimedAmt.toFixed(2)} referral earnings directly to your Wallet!`, 'success');
     }
 
     function updateFavoritesUI() {
@@ -3144,7 +4446,121 @@
       }).join('');
     }
 
+    function triggerOtpPulseAnimation(element) {
+      if (!element) return;
+      element.classList.remove('otp-pulse');
+      void element.offsetWidth; // Force CSS reflow to restart animation
+      element.classList.add('otp-pulse');
+    }
+
+    function formatTimeRemaining(ms) {
+      if (ms <= 0) return '00m 00s';
+      const totalSeconds = Math.floor(ms / 1000);
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      const padMin = String(mins).padStart(2, '0');
+      const padSec = String(secs).padStart(2, '0');
+      return `${padMin}m ${padSec}s`;
+    }
+
+    function extendRentalDuration(purchaseId) {
+      const p = AppState.purchases.find(item => item.id === purchaseId);
+      if (!p) return;
+
+      const now = Date.now();
+      const baseTime = (p.expiresAt && p.expiresAt > now) ? p.expiresAt : now;
+      p.expiresAt = baseTime + 10 * 60 * 1000; // Add 10 minutes
+
+      localStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
+      renderPurchasesHistory();
+      showToast(`⏱️ Extended rental time for ${p.phone} by +10 minutes!`, 'success');
+    }
+
+    let rentalTickerInterval = null;
+
+    function startRentalTicker() {
+      if (rentalTickerInterval) clearInterval(rentalTickerInterval);
+
+      rentalTickerInterval = setInterval(() => {
+        if (!AppState.purchases || AppState.purchases.length === 0) return;
+
+        const now = Date.now();
+
+        AppState.purchases.forEach(p => {
+          const createdAt = p.createdAt || (now - 5 * 60 * 1000);
+          const expiresAt = p.expiresAt || (createdAt + 20 * 60 * 1000);
+          const totalDuration = Math.max(1, expiresAt - createdAt);
+          const remainingMs = Math.max(0, expiresAt - now);
+          const isExpired = remainingMs <= 0;
+          const progressPct = Math.max(0, Math.min(100, (remainingMs / totalDuration) * 100));
+
+          const timerTextEl = document.getElementById(`timer-text-${p.id}`);
+          const timerBarEl = document.getElementById(`timer-bar-${p.id}`);
+          const timerIconEl = document.getElementById(`timer-icon-${p.id}`);
+          const badgeEl = document.getElementById(`rental-badge-${p.id}`);
+
+          let timerColor = 'var(--success)';
+          if (isExpired) timerColor = '#ef4444';
+          else if (remainingMs < 300000) timerColor = '#f59e0b';
+
+          if (timerTextEl) {
+            timerTextEl.innerText = isExpired ? '00m 00s (Expired)' : formatTimeRemaining(remainingMs);
+            timerTextEl.style.color = timerColor;
+          }
+
+          if (timerBarEl) {
+            timerBarEl.style.width = `${progressPct}%`;
+            timerBarEl.style.backgroundColor = timerColor;
+          }
+
+          if (timerIconEl) {
+            timerIconEl.style.color = timerColor;
+            if (isExpired) {
+              timerIconEl.classList.remove('fa-spin');
+            } else if (!timerIconEl.classList.contains('fa-spin')) {
+              timerIconEl.classList.add('fa-spin');
+            }
+          }
+
+          if (badgeEl) {
+            if (isExpired && badgeEl.innerText !== 'EXPIRED') {
+              badgeEl.className = 'badge badge-danger';
+              badgeEl.innerText = 'EXPIRED';
+            } else if (!isExpired && remainingMs < 300000 && badgeEl.innerText !== 'EXPIRING SOON') {
+              badgeEl.className = 'badge badge-warning';
+              badgeEl.innerText = 'EXPIRING SOON';
+            } else if (!isExpired && remainingMs >= 300000 && badgeEl.innerText !== 'ACTIVE') {
+              badgeEl.className = 'badge badge-success';
+              badgeEl.innerText = 'ACTIVE';
+            }
+          }
+        });
+      }, 1000);
+    }
+
+    function updateMobileNavBadges() {
+      const activeCountBadge = document.getElementById('mob-nav-active-count-badge');
+      if (activeCountBadge) {
+        const activeCount = AppState.purchases ? AppState.purchases.length : 0;
+        activeCountBadge.innerText = activeCount;
+        activeCountBadge.style.display = activeCount > 0 ? 'inline-block' : 'none';
+      }
+    }
+
+    function setActiveMobileBottomNav(elementOrId) {
+      document.querySelectorAll('.mobile-bottom-nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      if (typeof elementOrId === 'string') {
+        const el = document.getElementById(elementOrId);
+        if (el) el.classList.add('active');
+      } else if (elementOrId && elementOrId.classList) {
+        elementOrId.classList.add('active');
+      }
+    }
+
     function renderPurchasesHistory() {
+      updateMobileNavBadges();
       const container = document.getElementById('purchased-history-list');
       if (!container) return;
 
@@ -3158,42 +4574,90 @@
         return;
       }
 
-      container.innerHTML = AppState.purchases.map(p => `
-        <div class="otp-card">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div class="country-info">
-              <span>${p.flag}</span>
-              <span>${p.country}</span>
-              <span style="color: var(--text-muted); font-size: 0.8rem;">(${p.platform})</span>
+      const now = Date.now();
+      container.innerHTML = AppState.purchases.map(p => {
+        p.createdAt = p.createdAt || (now - 5 * 60 * 1000);
+        p.expiresAt = p.expiresAt || (p.createdAt + 20 * 60 * 1000);
+
+        const totalDuration = Math.max(1, p.expiresAt - p.createdAt);
+        const remainingMs = Math.max(0, p.expiresAt - now);
+        const isExpired = remainingMs <= 0;
+        const progressPct = Math.max(0, Math.min(100, (remainingMs / totalDuration) * 100));
+
+        let timerColor = 'var(--success)';
+        if (isExpired) timerColor = '#ef4444';
+        else if (remainingMs < 300000) timerColor = '#f59e0b';
+
+        let badgeClass = 'badge-success';
+        let badgeText = 'ACTIVE';
+        if (isExpired) {
+          badgeClass = 'badge-danger';
+          badgeText = 'EXPIRED';
+        } else if (remainingMs < 300000) {
+          badgeClass = 'badge-warning';
+          badgeText = 'EXPIRING SOON';
+        }
+
+        return `
+          <div class="otp-card" id="purchase-card-${p.id}">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div class="country-info">
+                <span>${p.flag}</span>
+                <span>${p.country}</span>
+                <span style="color: var(--text-muted); font-size: 0.8rem;">(${p.platform})</span>
+              </div>
+              <span class="badge ${badgeClass}" id="rental-badge-${p.id}">${badgeText}</span>
             </div>
-            <span class="badge badge-success">ACTIVE</span>
-          </div>
 
-          <div style="font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; color: var(--accent); margin: 0.5rem 0;">
-            ${p.phone}
-          </div>
-
-          <div style="background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: var(--radius-sm); margin-top: 0.5rem;">
-            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">
-              <span><i class="fa-solid fa-sms"></i> ${p.platform} SMS</span>
-              <span>${p.time}</span>
+            <div style="font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; color: var(--accent); margin: 0.4rem 0 0.2rem 0; display: flex; align-items: center; justify-content: space-between;">
+              <span>${p.phone}</span>
+              <span style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted);">₹${p.price || 49}</span>
             </div>
-            <div class="otp-code" style="font-size: 1.5rem;">${p.latestOtp}</div>
-            <p style="font-size: 0.825rem; color: var(--text-muted);">
-              Your ${p.platform} verification code is <strong>${p.latestOtp}</strong>.
-            </p>
-          </div>
 
-          <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
-            <button class="btn btn-secondary btn-sm" onclick="copyText('${p.latestOtp}', 'OTP Code Copied!')">
-              <i class="fa-solid fa-copy"></i> Copy OTP
-            </button>
-            <button class="btn btn-outline btn-sm" onclick="regenerateOtpForPurchase('${p.id}')">
-              <i class="fa-solid fa-rotate"></i> New Code
-            </button>
+            <!-- Dynamic Rental Countdown Box -->
+            <div style="background: rgba(15, 23, 42, 0.45); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.55rem 0.8rem; margin: 0.5rem 0;" id="timer-box-${p.id}">
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.35rem;">
+                <span style="color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 0.35rem;">
+                  <i class="fa-solid fa-hourglass-half ${isExpired ? '' : 'fa-spin'}" style="color: ${timerColor}; font-size: 0.85rem;" id="timer-icon-${p.id}"></i> Rental Countdown
+                </span>
+                <span style="font-family: var(--font-mono); font-weight: 800; font-size: 0.85rem; color: ${timerColor};" id="timer-text-${p.id}">
+                  ${isExpired ? '00m 00s (Expired)' : formatTimeRemaining(remainingMs)}
+                </span>
+              </div>
+              <div style="width: 100%; height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                <div id="timer-bar-${p.id}" style="height: 100%; width: ${progressPct}%; background: ${timerColor}; transition: width 1s linear, background-color 0.5s ease;"></div>
+              </div>
+            </div>
+
+            <!-- Latest OTP Received Box -->
+            <div style="background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: var(--radius-sm); margin-top: 0.5rem;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                <span><i class="fa-solid fa-sms"></i> ${p.platform} SMS</span>
+                <span>${p.time}</span>
+              </div>
+              <div class="otp-code" id="otp-code-${p.id}" style="font-size: 1.5rem;">${p.latestOtp}</div>
+              <p style="font-size: 0.825rem; color: var(--text-muted);">
+                Your ${p.platform} verification code is <strong>${p.latestOtp}</strong>.
+              </p>
+            </div>
+
+            <!-- Action Controls -->
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="copyText('${p.latestOtp}', 'OTP Code Copied!')">
+                <i class="fa-solid fa-copy"></i> Copy OTP
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="regenerateOtpForPurchase('${p.id}')">
+                <i class="fa-solid fa-rotate"></i> New Code
+              </button>
+              <button class="btn btn-warning btn-sm" style="padding: 0.35rem 0.65rem; font-size: 0.75rem; font-weight: 700; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b;" onclick="extendRentalDuration('${p.id}')" title="Extend rental time by 10 minutes">
+                <i class="fa-solid fa-clock-rotate-left"></i> +10m Extend
+              </button>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+
+      startRentalTicker();
     }
 
     /* ==========================================
@@ -3667,22 +5131,49 @@
       const order = AppState.pendingOrder;
       if (!order) return;
 
-      // Update state
-      const numObj = AppState.numbers.find(n => n.id === order.numId);
-      if (numObj) numObj.status = 'PURCHASED';
+      if (order.isBulk && order.items && order.items.length > 0) {
+        order.items.forEach(num => {
+          const numObj = AppState.numbers.find(n => n.id === num.id);
+          if (numObj) numObj.status = 'PURCHASED';
 
-      const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
-      AppState.purchases.unshift({
-        id: `p_${Date.now()}`,
-        phone: order.phone,
-        country: order.country,
-        flag: order.flag,
-        platform: order.platform,
-        price: order.price,
-        orderId: order.orderId,
-        latestOtp: newOtp,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      });
+          const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+          const pNow = Date.now();
+          AppState.purchases.unshift({
+            id: `p_${pNow}_${Math.floor(100 + Math.random() * 899)}`,
+            phone: num.phone,
+            country: num.countryName,
+            flag: num.flag,
+            platform: num.platformName,
+            price: num.price,
+            orderId: order.orderId,
+            latestOtp: newOtp,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            createdAt: pNow,
+            expiresAt: pNow + 20 * 60 * 1000
+          });
+        });
+        AppState.selectedNumberIds = [];
+      } else {
+        // Single purchase
+        const numObj = AppState.numbers.find(n => n.id === order.numId);
+        if (numObj) numObj.status = 'PURCHASED';
+
+        const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+        const pNow = Date.now();
+        AppState.purchases.unshift({
+          id: `p_${pNow}`,
+          phone: order.phone,
+          country: order.country,
+          flag: order.flag,
+          platform: order.platform,
+          price: order.price,
+          orderId: order.orderId,
+          latestOtp: newOtp,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          createdAt: pNow,
+          expiresAt: pNow + 20 * 60 * 1000
+        });
+      }
 
       AppState.walletBalance -= order.price;
 
@@ -3704,22 +5195,144 @@
       if (valMsg) valMsg.style.display = 'none';
 
       triggerConfetti();
-      showToast('🎉 Payment Successful! Virtual Number Activated.', 'success');
+      showToast(order.isBulk ? `🎉 Bulk Payment Successful! Activated ${order.items.length} Virtual Numbers.` : '🎉 Payment Successful! Virtual Number Activated.', 'success');
       updateWalletUI();
       renderMarketplace();
       renderPurchasesHistory();
+      updateBulkToolbarUI();
+      const firstPurchase = AppState.purchases[0];
+      if (firstPurchase) {
+        const otpEl = document.getElementById(`otp-code-${firstPurchase.id}`);
+        if (otpEl) triggerOtpPulseAnimation(otpEl);
+      }
       scrollToSection('dashboard');
+      switchDashboardTab('purchases');
     }
 
-    function regenerateOtpForPurchase(pId) {
+    function regenerateOtpForPurchase(pId, isAuto = false) {
       const p = AppState.purchases.find(x => x.id === pId);
       if (p) {
         p.latestOtp = Math.floor(100000 + Math.random() * 900000).toString();
         p.time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         localStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
         renderPurchasesHistory();
-        showToast('New OTP Message Received!', 'info');
+        const otpEl = document.getElementById(`otp-code-${pId}`);
+        if (otpEl) {
+          triggerOtpPulseAnimation(otpEl);
+        }
+        if (isAuto) {
+          playOtpSoundNotification();
+        }
+        showToast(isAuto ? `🔔 Auto-Received New OTP (${p.latestOtp}) for ${p.platform}!` : `✨ New OTP Code Generated (${p.latestOtp})!`, 'info');
       }
+    }
+
+    /* ==========================================
+       WEB AUDIO API NOTIFICATION ENGINE
+       ========================================== */
+    let isOtpAudioMuted = false;
+    let globalAudioCtx = null;
+
+    function getAudioContext() {
+      if (!globalAudioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          globalAudioCtx = new AudioContextClass();
+        }
+      }
+      if (globalAudioCtx && globalAudioCtx.state === 'suspended') {
+        globalAudioCtx.resume().catch(() => {});
+      }
+      return globalAudioCtx;
+    }
+
+    // Unlock Audio Context on first user touch / click
+    document.addEventListener('click', () => { getAudioContext(); }, { once: true });
+    document.addEventListener('touchstart', () => { getAudioContext(); }, { once: true });
+
+    function playOtpSoundNotification() {
+      if (isOtpAudioMuted) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+
+        const now = ctx.currentTime;
+
+        // Subtle lowpass filter for a warm, luxury acoustic feel
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(2200, now);
+        filter.connect(ctx.destination);
+
+        // Primary gentle chime (E5 - 659.25 Hz)
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(659.25, now);
+        gain1.gain.setValueAtTime(0.001, now);
+        gain1.gain.linearRampToValueAtTime(0.06, now + 0.012);
+        gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+        osc1.connect(gain1);
+        gain1.connect(filter);
+        osc1.start(now);
+        osc1.stop(now + 0.23);
+
+        // Harmonic secondary chime (B5 - 987.77 Hz)
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(987.77, now + 0.06);
+        gain2.gain.setValueAtTime(0.001, now + 0.06);
+        gain2.gain.linearRampToValueAtTime(0.08, now + 0.075);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+        osc2.connect(gain2);
+        gain2.connect(filter);
+        osc2.start(now + 0.06);
+        osc2.stop(now + 0.36);
+      } catch (e) {
+        console.warn('Web Audio playback error:', e);
+      }
+    }
+
+    function toggleOtpAudioMute() {
+      isOtpAudioMuted = !isOtpAudioMuted;
+      const buttons = document.querySelectorAll('.otp-audio-toggle-btn');
+      buttons.forEach(btn => {
+        if (isOtpAudioMuted) {
+          btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Sound Muted';
+          btn.style.opacity = '0.6';
+        } else {
+          btn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Sound Alert Active';
+          btn.style.opacity = '1';
+        }
+      });
+      showToast(isOtpAudioMuted ? '🔇 OTP Sound Alerts Muted' : '🔊 OTP Sound Alerts Activated!', 'info');
+    }
+
+    /* Automatic Periodic Dashboard OTP Refresh Engine (30s) */
+    let autoOtpEngineTimer = null;
+
+    function startAutoOtpRefreshEngine() {
+      if (autoOtpEngineTimer) clearInterval(autoOtpEngineTimer);
+      autoOtpEngineTimer = setInterval(() => {
+        if (AppState.purchases && AppState.purchases.length > 0) {
+          // Pick an active purchase in user dashboard to auto-refresh
+          const randomIdx = Math.floor(Math.random() * AppState.purchases.length);
+          const activeItem = AppState.purchases[randomIdx];
+          if (activeItem) {
+            regenerateOtpForPurchase(activeItem.id, true);
+          }
+        } else {
+          // Refresh Hero Live Receiver OTP code
+          const demoOtp = document.getElementById('hero-demo-otp');
+          if (demoOtp) {
+            const newCode = Math.floor(100000 + Math.random() * 900000);
+            demoOtp.innerText = newCode;
+            triggerOtpPulseAnimation(demoOtp);
+            showToast(`🔔 Live OTP Stream Refreshed (${newCode})`, 'info');
+          }
+        }
+      }, 30000);
     }
 
     /* ==========================================
@@ -5030,8 +6643,13 @@
     }
 
     function updateWalletUI() {
-      document.getElementById('wallet-balance-display').innerText = `₹${AppState.walletBalance.toFixed(2)}`;
-      document.getElementById('dashboard-wallet-balance').innerText = `₹${AppState.walletBalance.toFixed(2)}`;
+      const formatted = `₹${AppState.walletBalance.toFixed(2)}`;
+      const w1 = document.getElementById('wallet-balance-display');
+      if (w1) w1.innerText = formatted;
+      const w2 = document.getElementById('dashboard-wallet-balance');
+      if (w2) w2.innerText = formatted;
+      const w3 = document.getElementById('mobile-sidebar-wallet');
+      if (w3) w3.innerText = formatted;
       
       const walletStat = document.getElementById('dash-stat-wallet-val');
       if (walletStat) {
@@ -5044,7 +6662,50 @@
       localStorage.setItem('vnh_wallet', AppState.walletBalance);
       updateWalletUI();
       closeModal('topup-modal');
-      showToast(`Added ₹${amt} to your Wallet!`, 'success');
+
+      const customInput = document.getElementById('custom-wallet-amount-input');
+      if (customInput) {
+        customInput.value = '';
+        customInput.style.borderColor = '';
+        customInput.style.boxShadow = '';
+      }
+      const valMsg = document.getElementById('custom-amount-val-msg');
+      if (valMsg) valMsg.style.display = 'none';
+
+      showToast(`Added ₹${amt.toFixed(2)} to your Wallet!`, 'success');
+    }
+
+    function submitCustomWalletFunds() {
+      const input = document.getElementById('custom-wallet-amount-input');
+      const valMsg = document.getElementById('custom-amount-val-msg');
+      if (!input) return;
+
+      const amt = parseFloat(input.value);
+      if (isNaN(amt) || amt < 10) {
+        if (valMsg) {
+          valMsg.style.display = 'block';
+          valMsg.innerText = '⚠️ Please enter a minimum amount of ₹10.';
+        }
+        input.style.borderColor = '#ef4444';
+        input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+        return;
+      }
+
+      if (amt > 100000) {
+        if (valMsg) {
+          valMsg.style.display = 'block';
+          valMsg.innerText = '⚠️ Maximum allowed single top-up is ₹1,00,000.';
+        }
+        input.style.borderColor = '#ef4444';
+        input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+        return;
+      }
+
+      if (valMsg) valMsg.style.display = 'none';
+      input.style.borderColor = '';
+      input.style.boxShadow = '';
+
+      addDemoWalletFunds(amt);
     }
 
     function launchUpiRedirect() {
@@ -5059,41 +6720,67 @@
       const screen = document.getElementById('loading-screen');
       const fill = document.getElementById('loading-fill');
       if (fill) fill.style.width = '100%';
-      if (screen && screen.style.display !== 'none') {
-        screen.style.opacity = '0';
+      if (screen && !screen.classList.contains('dismissed') && !screen.classList.contains('dismissing')) {
+        screen.classList.add('dismissing');
         setTimeout(() => {
+          screen.classList.add('dismissed');
           screen.style.display = 'none';
         }, 400);
       }
     }
 
-    function initApp() {
-      // Fast progress animation for splash loading fill
-      const fill = document.getElementById('loading-fill');
-      let p = 0;
-      const loader = setInterval(() => {
-        p += 25;
-        if (fill) fill.style.width = `${p}%`;
-        if (p >= 100) {
-          clearInterval(loader);
-          dismissLoadingScreen();
-        }
-      }, 60);
+    const waitDelay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-      // Core Data Init with try-catch safety wrapper
+    async function initApp() {
+      const fill = document.getElementById('loading-fill');
+      const statusText = document.getElementById('loading-status');
+
+      function setProgress(percent, label) {
+        if (fill) fill.style.width = `${percent}%`;
+        if (statusText && label) statusText.innerText = label;
+      }
+
+      // Step 1: User Theme
+      setProgress(20, 'Applying user preferences...');
       try { applyTheme(AppState.theme, false); } catch(e) { console.error('Theme err:', e); }
+      await waitDelay(100);
+
+      // Step 2: Core Data Object Processing
+      setProgress(45, 'Processing countries & virtual numbers...');
       try { initializeCatalogData(); } catch(e) { console.error('Catalog err:', e); }
+      await waitDelay(120);
+
+      // Data Verification Safety Check
+      const dataReady = (
+        Array.isArray(AppState.countries) && AppState.countries.length > 0 &&
+        Array.isArray(AppState.platforms) && AppState.platforms.length > 0 &&
+        Array.isArray(AppState.numbers) && AppState.numbers.length > 0
+      );
+
+      if (!dataReady) {
+        console.warn('Initial data objects incomplete, running fallback catalog generation...');
+        try { initializeCatalogData(); } catch(e) { console.error('Catalog fallback err:', e); }
+      }
+
+      // Step 3: Populate Dropdowns & Render Catalog UI
+      setProgress(70, 'Building marketplace catalog...');
       try { populateMarketplaceDropdowns(); } catch(e) { console.error('Dropdowns err:', e); }
       try { renderCountryChips(); } catch(e) { console.error('Country chips err:', e); }
       try { renderPlatformChips(); } catch(e) { console.error('Platform chips err:', e); }
       try { renderMarketplace(); } catch(e) { console.error('Marketplace err:', e); }
+      await waitDelay(120);
+
+      // Step 4: User State, Wallet & Visual Charts
+      setProgress(90, 'Restoring wallet & dashboard history...');
       try { renderPurchasesHistory(); } catch(e) { console.error('Purchases err:', e); }
       try { updateFavoritesUI(); } catch(e) { console.error('Favorites err:', e); }
+      try { renderReferralTab(); } catch(e) { console.error('Referral err:', e); }
       try { updateWalletUI(); } catch(e) { console.error('Wallet err:', e); }
       try { updateUserAuthUI(); } catch(e) { console.error('User auth err:', e); }
       try { initCanvasBackground(); } catch(e) { console.error('Canvas err:', e); }
       try { renderDashboardActivationChart(); } catch(e) { console.error('Chart err:', e); }
       try { initResponsiveChartObservers(); } catch(e) { console.error('Chart observer err:', e); }
+      await waitDelay(100);
 
       // Real-time UTC Server Clock Initialization
       try {
@@ -5107,6 +6794,11 @@
         updatePriceAlertsUI();
         evaluatePriceAlerts();
       } catch(e) { console.error('Alerts err:', e); }
+
+      // Step 5: Finalize and trigger graceful exit animation
+      setProgress(100, 'Platform Ready!');
+      await waitDelay(250);
+      dismissLoadingScreen();
 
       // Setup Event Listeners with Safe Optional Chaining
       document.getElementById('price-alert-bell-btn')?.addEventListener('click', () => {
@@ -5157,19 +6849,42 @@
         });
       });
 
-      // Load More Button
-      document.getElementById('load-more-btn')?.addEventListener('click', () => {
-        AppState.visibleCount += 12;
-        renderMarketplace();
-      });
+      // Load More Button & Infinite Scroll Observer
+      const loadMoreBtn = document.getElementById('load-more-btn');
+      if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', () => {
+          AppState.visibleCount += 24;
+          renderMarketplace();
+        });
+
+        if ('IntersectionObserver' in window) {
+          const loadMoreObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting && !loadMoreBtn.disabled && loadMoreBtn.style.display !== 'none') {
+                AppState.visibleCount += 24;
+                renderMarketplace();
+              }
+            });
+          }, { rootMargin: '250px' });
+          loadMoreObserver.observe(loadMoreBtn);
+        }
+      }
 
       // Hero Demo OTP Refresh
       document.getElementById('hero-refresh-otp-btn')?.addEventListener('click', () => {
         const newCode = Math.floor(100000 + Math.random() * 900000);
         const demoOtp = document.getElementById('hero-demo-otp');
-        if (demoOtp) demoOtp.innerText = newCode;
+        if (demoOtp) {
+          demoOtp.innerText = newCode;
+          triggerOtpPulseAnimation(demoOtp);
+        }
         showToast('Demo OTP Refreshed!', 'info');
       });
+
+      // Start Automatic Dashboard OTP Refresh Engine
+      try {
+        startAutoOtpRefreshEngine();
+      } catch(e) { console.error('Auto OTP engine err:', e); }
 
       // Intersection Observer & Nav Links for Dashboard Stats Count-Up Animation
       const dashboardSec = document.getElementById('dashboard');
@@ -5198,8 +6913,13 @@
       initApp();
     }
 
-    // Absolute Failsafe: Hide loading screen after 1 second under any conditions
-    setTimeout(dismissLoadingScreen, 1000);
+    // Failsafe: Hide splash screen after 4 seconds under any conditions
+    setTimeout(dismissLoadingScreen, 4000);
+
+    // Strict Mobile Gesture Prevention
+    document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
+    document.addEventListener('gesturechange', function (e) { e.preventDefault(); }, { passive: false });
+    document.addEventListener('gestureend', function (e) { e.preventDefault(); }, { passive: false });
   </script>
 </body>
 </html>
