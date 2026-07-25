@@ -22,10 +22,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- GSAP Animation Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
   <!-- jsQR Code Scanner Library -->
-  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
   <style>
     /* ==========================================
@@ -1950,6 +1950,16 @@
       <div class="loading-bar-fill" id="loading-fill"></div>
     </div>
   </div>
+  <script>
+    setTimeout(function() {
+      var scr = document.getElementById('loading-screen');
+      if (scr && scr.style.display !== 'none' && !scr.classList.contains('dismissed')) {
+        scr.style.opacity = '0';
+        scr.style.pointerEvents = 'none';
+        setTimeout(function() { scr.style.display = 'none'; }, 400);
+      }
+    }, 2500);
+  </script>
 
   <!-- App Header -->
   <header class="app-header">
@@ -3275,6 +3285,44 @@
        ========================================== -->
   <script>
     /* ==========================================
+       SAFE LOCALSTORAGE WRAPPER FOR EMBEDDED WEBVIEWS & GITHUB PAGES
+       ========================================== */
+    const SafeStorage = {
+      getItem(key) {
+        try {
+          return window.localStorage ? window.localStorage.getItem(key) : null;
+        } catch (e) {
+          console.warn('Storage getItem blocked:', e);
+          return null;
+        }
+      },
+      setItem(key, value) {
+        try {
+          if (window.localStorage) window.localStorage.setItem(key, String(value));
+        } catch (e) {
+          console.warn('Storage setItem blocked:', e);
+        }
+      },
+      removeItem(key) {
+        try {
+          if (window.localStorage) window.localStorage.removeItem(key);
+        } catch (e) {
+          console.warn('Storage removeItem blocked:', e);
+        }
+      }
+    };
+
+    function safeParseJSON(key, fallback) {
+      try {
+        const raw = SafeStorage.getItem(key);
+        if (!raw) return fallback;
+        return JSON.parse(raw);
+      } catch (e) {
+        return fallback;
+      }
+    }
+
+    /* ==========================================
        DATA GENERATORS & APPLICATION STATE
        ========================================== */
     const seedNow = Date.now();
@@ -3320,7 +3368,7 @@
       }
     ];
 
-    let storedPurchases = JSON.parse(localStorage.getItem('vnh_purchases'));
+    let storedPurchases = safeParseJSON('vnh_purchases', null);
     if (!storedPurchases || !Array.isArray(storedPurchases) || storedPurchases.length === 0) {
       storedPurchases = defaultSeedPurchases;
     } else {
@@ -3331,11 +3379,11 @@
     }
 
     const AppState = {
-      theme: localStorage.getItem('vnh_theme') || 'dark',
-      walletBalance: parseFloat(localStorage.getItem('vnh_wallet')) || 500.00,
+      theme: SafeStorage.getItem('vnh_theme') || 'dark',
+      walletBalance: parseFloat(SafeStorage.getItem('vnh_wallet')) || 500.00,
       purchases: storedPurchases,
-      favorites: JSON.parse(localStorage.getItem('vnh_favorites')) || ['num_1', 'num_3', 'num_5'],
-      priceAlerts: JSON.parse(localStorage.getItem('vnh_price_alerts')) || [
+      favorites: safeParseJSON('vnh_favorites', ['num_1', 'num_3', 'num_5']),
+      priceAlerts: safeParseJSON('vnh_price_alerts', [
         {
           id: 'alert_default_1',
           targetType: 'country',
@@ -3354,18 +3402,18 @@
           createdAt: new Date().toLocaleDateString(),
           triggered: false
         }
-      ],
-      pendingOrder: JSON.parse(localStorage.getItem('vnh_pending_order')) || null,
-      isLoggedIn: JSON.parse(localStorage.getItem('vnh_is_logged_in')) ?? true,
-      currentUser: JSON.parse(localStorage.getItem('vnh_user')) || {
+      ]),
+      pendingOrder: safeParseJSON('vnh_pending_order', null),
+      isLoggedIn: safeParseJSON('vnh_is_logged_in', true),
+      currentUser: safeParseJSON('vnh_user', {
         name: 'Alex Rivers',
         email: 'alex@virtualhub.io',
         tier: 'Pro VIP'
-      },
-      referralCode: localStorage.getItem('vnh_ref_code') || 'VNH-ALEX-8829',
-      referralEarnings: parseFloat(localStorage.getItem('vnh_ref_earnings')) || 175.00,
+      }),
+      referralCode: SafeStorage.getItem('vnh_ref_code') || 'VNH-ALEX-8829',
+      referralEarnings: parseFloat(SafeStorage.getItem('vnh_ref_earnings')) || 175.00,
       referralFilter: 'ALL',
-      referralsList: JSON.parse(localStorage.getItem('vnh_ref_list')) || [
+      referralsList: safeParseJSON('vnh_ref_list', [
         {
           id: 'ref_101',
           name: 'Rahul Sharma',
@@ -3406,7 +3454,7 @@
           spent: 0.00,
           reward: 0.00
         }
-      ],
+      ]),
       autoOtpEnabled: true,
       selectedNumberIds: [],
       countries: [],
@@ -3952,7 +4000,7 @@
 
       // Deduct Wallet Balance
       AppState.walletBalance -= finalTotal;
-      localStorage.setItem('vnh_wallet', AppState.walletBalance);
+      SafeStorage.setItem('vnh_wallet', AppState.walletBalance);
 
       // Batch convert all selected items to PURCHASES
       selectedItems.forEach(num => {
@@ -3974,7 +4022,7 @@
         AppState.purchases.unshift(purchaseEntry);
       });
 
-      localStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
+      SafeStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
 
       // Reset selection
       AppState.selectedNumberIds = [];
@@ -4038,7 +4086,7 @@
         AppState.favorites.push(numId);
         showToast('Saved to Favorites! ❤️', 'success');
       }
-      localStorage.setItem('vnh_favorites', JSON.stringify(AppState.favorites));
+      SafeStorage.setItem('vnh_favorites', JSON.stringify(AppState.favorites));
       updateFavoritesUI();
     }
 
@@ -4287,7 +4335,7 @@
     function regenerateReferralCode() {
       const newCode = `VNH-ALEX-${Math.floor(1000 + Math.random() * 9000)}`;
       AppState.referralCode = newCode;
-      localStorage.setItem('vnh_ref_code', newCode);
+      SafeStorage.setItem('vnh_ref_code', newCode);
       renderReferralTab();
       showToast(`Generated new referral code: ${newCode}`, 'info');
     }
@@ -4340,8 +4388,8 @@
       AppState.referralsList.unshift(newRef);
       AppState.referralEarnings += reward;
 
-      localStorage.setItem('vnh_ref_list', JSON.stringify(AppState.referralsList));
-      localStorage.setItem('vnh_ref_earnings', AppState.referralEarnings);
+      SafeStorage.setItem('vnh_ref_list', JSON.stringify(AppState.referralsList));
+      SafeStorage.setItem('vnh_ref_earnings', AppState.referralEarnings);
 
       renderReferralTab();
       triggerConfetti();
@@ -4358,8 +4406,8 @@
       AppState.walletBalance += claimedAmt;
       AppState.referralEarnings = 0;
 
-      localStorage.setItem('vnh_wallet', AppState.walletBalance);
-      localStorage.setItem('vnh_ref_earnings', AppState.referralEarnings);
+      SafeStorage.setItem('vnh_wallet', AppState.walletBalance);
+      SafeStorage.setItem('vnh_ref_earnings', AppState.referralEarnings);
 
       updateWalletUI();
       renderReferralTab();
@@ -4471,7 +4519,7 @@
       const baseTime = (p.expiresAt && p.expiresAt > now) ? p.expiresAt : now;
       p.expiresAt = baseTime + 10 * 60 * 1000; // Add 10 minutes
 
-      localStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
+      SafeStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
       renderPurchasesHistory();
       showToast(`⏱️ Extended rental time for ${p.phone} by +10 minutes!`, 'success');
     }
@@ -4969,7 +5017,7 @@
         orderId: orderId
       };
 
-      localStorage.setItem('vnh_pending_order', JSON.stringify(AppState.pendingOrder));
+      SafeStorage.setItem('vnh_pending_order', JSON.stringify(AppState.pendingOrder));
 
       updatePaymentModalSummary();
       showToast(`⚡ Quick Buy: Direct UPI payment for ${item.phone}`, 'info');
@@ -4996,8 +5044,8 @@
         email: email || 'alex@virtualhub.io',
         tier: 'Pro VIP'
       };
-      localStorage.setItem('vnh_is_logged_in', JSON.stringify(true));
-      localStorage.setItem('vnh_user', JSON.stringify(AppState.currentUser));
+      SafeStorage.setItem('vnh_is_logged_in', JSON.stringify(true));
+      SafeStorage.setItem('vnh_user', JSON.stringify(AppState.currentUser));
       updateUserAuthUI();
       showToast('🎉 Logged in as ' + AppState.currentUser.name + '! Quick Buy enabled.', 'success');
       closeModal('user-modal');
@@ -5005,7 +5053,7 @@
 
     function logoutUser() {
       AppState.isLoggedIn = false;
-      localStorage.setItem('vnh_is_logged_in', JSON.stringify(false));
+      SafeStorage.setItem('vnh_is_logged_in', JSON.stringify(false));
       updateUserAuthUI();
       showToast('Logged out. Log in anytime to use Quick Buy.', 'info');
       closeModal('user-modal');
@@ -5178,8 +5226,8 @@
       AppState.walletBalance -= order.price;
 
       // Persist
-      localStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
-      localStorage.setItem('vnh_wallet', AppState.walletBalance);
+      SafeStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
+      SafeStorage.setItem('vnh_wallet', AppState.walletBalance);
 
       closeModal('payment-modal');
       document.getElementById('payment-progress-box').style.display = 'none';
@@ -5214,7 +5262,7 @@
       if (p) {
         p.latestOtp = Math.floor(100000 + Math.random() * 900000).toString();
         p.time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        localStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
+        SafeStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
         renderPurchasesHistory();
         const otpEl = document.getElementById(`otp-code-${pId}`);
         if (otpEl) {
@@ -5400,7 +5448,7 @@
       };
 
       AppState.priceAlerts.unshift(newAlert);
-      localStorage.setItem('vnh_price_alerts', JSON.stringify(AppState.priceAlerts));
+      SafeStorage.setItem('vnh_price_alerts', JSON.stringify(AppState.priceAlerts));
 
       priceInput.value = '';
       updatePriceAlertsUI();
@@ -5425,14 +5473,14 @@
 
     function removePriceAlert(alertId) {
       AppState.priceAlerts = AppState.priceAlerts.filter(a => a.id !== alertId);
-      localStorage.setItem('vnh_price_alerts', JSON.stringify(AppState.priceAlerts));
+      SafeStorage.setItem('vnh_price_alerts', JSON.stringify(AppState.priceAlerts));
       updatePriceAlertsUI();
       showToast('Price alert preference removed.', 'info');
     }
 
     function clearAllPriceAlerts() {
       AppState.priceAlerts = [];
-      localStorage.setItem('vnh_price_alerts', JSON.stringify(AppState.priceAlerts));
+      SafeStorage.setItem('vnh_price_alerts', JSON.stringify(AppState.priceAlerts));
       updatePriceAlertsUI();
       showToast('All price alert preferences cleared.', 'info');
     }
@@ -5775,7 +5823,7 @@
         }
       });
       if (triggeredCount > 0) {
-        localStorage.setItem('vnh_price_alerts', JSON.stringify(AppState.priceAlerts));
+        SafeStorage.setItem('vnh_price_alerts', JSON.stringify(AppState.priceAlerts));
         updatePriceAlertsUI();
       }
     }
@@ -5785,7 +5833,7 @@
        ========================================== */
     function applyTheme(theme, animate = false) {
       AppState.theme = theme;
-      localStorage.setItem('vnh_theme', theme);
+      SafeStorage.setItem('vnh_theme', theme);
 
       const updateDomTheme = () => {
         document.documentElement.setAttribute('data-theme', theme);
@@ -5830,6 +5878,8 @@
       applyTheme(nextTheme, true);
       showToast(`Switched to ${nextTheme === 'light' ? 'Light ☀️' : 'Dark 🌙'} Theme`, 'info');
     }
+
+    function triggerSimulatedPriceDrop() {
       // Pick target from price alerts or create a temporary drop
       if (AppState.priceAlerts.length === 0) {
         // Add a default alert threshold
@@ -6659,7 +6709,7 @@
 
     function addDemoWalletFunds(amt) {
       AppState.walletBalance += amt;
-      localStorage.setItem('vnh_wallet', AppState.walletBalance);
+      SafeStorage.setItem('vnh_wallet', AppState.walletBalance);
       updateWalletUI();
       closeModal('topup-modal');
 
@@ -6740,65 +6790,70 @@
         if (statusText && label) statusText.innerText = label;
       }
 
-      // Step 1: User Theme
-      setProgress(20, 'Applying user preferences...');
-      try { applyTheme(AppState.theme, false); } catch(e) { console.error('Theme err:', e); }
-      await waitDelay(100);
+      try {
+        // Step 1: User Theme
+        setProgress(20, 'Applying user preferences...');
+        try { applyTheme(AppState.theme, false); } catch(e) { console.error('Theme err:', e); }
+        await waitDelay(100);
 
-      // Step 2: Core Data Object Processing
-      setProgress(45, 'Processing countries & virtual numbers...');
-      try { initializeCatalogData(); } catch(e) { console.error('Catalog err:', e); }
-      await waitDelay(120);
+        // Step 2: Core Data Object Processing
+        setProgress(45, 'Processing countries & virtual numbers...');
+        try { initializeCatalogData(); } catch(e) { console.error('Catalog err:', e); }
+        await waitDelay(120);
 
-      // Data Verification Safety Check
-      const dataReady = (
-        Array.isArray(AppState.countries) && AppState.countries.length > 0 &&
-        Array.isArray(AppState.platforms) && AppState.platforms.length > 0 &&
-        Array.isArray(AppState.numbers) && AppState.numbers.length > 0
-      );
+        // Data Verification Safety Check
+        const dataReady = (
+          Array.isArray(AppState.countries) && AppState.countries.length > 0 &&
+          Array.isArray(AppState.platforms) && AppState.platforms.length > 0 &&
+          Array.isArray(AppState.numbers) && AppState.numbers.length > 0
+        );
 
-      if (!dataReady) {
-        console.warn('Initial data objects incomplete, running fallback catalog generation...');
-        try { initializeCatalogData(); } catch(e) { console.error('Catalog fallback err:', e); }
+        if (!dataReady) {
+          console.warn('Initial data objects incomplete, running fallback catalog generation...');
+          try { initializeCatalogData(); } catch(e) { console.error('Catalog fallback err:', e); }
+        }
+
+        // Step 3: Populate Dropdowns & Render Catalog UI
+        setProgress(70, 'Building marketplace catalog...');
+        try { populateMarketplaceDropdowns(); } catch(e) { console.error('Dropdowns err:', e); }
+        try { renderCountryChips(); } catch(e) { console.error('Country chips err:', e); }
+        try { renderPlatformChips(); } catch(e) { console.error('Platform chips err:', e); }
+        try { renderMarketplace(); } catch(e) { console.error('Marketplace err:', e); }
+        await waitDelay(120);
+
+        // Step 4: User State, Wallet & Visual Charts
+        setProgress(90, 'Restoring wallet & dashboard history...');
+        try { renderPurchasesHistory(); } catch(e) { console.error('Purchases err:', e); }
+        try { updateFavoritesUI(); } catch(e) { console.error('Favorites err:', e); }
+        try { renderReferralTab(); } catch(e) { console.error('Referral err:', e); }
+        try { updateWalletUI(); } catch(e) { console.error('Wallet err:', e); }
+        try { updateUserAuthUI(); } catch(e) { console.error('User auth err:', e); }
+        try { initCanvasBackground(); } catch(e) { console.error('Canvas err:', e); }
+        try { renderDashboardActivationChart(); } catch(e) { console.error('Chart err:', e); }
+        try { initResponsiveChartObservers(); } catch(e) { console.error('Chart observer err:', e); }
+        await waitDelay(100);
+
+        // Real-time UTC Server Clock Initialization
+        try {
+          updateServerClocks();
+          setInterval(updateServerClocks, 1000);
+        } catch(e) { console.error('Clock err:', e); }
+
+        // Price Alerts Init
+        try {
+          populateAlertDropdowns();
+          updatePriceAlertsUI();
+          evaluatePriceAlerts();
+        } catch(e) { console.error('Alerts err:', e); }
+
+        // Step 5: Finalize and trigger graceful exit animation
+        setProgress(100, 'Platform Ready!');
+        await waitDelay(200);
+      } catch (err) {
+        console.error('App init error:', err);
+      } finally {
+        dismissLoadingScreen();
       }
-
-      // Step 3: Populate Dropdowns & Render Catalog UI
-      setProgress(70, 'Building marketplace catalog...');
-      try { populateMarketplaceDropdowns(); } catch(e) { console.error('Dropdowns err:', e); }
-      try { renderCountryChips(); } catch(e) { console.error('Country chips err:', e); }
-      try { renderPlatformChips(); } catch(e) { console.error('Platform chips err:', e); }
-      try { renderMarketplace(); } catch(e) { console.error('Marketplace err:', e); }
-      await waitDelay(120);
-
-      // Step 4: User State, Wallet & Visual Charts
-      setProgress(90, 'Restoring wallet & dashboard history...');
-      try { renderPurchasesHistory(); } catch(e) { console.error('Purchases err:', e); }
-      try { updateFavoritesUI(); } catch(e) { console.error('Favorites err:', e); }
-      try { renderReferralTab(); } catch(e) { console.error('Referral err:', e); }
-      try { updateWalletUI(); } catch(e) { console.error('Wallet err:', e); }
-      try { updateUserAuthUI(); } catch(e) { console.error('User auth err:', e); }
-      try { initCanvasBackground(); } catch(e) { console.error('Canvas err:', e); }
-      try { renderDashboardActivationChart(); } catch(e) { console.error('Chart err:', e); }
-      try { initResponsiveChartObservers(); } catch(e) { console.error('Chart observer err:', e); }
-      await waitDelay(100);
-
-      // Real-time UTC Server Clock Initialization
-      try {
-        updateServerClocks();
-        setInterval(updateServerClocks, 1000);
-      } catch(e) { console.error('Clock err:', e); }
-
-      // Price Alerts Init
-      try {
-        populateAlertDropdowns();
-        updatePriceAlertsUI();
-        evaluatePriceAlerts();
-      } catch(e) { console.error('Alerts err:', e); }
-
-      // Step 5: Finalize and trigger graceful exit animation
-      setProgress(100, 'Platform Ready!');
-      await waitDelay(250);
-      dismissLoadingScreen();
 
       // Setup Event Listeners with Safe Optional Chaining
       document.getElementById('price-alert-bell-btn')?.addEventListener('click', () => {
