@@ -1929,6 +1929,160 @@
       box-shadow: 0 2px 6px rgba(37, 99, 235, 0.5);
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
+
+    /* PLATFORM QUICK-LINKS SECTION WITH CIRCULAR BADGES */
+    .platform-quicklinks-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.15rem 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      backdrop-filter: blur(12px);
+      position: relative;
+    }
+
+    .platform-quicklinks-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.85rem;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .platform-quicklinks-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .platform-quicklinks-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 1rem;
+    }
+
+    .platform-quicklinks-heading {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin: 0;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .platform-quicklinks-subheading {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin: 0.15rem 0 0 0;
+      font-weight: 500;
+    }
+
+    .platform-circular-badges-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      overflow-x: auto;
+      padding: 0.5rem 0.25rem 0.75rem 0.25rem;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .platform-circular-badges-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .platform-badge-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      width: 68px;
+    }
+
+    .platform-badge-item:hover {
+      transform: translateY(-3px);
+    }
+
+    .platform-badge-circle {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(30, 41, 59, 0.6);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.45rem;
+      color: var(--text-main);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    [data-theme="light"] .platform-badge-circle {
+      background: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .platform-badge-item:hover .platform-badge-circle {
+      border-color: var(--accent);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25);
+    }
+
+    .platform-badge-item.active .platform-badge-circle {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(168, 85, 247, 0.25));
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5), 0 4px 14px rgba(0, 0, 0, 0.3);
+      transform: scale(1.05);
+    }
+
+    .platform-badge-item.active .platform-badge-circle::after {
+      content: "✓";
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      color: #FFFFFF;
+      border-radius: 50%;
+      font-size: 0.72rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      border: 2px solid var(--bg-card);
+    }
+
+    .platform-badge-label {
+      font-size: 0.73rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 68px;
+      transition: color 0.2s ease, font-weight 0.2s ease;
+    }
+
+    .platform-badge-item.active .platform-badge-label {
+      color: var(--accent);
+      font-weight: 800;
+    }
   </style>
 </head>
 <body>
@@ -1995,7 +2149,7 @@
 
         <div class="wallet-chip" id="wallet-chip-btn">
           <i class="fa-solid fa-wallet"></i>
-          <span id="wallet-balance-display">₹500.00</span>
+          <span id="wallet-balance-display">₹0.00</span>
         </div>
 
         <button class="btn btn-secondary btn-icon" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
@@ -2050,7 +2204,7 @@
       </div>
       <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 0.5rem; border-top: 1px dashed var(--border-color); font-size: 0.8rem;">
         <span style="color: var(--text-muted);">Wallet Balance:</span>
-        <span style="font-weight: 800; color: var(--success);" id="mobile-sidebar-wallet">₹500.00</span>
+        <span style="font-weight: 800; color: var(--success);" id="mobile-sidebar-wallet">₹0.00</span>
       </div>
     </div>
 
@@ -2233,6 +2387,28 @@
           <p class="section-desc">Search through 2,000+ active virtual numbers ready for instant purchase.</p>
         </div>
 
+        <!-- PLATFORM FILTER QUICK-LINKS CARD -->
+        <div class="platform-quicklinks-card" id="platform-quicklinks-section">
+          <div class="platform-quicklinks-header">
+            <div class="platform-quicklinks-title">
+              <div class="platform-quicklinks-icon">
+                <i class="fa-solid fa-shapes"></i>
+              </div>
+              <div>
+                <h3 class="platform-quicklinks-heading">Platform Filter</h3>
+                <p class="platform-quicklinks-subheading">Tap service icon to filter numbers</p>
+              </div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="resetPlatformQuickFilter()" id="platform-quicklinks-reset-btn" style="display: none; font-size: 0.75rem; padding: 0.3rem 0.7rem; border-radius: 20px;">
+              <i class="fa-solid fa-xmark"></i> Clear Filter
+            </button>
+          </div>
+
+          <div class="platform-circular-badges-container" id="platform-circular-badges">
+            <!-- Dynamically populated circular badges -->
+          </div>
+        </div>
+
         <!-- Search & Filter Controls -->
         <div class="search-filter-box">
           <div class="search-input-wrapper">
@@ -2366,7 +2542,7 @@
                 <i class="fa-solid fa-wallet"></i>
               </div>
             </div>
-            <div class="dash-stat-number" id="dash-stat-wallet-val" data-target="500.00" data-prefix="₹" data-suffix="" data-decimals="2">₹0.00</div>
+            <div class="dash-stat-number" id="dash-stat-wallet-val" data-target="0.00" data-prefix="₹" data-suffix="" data-decimals="2">₹0.00</div>
             <div class="dash-stat-footer" style="color: var(--accent);">
               <i class="fa-solid fa-arrows-rotate"></i> <span>Instant top-up active</span>
             </div>
@@ -2396,7 +2572,7 @@
                 <span class="badge badge-success">ACTIVE</span>
               </div>
               <div style="font-size: 2.25rem; font-weight: 800; font-family: var(--font-mono); color: var(--text-main);" id="dashboard-wallet-balance">
-                ₹500.00
+                ₹0.00
               </div>
               <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Instant auto-debit on number rental</p>
               <button class="btn btn-primary btn-sm" style="width: 100%;" id="topup-modal-open-btn">
@@ -2855,7 +3031,7 @@
         </div>
         <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.88rem;">
           <span style="color: var(--text-muted);">Your Wallet Balance:</span>
-          <strong style="font-family: var(--font-mono); color: var(--accent);" id="bulk-modal-wallet-balance">₹500.00</strong>
+          <strong style="font-family: var(--font-mono); color: var(--accent);" id="bulk-modal-wallet-balance">₹0.00</strong>
         </div>
         <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 0.75rem; font-size: 1.05rem;">
           <span style="font-weight: 700;">Final Payable Amount:</span>
@@ -3380,7 +3556,15 @@
 
     const AppState = {
       theme: SafeStorage.getItem('vnh_theme') || 'dark',
-      walletBalance: parseFloat(SafeStorage.getItem('vnh_wallet')) || 500.00,
+      walletBalance: (() => {
+        const saved = SafeStorage.getItem('vnh_wallet');
+        if (saved === null || saved === '500' || saved === '500.00') {
+          SafeStorage.setItem('vnh_wallet', '0.00');
+          return 0.00;
+        }
+        const val = parseFloat(saved);
+        return isNaN(val) ? 0.00 : val;
+      })(),
       purchases: storedPurchases,
       favorites: safeParseJSON('vnh_favorites', ['num_1', 'num_3', 'num_5']),
       priceAlerts: safeParseJSON('vnh_price_alerts', [
@@ -3584,6 +3768,63 @@
           <span>${p.name}</span>
         </div>
       `).join('');
+    }
+
+    function renderPlatformQuickFilters() {
+      const container = document.getElementById('platform-circular-badges');
+      if (!container) return;
+
+      const items = [
+        { name: 'ALL', label: 'All Services', icon: 'fa-solid fa-border-all', color: 'var(--accent)' },
+        ...RawPlatforms
+      ];
+
+      container.innerHTML = items.map(p => {
+        const isAll = p.name === 'ALL';
+        const displayLabel = isAll ? 'All' : p.name.split('/')[0].trim();
+        return `
+          <div class="platform-badge-item ${isAll ? 'active' : ''}" data-platform="${p.name}" onclick="onPlatformBadgeClick('${p.name}')">
+            <div class="platform-badge-circle" style="color: ${p.color || 'var(--accent)'}">
+              <i class="${p.icon}"></i>
+            </div>
+            <span class="platform-badge-label" title="${p.name}">${displayLabel}</span>
+          </div>
+        `;
+      }).join('');
+
+      syncPlatformBadgeActiveState();
+    }
+
+    function onPlatformBadgeClick(platformName) {
+      const currentSelectVal = document.getElementById('filter-platform-select')?.value || 'ALL';
+      let newTarget = platformName;
+      if (platformName !== 'ALL' && currentSelectVal === platformName) {
+        newTarget = 'ALL';
+      }
+      filterByPlatform(newTarget);
+    }
+
+    function syncPlatformBadgeActiveState() {
+      const selectVal = document.getElementById('filter-platform-select')?.value || 'ALL';
+      const badges = document.querySelectorAll('#platform-circular-badges .platform-badge-item');
+      const resetBtn = document.getElementById('platform-quicklinks-reset-btn');
+
+      badges.forEach(badge => {
+        const platform = badge.getAttribute('data-platform');
+        if (platform === selectVal) {
+          badge.classList.add('active');
+        } else {
+          badge.classList.remove('active');
+        }
+      });
+
+      if (resetBtn) {
+        resetBtn.style.display = selectVal !== 'ALL' ? 'inline-flex' : 'none';
+      }
+    }
+
+    function resetPlatformQuickFilter() {
+      filterByPlatform('ALL');
     }
 
     function renderMarketplaceSkeletons(count = 6) {
@@ -5673,6 +5914,7 @@
         AppState.filteredNumbers = results;
         AppState.visibleCount = 12;
         renderMarketplace();
+        try { syncPlatformBadgeActiveState(); } catch(e) {}
       }, 200);
     }
 
@@ -6635,7 +6877,7 @@
 
       const walletStat = document.getElementById('dash-stat-wallet-val');
       if (walletStat) {
-        walletStat.setAttribute('data-target', AppState.walletBalance ? AppState.walletBalance.toFixed(2) : '500.00');
+        walletStat.setAttribute('data-target', AppState.walletBalance !== undefined && AppState.walletBalance !== null ? AppState.walletBalance.toFixed(2) : '0.00');
       }
 
       const statElements = document.querySelectorAll('.dash-stat-number');
@@ -6818,6 +7060,7 @@
         try { populateMarketplaceDropdowns(); } catch(e) { console.error('Dropdowns err:', e); }
         try { renderCountryChips(); } catch(e) { console.error('Country chips err:', e); }
         try { renderPlatformChips(); } catch(e) { console.error('Platform chips err:', e); }
+        try { renderPlatformQuickFilters(); } catch(e) { console.error('Platform quick filters err:', e); }
         try { renderMarketplace(); } catch(e) { console.error('Marketplace err:', e); }
         await waitDelay(120);
 

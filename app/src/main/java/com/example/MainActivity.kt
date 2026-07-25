@@ -21,6 +21,10 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.example.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
+  override fun getAttributionTag(): String {
+    return "default"
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
@@ -44,13 +48,18 @@ fun VirtualNumberWebView() {
   AndroidView(
     modifier = Modifier.fillMaxSize(),
     factory = { context ->
-      WebView(context).apply {
+      val webContext = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+        context.createAttributionContext("default")
+      } else {
+        context
+      }
+      WebView(webContext).apply {
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
         settings.databaseEnabled = true
         settings.allowFileAccess = true
         settings.allowContentAccess = true
-        settings.mediaPlaybackRequiresUserGesture = false
+        settings.mediaPlaybackRequiresUserGesture = true
         // Disable Zoom & Overview Mode to prevent zoom in/out
         settings.setSupportZoom(false)
         settings.builtInZoomControls = false
