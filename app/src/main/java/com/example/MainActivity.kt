@@ -50,6 +50,7 @@ fun VirtualNumberWebView() {
         settings.databaseEnabled = true
         settings.allowFileAccess = true
         settings.allowContentAccess = true
+        settings.mediaPlaybackRequiresUserGesture = false
         // Disable Zoom & Overview Mode to prevent zoom in/out
         settings.setSupportZoom(false)
         settings.builtInZoomControls = false
