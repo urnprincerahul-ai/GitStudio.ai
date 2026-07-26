@@ -1475,34 +1475,190 @@
       color: var(--text-main);
     }
 
-    /* FAQ Accordion */
+    /* FAQ Section & Category Filters */
+    .faq-category-filters {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 850px;
+      margin: 0 auto 2rem auto;
+    }
+    .faq-cat-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.1rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .faq-cat-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .faq-cat-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+    .faq-cat-badge {
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      font-weight: 700;
+      color: inherit;
+    }
+    .faq-cat-btn.active .faq-cat-badge {
+      background: rgba(255, 255, 255, 0.25);
+      color: #fff;
+    }
+
     .faq-list {
-      max-width: 800px;
+      max-width: 850px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.25rem;
     }
+
+    /* Collapsible FAQ Category Blocks */
+    .faq-category-block {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      background: var(--bg-card);
+      overflow: hidden;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .faq-category-block.open {
+      border-color: rgba(59, 130, 246, 0.4);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+    .faq-category-header {
+      padding: 1.1rem 1.35rem;
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      border-bottom: 1px solid transparent;
+      user-select: none;
+      transition: background 0.2s ease;
+    }
+    .faq-category-header:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .faq-category-block.open .faq-category-header {
+      border-bottom-color: var(--border-color);
+      background: rgba(59, 130, 246, 0.06);
+    }
+    .faq-category-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .faq-category-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .faq-category-count-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-color);
+    }
+    .faq-category-chevron {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: transform 0.3s ease;
+    }
+    .faq-category-block.open .faq-category-chevron {
+      transform: rotate(180deg);
+      color: var(--accent);
+    }
+    .faq-category-body {
+      display: none;
+      padding: 1rem 1.25rem 1.25rem 1.25rem;
+      flex-direction: column;
+      gap: 0.75rem;
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .faq-category-block.open .faq-category-body {
+      display: flex;
+    }
+
+    /* FAQ Items */
+    @keyframes faqPopIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.97) translateY(8px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    .faq-pop-in {
+      animation: faqPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
     .faq-item {
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      background: var(--bg-card);
+      background: var(--bg-surface);
       overflow: hidden;
       transition: var(--transition);
     }
     .faq-question {
-      padding: 1.25rem 1.5rem;
+      padding: 1rem 1.25rem;
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 0.98rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      color: var(--text-main);
+      user-select: none;
+    }
+    .faq-question i {
+      transition: transform 0.3s ease;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-left: 0.5rem;
+      flex-shrink: 0;
+    }
+    .faq-item.open .faq-question i {
+      transform: rotate(180deg);
+      color: var(--accent);
     }
     .faq-answer {
-      padding: 0 1.5rem 1.25rem 1.5rem;
+      padding: 0 1.25rem 1.1rem 1.25rem;
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
       display: none;
     }
     .faq-item.open .faq-answer {
@@ -1510,6 +1666,7 @@
     }
     .faq-item.open {
       border-color: var(--accent);
+      background: var(--bg-card);
     }
 
     /* ==========================================
@@ -1690,6 +1847,10 @@
     .chips-carousel,
     .platform-circular-badges-container,
     .grid-display,
+    .dash-stats-grid,
+    .faq-list,
+    .faq-category-block,
+    .faq-category-body,
     .modal-box,
     .mobile-sidebar,
     #utr-api-terminal-log,
@@ -1703,12 +1864,16 @@
     }
 
     .pricing-grid,
-    .features-grid {
+    .features-grid,
+    .dash-stats-grid,
+    .faq-list {
       scroll-snap-type: y proximity;
     }
 
     .pricing-card,
-    .feature-card {
+    .feature-card,
+    .dash-stat-card,
+    .faq-category-block {
       scroll-snap-align: start;
     }
 
@@ -3065,7 +3230,7 @@
       </div>
 
       <!-- FAQ Search Input Box -->
-      <div style="max-width: 650px; margin: 0 auto 2rem auto; position: relative;">
+      <div style="max-width: 650px; margin: 0 auto 1.5rem auto; position: relative;">
         <div style="position: relative; display: flex; align-items: center;">
           <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 1.1rem; color: var(--accent); font-size: 1rem; pointer-events: none;"></i>
           <input type="text" id="faq-search-input" placeholder="Search questions by keywords (e.g. OTP, refund, UPI, UTR, SIM, referral)..." class="search-input" style="padding-left: 2.8rem; padding-right: 2.8rem; height: 50px; border-radius: var(--radius-md); font-size: 0.95rem; width: 100%; border: 1px solid var(--border-color); background: var(--bg-card); transition: all 0.2s ease;">
@@ -3079,84 +3244,215 @@
         </div>
       </div>
 
+      <!-- FAQ Category Filter Buttons -->
+      <div class="faq-category-filters" id="faq-category-filters">
+        <button class="faq-cat-btn active" data-category="all" onclick="selectFaqCategory('all')">
+          <i class="fa-solid fa-layer-group"></i> All Questions <span class="faq-cat-badge" id="faq-cat-count-all">13</span>
+        </button>
+        <button class="faq-cat-btn" data-category="sms" onclick="selectFaqCategory('sms')">
+          <i class="fa-solid fa-comment-sms"></i> SMS & Verification <span class="faq-cat-badge" id="faq-cat-count-sms">4</span>
+        </button>
+        <button class="faq-cat-btn" data-category="payments" onclick="selectFaqCategory('payments')">
+          <i class="fa-solid fa-credit-card"></i> Payments & Billing <span class="faq-cat-badge" id="faq-cat-count-payments">3</span>
+        </button>
+        <button class="faq-cat-btn" data-category="account" onclick="selectFaqCategory('account')">
+          <i class="fa-solid fa-users"></i> Account & Referrals <span class="faq-cat-badge" id="faq-cat-count-account">3</span>
+        </button>
+        <button class="faq-cat-btn" data-category="technical" onclick="selectFaqCategory('technical')">
+          <i class="fa-solid fa-sliders"></i> Technical & Tools <span class="faq-cat-badge" id="faq-cat-count-technical">3</span>
+        </button>
+      </div>
+
       <!-- No Matching Results Empty State -->
-      <div id="faq-empty-state" style="display: none; text-align: center; padding: 3rem 1.5rem; background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: var(--radius-md); margin-bottom: 2rem;">
+      <div id="faq-empty-state" style="display: none; text-align: center; padding: 3rem 1.5rem; background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: var(--radius-md); margin-bottom: 2rem; max-width: 850px; margin-left: auto; margin-right: auto;">
         <div style="font-size: 2.5rem; color: var(--text-muted); margin-bottom: 0.75rem;"><i class="fa-solid fa-circle-question"></i></div>
         <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">No matching questions found</h4>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Try searching for different keywords like "SMS", "payment", "bonus", "cancel", or "wallet".</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Try searching for different keywords or selecting another category.</p>
         <button class="btn btn-secondary btn-sm" onclick="clearFaqSearch()">
-          <i class="fa-solid fa-rotate-left"></i> Reset FAQ Search
+          <i class="fa-solid fa-rotate-left"></i> Reset Search & Category
         </button>
       </div>
 
       <div class="faq-list">
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>How quickly do I receive the SMS verification code?</span>
-            <i class="fa-solid fa-chevron-down"></i>
+        <!-- CATEGORY 1: SMS & VERIFICATION -->
+        <div class="faq-category-block open" data-category="sms">
+          <div class="faq-category-header" onclick="toggleFaqCategoryBlock(this)">
+            <div class="faq-category-title">
+              <div class="faq-category-icon"><i class="fa-solid fa-comment-sms"></i></div>
+              <span>SMS & Verification Services</span>
+              <span class="faq-category-count-badge">4 Questions</span>
+            </div>
+            <i class="fa-solid fa-chevron-down faq-category-chevron"></i>
           </div>
-          <div class="faq-answer">
-            SMS verification codes typically arrive within 2 to 5 seconds. If no SMS arrives within 5 minutes, you can refresh or cancel for an automatic full refund.
+          <div class="faq-category-body">
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>How quickly do I receive the SMS verification code?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                SMS verification codes typically arrive within 2 to 5 seconds. If no SMS arrives within 5 minutes, you can refresh or cancel for an automatic full refund.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>Are these numbers real SIM cards or VoIP?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                We operate real physical cellular SIM card routes from global mobile carriers, guaranteeing maximum acceptance on WhatsApp, Telegram, Google, Tinder, and strict platforms.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>What happens if an SMS code is delayed or does not arrive?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                If the SMS code does not arrive within the 20-minute timer window, you can cancel the order directly from your Active Purchases dashboard. Your payment or wallet credits will be immediately refunded with zero cancellation fees.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>Can I receive multiple OTPs on the same virtual number?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                Temporary lines lock single service for 20 minutes with automatic line refresh option. For multiple OTPs over 24 hours or 7 days, select our Rental Line or Premium Line options in Marketplace.
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Are these numbers real SIM cards or VoIP?</span>
-            <i class="fa-solid fa-chevron-down"></i>
+        <!-- CATEGORY 2: PAYMENTS & BILLING -->
+        <div class="faq-category-block open" data-category="payments">
+          <div class="faq-category-header" onclick="toggleFaqCategoryBlock(this)">
+            <div class="faq-category-title">
+              <div class="faq-category-icon"><i class="fa-solid fa-credit-card"></i></div>
+              <span>Payments & Wallet Top-Up</span>
+              <span class="faq-category-count-badge">3 Questions</span>
+            </div>
+            <i class="fa-solid fa-chevron-down faq-category-chevron"></i>
           </div>
-          <div class="faq-answer">
-            We operate real physical cellular SIM card routes from global mobile carriers, guaranteeing maximum acceptance on WhatsApp, Telegram, Google, and strict services.
+          <div class="faq-category-body">
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>How does the UPI payment & UTR verification work?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                After clicking "Proceed to Pay", scan the UPI QR code or pay via PhonePe, Paytm, Google Pay, or BHIM. Submit your 12-digit UTR reference number to unlock your virtual number or wallet balance immediately.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>Does my wallet balance expire?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                No, your wallet balance and referral earnings never expire. You can keep credits in your account and use them whenever you need to activate virtual numbers.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>Are refunds instant if a number fails to receive SMS?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                Yes! Refund processing is 100% automated. If you cancel an unfulfilled number activation, your wallet balance is restored immediately without requiring support ticket intervention.
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>How does the UPI payment & UTR verification work?</span>
-            <i class="fa-solid fa-chevron-down"></i>
+        <!-- CATEGORY 3: ACCOUNT & REFERRALS -->
+        <div class="faq-category-block open" data-category="account">
+          <div class="faq-category-header" onclick="toggleFaqCategoryBlock(this)">
+            <div class="faq-category-title">
+              <div class="faq-category-icon"><i class="fa-solid fa-users"></i></div>
+              <span>Account & Referral Rewards</span>
+              <span class="faq-category-count-badge">3 Questions</span>
+            </div>
+            <i class="fa-solid fa-chevron-down faq-category-chevron"></i>
           </div>
-          <div class="faq-answer">
-            After clicking "Proceed to Pay", scan the UPI QR code or pay via your UPI application. Submit your 12-digit UTR reference number to unlock your virtual number immediately.
+          <div class="faq-category-body">
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>How does the Refer & Earn 10% lifetime rewards program work?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                When you invite friends using your unique referral link or code, your friend gets an instant ₹50 welcome bonus! Whenever they rent virtual numbers or top up their wallet, you automatically earn 10% cash credits directly in your wallet.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>How do I claim my ₹50 welcome bonus?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                Simply register or sign in to your Virtual Hub account. If you joined using a referral code, the ₹50 welcome bonus is automatically credited to your wallet balance upon registration!
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>Is my personal data and activation history private?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                Yes! We strictly respect user privacy and security. We do not link your real personal identity to temporary phone activations, and all data transmissions are encrypted.
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>What happens if an SMS code is delayed or does not arrive?</span>
-            <i class="fa-solid fa-chevron-down"></i>
+        <!-- CATEGORY 4: TECHNICAL & TOOLS -->
+        <div class="faq-category-block open" data-category="technical">
+          <div class="faq-category-header" onclick="toggleFaqCategoryBlock(this)">
+            <div class="faq-category-title">
+              <div class="faq-category-icon"><i class="fa-solid fa-sliders"></i></div>
+              <span>Technical & Power Tools</span>
+              <span class="faq-category-count-badge">3 Questions</span>
+            </div>
+            <i class="fa-solid fa-chevron-down faq-category-chevron"></i>
           </div>
-          <div class="faq-answer">
-            If the SMS code does not arrive within the timer window, you can cancel the order directly from your Active Purchases dashboard. Your payment or wallet credits will be immediately refunded with zero cancellation fees.
-          </div>
-        </div>
+          <div class="faq-category-body">
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>Can I rent multiple virtual numbers in bulk?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                Yes! Use the multi-select checkboxes in the Marketplace or the "Bulk Operations" toolbar to select multiple numbers across different countries and platforms, then checkout in a single UPI transaction.
+              </div>
+            </div>
 
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>How does the Refer & Earn 10% lifetime rewards program work?</span>
-            <i class="fa-solid fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            When you invite friends using your unique referral link or code, your friend gets an instant ₹50 welcome bonus! Whenever they rent virtual numbers or top up their wallet, you automatically earn 10% cash credits directly in your wallet.
-          </div>
-        </div>
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>How do automated price alerts work?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                Click the bell icon next to any country or service platform to set a maximum price threshold. Our real-time monitor will alert you immediately when a matching line drops below your desired price!
+              </div>
+            </div>
 
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Can I rent multiple virtual numbers in bulk?</span>
-            <i class="fa-solid fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            Yes! Use the multi-select checkboxes in the Marketplace or the "Bulk Operations" toolbar to select multiple numbers across different countries and platforms, then checkout in a single UPI transaction.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Does my wallet balance expire?</span>
-            <i class="fa-solid fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            No, your wallet balance and referral earnings never expire. You can use your credits whenever you need to activate virtual numbers.
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>How does Auto-OTP refresh and Text-to-Speech audio alert work?</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                When enabled in your Active Purchases dashboard, our background engine polls incoming SMS streams every 3 seconds and automatically speaks your 6-digit OTP code using web speech synthesis as soon as it arrives!
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -7329,8 +7625,33 @@
     }
 
     /* ==========================================
-       FAQ SEARCH & ACCORDION FILTER
+       FAQ CATEGORY & ACCORDION FILTER SYSTEM
        ========================================== */
+    let currentFaqCategory = 'all';
+
+    function selectFaqCategory(category) {
+      currentFaqCategory = category;
+
+      // Update button active states
+      const catBtns = document.querySelectorAll('.faq-cat-btn');
+      catBtns.forEach(btn => {
+        if (btn.dataset.category === category) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      filterFaqs();
+    }
+
+    function toggleFaqCategoryBlock(headerEl) {
+      const block = headerEl.parentElement;
+      if (block) {
+        block.classList.toggle('open');
+      }
+    }
+
     function filterFaqs() {
       const input = document.getElementById('faq-search-input');
       const clearBtn = document.getElementById('faq-search-clear-btn');
@@ -7341,50 +7662,95 @@
       const query = input.value.trim().toLowerCase();
 
       if (clearBtn) {
-        clearBtn.style.display = query.length > 0 ? 'inline-block' : 'none';
+        clearBtn.style.display = (query.length > 0 || currentFaqCategory !== 'all') ? 'inline-block' : 'none';
       }
 
-      const items = document.querySelectorAll('.faq-item');
-      let visibleCount = 0;
+      const categoryBlocks = document.querySelectorAll('.faq-category-block');
+      let totalMatchingQuestions = 0;
 
-      items.forEach(item => {
-        const qText = item.querySelector('.faq-question')?.innerText.toLowerCase() || '';
-        const aText = item.querySelector('.faq-answer')?.innerText.toLowerCase() || '';
+      categoryBlocks.forEach(block => {
+        const blockCat = block.dataset.category;
+        const matchesCategory = (currentFaqCategory === 'all' || blockCat === currentFaqCategory);
 
-        if (qText.includes(query) || aText.includes(query)) {
-          item.style.display = 'block';
-          visibleCount++;
-          if (query.length > 0) {
-            item.classList.add('open');
+        if (!matchesCategory) {
+          block.style.display = 'none';
+          return;
+        }
+
+        const items = block.querySelectorAll('.faq-item');
+        let blockMatchingCount = 0;
+
+        items.forEach(item => {
+          const qText = item.querySelector('.faq-question')?.innerText.toLowerCase() || '';
+          const aText = item.querySelector('.faq-answer')?.innerText.toLowerCase() || '';
+
+          if (query.length === 0 || qText.includes(query) || aText.includes(query)) {
+            const wasHidden = item.style.display === 'none';
+            item.style.display = 'block';
+            blockMatchingCount++;
+            if (query.length > 0) {
+              item.classList.add('open');
+            } else {
+              item.classList.remove('open');
+            }
+
+            // Trigger subtle pop-in animation
+            if (wasHidden || query.length > 0) {
+              item.classList.remove('faq-pop-in');
+              void item.offsetWidth;
+              item.classList.add('faq-pop-in');
+            }
           } else {
+            item.style.display = 'none';
             item.classList.remove('open');
+            item.classList.remove('faq-pop-in');
           }
+        });
+
+        if (blockMatchingCount > 0) {
+          const wasBlockHidden = block.style.display === 'none';
+          block.style.display = 'block';
+          block.classList.add('open');
+          if (wasBlockHidden || currentFaqCategory !== 'all') {
+            block.classList.remove('faq-pop-in');
+            void block.offsetWidth;
+            block.classList.add('faq-pop-in');
+          }
+          totalMatchingQuestions += blockMatchingCount;
         } else {
-          item.style.display = 'none';
-          item.classList.remove('open');
+          block.style.display = 'none';
+          block.classList.remove('faq-pop-in');
         }
       });
 
       if (countSpan) {
-        if (query.length === 0) {
-          countSpan.innerText = `Showing all ${items.length} questions`;
+        if (query.length === 0 && currentFaqCategory === 'all') {
+          countSpan.innerText = `Showing all 13 questions across 4 categories`;
+        } else if (query.length === 0) {
+          const activeBtnText = document.querySelector(`.faq-cat-btn[data-category="${currentFaqCategory}"]`)?.innerText.replace(/\d+/g, '').trim() || 'Selected Category';
+          countSpan.innerText = `Showing ${totalMatchingQuestions} question${totalMatchingQuestions === 1 ? '' : 's'} in ${activeBtnText}`;
         } else {
-          countSpan.innerText = `Found ${visibleCount} matching question${visibleCount === 1 ? '' : 's'} for "${query}"`;
+          countSpan.innerText = `Found ${totalMatchingQuestions} matching question${totalMatchingQuestions === 1 ? '' : 's'} for "${query}"`;
         }
       }
 
       if (emptyState) {
-        emptyState.style.display = (visibleCount === 0 && items.length > 0) ? 'block' : 'none';
+        emptyState.style.display = (totalMatchingQuestions === 0) ? 'block' : 'none';
       }
     }
 
     function clearFaqSearch() {
       const input = document.getElementById('faq-search-input');
-      if (input) {
-        input.value = '';
-        filterFaqs();
-        input.focus();
-      }
+      if (input) input.value = '';
+      currentFaqCategory = 'all';
+
+      const catBtns = document.querySelectorAll('.faq-cat-btn');
+      catBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.category === 'all');
+      });
+
+      filterFaqs();
+      if (input) input.focus();
     }
 
     /* ==========================================
