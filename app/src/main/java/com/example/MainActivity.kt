@@ -44,7 +44,12 @@ fun VirtualNumberWebView() {
   AndroidView(
     modifier = Modifier.fillMaxSize(),
     factory = { context ->
-      WebView(context).apply {
+      val webContext = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+        context.createAttributionContext("default")
+      } else {
+        context
+      }
+      WebView(webContext).apply {
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
         settings.databaseEnabled = true
