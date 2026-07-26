@@ -21,10 +21,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.example.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
-  override fun getAttributionTag(): String {
-    return "default"
-  }
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
@@ -48,12 +44,7 @@ fun VirtualNumberWebView() {
   AndroidView(
     modifier = Modifier.fillMaxSize(),
     factory = { context ->
-      val webContext = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-        context.createAttributionContext("default")
-      } else {
-        context
-      }
-      WebView(webContext).apply {
+      WebView(context).apply {
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
         settings.databaseEnabled = true

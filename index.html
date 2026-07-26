@@ -615,16 +615,17 @@
     .mobile-sidebar {
       position: fixed;
       top: 0;
-      right: -320px;
-      width: 300px;
+      right: -330px;
+      width: 310px;
       height: 100vh;
       background: var(--bg-surface);
       z-index: 1000;
       box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
-      padding: 2rem 1.5rem;
+      padding: 1.5rem 1.25rem;
       transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       flex-direction: column;
+      overflow-y: auto;
     }
     .mobile-sidebar.open {
       right: 0;
@@ -642,6 +643,73 @@
     .mobile-sidebar-backdrop.open {
       opacity: 1;
       pointer-events: auto;
+    }
+
+    .mobile-sidebar-nav-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-evenly;
+      gap: 0.6rem;
+      margin-top: 0.75rem;
+      padding: 0;
+      list-style: none;
+    }
+
+    .mobile-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.8rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--text-main);
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid var(--border-color);
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 100%;
+    }
+
+    [data-theme="light"] .mobile-nav-item {
+      background: #FFFFFF;
+    }
+
+    .mobile-nav-item:hover, .mobile-nav-item:focus {
+      transform: translateX(4px);
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(168, 85, 247, 0.18));
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.15);
+    }
+
+    .mobile-nav-icon-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .mobile-nav-arrow {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      opacity: 0.6;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .mobile-nav-item:hover .mobile-nav-arrow {
+      transform: translateX(3px);
+      opacity: 1;
+      color: var(--accent);
     }
 
     /* ==========================================
@@ -2156,18 +2224,9 @@
           <i class="fa-solid fa-moon"></i>
         </button>
 
-        <button class="btn btn-secondary btn-icon" id="price-alert-bell-btn" title="Price Alert Notifications" style="position: relative;">
-          <i class="fa-solid fa-bell-concierge"></i>
-          <span class="badge badge-primary" id="alerts-count-badge" style="position: absolute; top: -4px; right: -4px; padding: 0.15rem 0.4rem; font-size: 0.65rem;">0</span>
-        </button>
-
         <button class="btn btn-secondary btn-icon" id="notification-bell-btn" style="position: relative;">
           <i class="fa-solid fa-bell"></i>
           <span class="badge badge-warning" id="notif-badge" style="position: absolute; top: -4px; right: -4px; padding: 0.15rem 0.4rem; font-size: 0.65rem;">3</span>
-        </button>
-
-        <button class="btn btn-primary btn-sm" id="admin-panel-btn">
-          <i class="fa-solid fa-user-shield"></i> Admin
         </button>
 
         <button class="hamburger-btn" id="hamburger-btn">
@@ -2180,7 +2239,7 @@
   <!-- Mobile Sidebar Overlay -->
   <div class="mobile-sidebar-backdrop" id="sidebar-backdrop"></div>
   <div class="mobile-sidebar" id="mobile-sidebar">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
       <div class="logo">
         <div class="logo-icon"><i class="fa-solid fa-sim-card"></i></div>
         <span>Virtual Hub</span>
@@ -2189,16 +2248,16 @@
     </div>
 
     <!-- Mobile User Profile & Wallet Quick Card -->
-    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 1rem;">
+    <div id="mobile-sidebar-user-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.75rem;">
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-        <div style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;" onclick="openModal('user-modal'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');">
+        <div style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer;" onclick="openModal('user-modal'); closeMobileSidebar();">
           <i class="fa-solid fa-circle-user" style="color: var(--accent); font-size: 1.2rem;"></i>
           <div>
-            <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">Alex (User)</div>
+            <div style="font-weight: 800; font-size: 0.9rem; color: var(--text-main);">Alex (User)</div>
             <div style="font-size: 0.72rem; color: var(--text-muted);">Standard Plan</div>
           </div>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="openModal('topup-modal'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">
+        <button class="btn btn-primary btn-sm" onclick="openModal('topup-modal'); closeMobileSidebar();" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">
           <i class="fa-solid fa-plus"></i> Top Up
         </button>
       </div>
@@ -2208,31 +2267,64 @@
       </div>
     </div>
 
-    <!-- Quick Action Grid in Sidebar -->
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 1.25rem;">
-      <button class="btn btn-secondary btn-sm" onclick="openModal('admin-modal'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');" style="justify-content: center; font-size: 0.78rem; padding: 0.4rem;">
-        <i class="fa-solid fa-user-shield" style="color: var(--accent);"></i> Admin
-      </button>
-      <button class="btn btn-secondary btn-sm" onclick="openModal('server-time-modal'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');" style="justify-content: center; font-size: 0.78rem; padding: 0.4rem;">
-        <i class="fa-solid fa-clock" style="color: var(--accent);"></i> UTC Clock
-      </button>
-      <button class="btn btn-secondary btn-sm" onclick="openModal('price-alerts-modal'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');" style="justify-content: center; font-size: 0.78rem; padding: 0.4rem;">
-        <i class="fa-solid fa-bell-concierge" style="color: var(--accent);"></i> Alerts
-      </button>
-      <button class="btn btn-secondary btn-sm" onclick="openModal('user-modal'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');" style="justify-content: center; font-size: 0.78rem; padding: 0.4rem;">
-        <i class="fa-solid fa-sliders" style="color: var(--accent);"></i> Settings
-      </button>
-    </div>
-
-    <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem;">
-      <li><a href="#hero" class="nav-link mobile-nav-item"><i class="fa-solid fa-house"></i> Home</a></li>
-      <li><a href="#numbers" class="nav-link mobile-nav-item"><i class="fa-solid fa-phone"></i> Numbers</a></li>
-      <li><a href="#countries" class="nav-link mobile-nav-item"><i class="fa-solid fa-globe"></i> Countries</a></li>
-      <li><a href="#platforms" class="nav-link mobile-nav-item"><i class="fa-solid fa-layer-group"></i> Platforms</a></li>
-      <li><a href="#pricing" class="nav-link mobile-nav-item"><i class="fa-solid fa-tags"></i> Pricing</a></li>
-      <li><a href="#dashboard" class="nav-link mobile-nav-item"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
-      <li><a href="#dashboard" onclick="switchDashboardTab('referrals'); document.getElementById('mobile-sidebar')?.classList.remove('open'); document.getElementById('sidebar-backdrop')?.classList.remove('open');" class="nav-link mobile-nav-item"><i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn</a></li>
-      <li><a href="#faq" class="nav-link mobile-nav-item"><i class="fa-solid fa-circle-question"></i> FAQ</a></li>
+    <!-- Full Height Spacious Navigation Menu -->
+    <ul class="mobile-sidebar-nav-container">
+      <li>
+        <a href="#hero" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+          <div class="mobile-nav-icon-badge"><i class="fa-solid fa-house"></i></div>
+          <span>Home</span>
+          <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#numbers" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+          <div class="mobile-nav-icon-badge"><i class="fa-solid fa-phone"></i></div>
+          <span>Numbers</span>
+          <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#countries" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+          <div class="mobile-nav-icon-badge"><i class="fa-solid fa-globe"></i></div>
+          <span>Countries</span>
+          <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#platforms" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+          <div class="mobile-nav-icon-badge"><i class="fa-solid fa-layer-group"></i></div>
+          <span>Platforms</span>
+          <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#pricing" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+          <div class="mobile-nav-icon-badge"><i class="fa-solid fa-tags"></i></div>
+          <span>Pricing</span>
+          <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#dashboard" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+          <div class="mobile-nav-icon-badge"><i class="fa-solid fa-chart-line"></i></div>
+          <span>Dashboard</span>
+          <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#dashboard" onclick="switchDashboardTab('referrals'); closeMobileSidebar();" class="nav-link mobile-nav-item">
+          <div class="mobile-nav-icon-badge" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.3); color: #f59e0b;"><i class="fa-solid fa-gift"></i></div>
+          <span>Refer & Earn</span>
+          <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#faq" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+          <div class="mobile-nav-icon-badge"><i class="fa-solid fa-circle-question"></i></div>
+          <span>FAQ</span>
+          <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
+        </a>
+      </li>
     </ul>
   </div>
 
@@ -3321,59 +3413,205 @@
 
   <!-- User Account & Auth Modal -->
   <div class="modal-backdrop" id="user-modal">
-    <div class="modal-box" style="max-width: 480px;">
+    <div class="modal-box" style="max-width: 500px; padding: 1.5rem;">
       <button class="modal-close" onclick="closeModal('user-modal')"><i class="fa-solid fa-xmark"></i></button>
-      
-      <div id="user-modal-logged-in-content">
+
+      <!-- LOGGED OUT CONTENT (SIGN IN / SIGN UP) -->
+      <div id="user-modal-logged-out-content" style="display: none;">
         <div style="text-align: center; margin-bottom: 1.25rem;">
-          <div style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #1d4ed8); display: inline-flex; align-items: center; justify-content: center; font-size: 1.75rem; color: #fff; margin-bottom: 0.75rem; box-shadow: 0 0 15px var(--accent-glow);">
-            <i class="fa-solid fa-user"></i>
+          <div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(59, 130, 246, 0.3); display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--accent); margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);">
+            <i class="fa-solid fa-user-lock"></i>
           </div>
-          <h3 style="font-size: 1.35rem; font-weight: 800;" id="user-profile-name">Alex Rivers</h3>
-          <p style="color: var(--text-muted); font-size: 0.85rem;" id="user-profile-email">alex@virtualhub.io</p>
-          <span class="badge badge-success" style="margin-top: 0.35rem; font-size: 0.7rem;"><i class="fa-solid fa-crown"></i> PRO VIP ACCOUNT</span>
+          <h3 style="font-size: 1.35rem; font-weight: 800; margin: 0;">Account Access</h3>
+          <p style="color: var(--text-muted); font-size: 0.82rem; margin-top: 0.25rem;">Sign in or create an account to manage virtual numbers</p>
         </div>
 
-        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-            <span style="font-size: 0.85rem; color: var(--text-muted);">Quick Buy Status:</span>
-            <span class="badge badge-success" style="font-size: 0.7rem;"><i class="fa-solid fa-bolt"></i> READY (DIRECT UPI)</span>
-          </div>
-          <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0;">
-            When clicking <strong>Quick Buy</strong> on any marketplace number, you skip the details screen and jump straight to UPI verification.
-          </p>
+        <!-- Mode Tabs: Sign In vs Sign Up -->
+        <div style="display: flex; background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.25rem; margin-bottom: 1rem;">
+          <button type="button" class="btn btn-sm btn-primary auth-tab-btn active" id="auth-tab-signin-btn" onclick="switchAuthTab('signin')" style="flex: 1; font-weight: 700; border-radius: var(--radius-sm);">
+            <i class="fa-solid fa-right-to-bracket"></i> Sign In
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary auth-tab-btn" id="auth-tab-signup-btn" onclick="switchAuthTab('signup')" style="flex: 1; font-weight: 700; border-radius: var(--radius-sm);">
+            <i class="fa-solid fa-user-plus"></i> Sign Up
+          </button>
         </div>
 
-        <div style="display: flex; gap: 0.75rem;">
-          <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal('user-modal')">Close</button>
-          <button class="btn btn-danger" style="flex: 1; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;" onclick="logoutUser()">
-            <i class="fa-solid fa-right-from-bracket"></i> Log Out
+        <!-- Login Type Switcher: Email vs Phone -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+          <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Method:</span>
+          <button type="button" class="btn btn-primary btn-sm auth-method-btn active" id="auth-method-email-btn" onclick="switchAuthMethod('email')" style="font-size: 0.75rem; padding: 0.25rem 0.65rem;">
+            <i class="fa-solid fa-envelope"></i> Email
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm auth-method-btn" id="auth-method-phone-btn" onclick="switchAuthMethod('phone')" style="font-size: 0.75rem; padding: 0.25rem 0.65rem;">
+            <i class="fa-solid fa-phone"></i> Phone Number
+          </button>
+        </div>
+
+        <!-- SIGN IN FORM -->
+        <div id="auth-signin-form">
+          <!-- Email Login Inputs -->
+          <div id="auth-signin-email-fields">
+            <div style="margin-bottom: 0.85rem;">
+              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Email Address</label>
+              <input type="email" id="login-email-input" class="search-input" value="alex@virtualhub.io" placeholder="e.g. user@domain.com">
+            </div>
+          </div>
+
+          <!-- Phone Login Inputs -->
+          <div id="auth-signin-phone-fields" style="display: none;">
+            <div style="margin-bottom: 0.85rem;">
+              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Phone Number</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <select class="select-input" id="login-phone-code" style="width: 100px; padding: 0.6rem;">
+                  <option value="+91">🇮🇳 +91</option>
+                  <option value="+1">🇺🇸 +1</option>
+                  <option value="+44">🇬🇧 +44</option>
+                  <option value="+92">🇵🇰 +92</option>
+                  <option value="+880">🇧🇩 +880</option>
+                </select>
+                <input type="tel" id="login-phone-input" class="search-input" value="9876543210" placeholder="Enter phone number" style="flex: 1;">
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Password</label>
+            <input type="password" id="login-pass-input" class="search-input" value="password123" placeholder="Enter password">
+          </div>
+
+          <button type="button" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-weight: 800; font-size: 0.95rem;" onclick="handleLoginSubmit()">
+            <i class="fa-solid fa-right-to-bracket"></i> Sign In to Account
+          </button>
+        </div>
+
+        <!-- SIGN UP FORM -->
+        <div id="auth-signup-form" style="display: none;">
+          <div style="margin-bottom: 0.85rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Full Name</label>
+            <input type="text" id="signup-name-input" class="search-input" placeholder="e.g. Rahul Sharma">
+          </div>
+
+          <!-- Email Sign Up Inputs -->
+          <div id="auth-signup-email-fields">
+            <div style="margin-bottom: 0.85rem;">
+              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Email Address</label>
+              <input type="email" id="signup-email-input" class="search-input" placeholder="e.g. name@example.com">
+            </div>
+            <div style="margin-bottom: 0.85rem;">
+              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Mobile Phone (Optional)</label>
+              <input type="tel" id="signup-phone-optional" class="search-input" placeholder="e.g. +91 9876543210">
+            </div>
+          </div>
+
+          <!-- Phone Sign Up Inputs -->
+          <div id="auth-signup-phone-fields" style="display: none;">
+            <div style="margin-bottom: 0.85rem;">
+              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Phone Number</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <select class="select-input" id="signup-phone-code" style="width: 100px; padding: 0.6rem;">
+                  <option value="+91">🇮🇳 +91</option>
+                  <option value="+1">🇺🇸 +1</option>
+                  <option value="+44">🇬🇧 +44</option>
+                  <option value="+92">🇵🇰 +92</option>
+                  <option value="+880">🇧🇩 +880</option>
+                </select>
+                <input type="tel" id="signup-phone-input" class="search-input" placeholder="Enter phone number" style="flex: 1;">
+              </div>
+            </div>
+            <div style="margin-bottom: 0.85rem;">
+              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Email Address (Optional)</label>
+              <input type="email" id="signup-email-optional" class="search-input" placeholder="e.g. name@example.com">
+            </div>
+          </div>
+
+          <div style="margin-bottom: 0.85rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Create Password</label>
+            <input type="password" id="signup-pass-input" class="search-input" placeholder="Min 4 characters">
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Confirm Password</label>
+            <input type="password" id="signup-pass-confirm-input" class="search-input" placeholder="Re-enter password">
+          </div>
+
+          <button type="button" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-weight: 800; font-size: 0.95rem;" onclick="handleSignupSubmit()">
+            <i class="fa-solid fa-user-plus"></i> Create Account & Register
           </button>
         </div>
       </div>
 
-      <div id="user-modal-logged-out-content" style="display: none;">
-        <div style="text-align: center; margin-bottom: 1.25rem;">
-          <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(59, 130, 246, 0.15); display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--accent); margin-bottom: 0.5rem;">
-            <i class="fa-solid fa-lock"></i>
+      <!-- LOGGED IN CONTENT (PROFILE & EDITING) -->
+      <div id="user-modal-logged-in-content">
+        <div style="text-align: center; margin-bottom: 1.25rem; position: relative;">
+          <!-- Profile Photo Display -->
+          <div style="position: relative; display: inline-block; margin-bottom: 0.75rem;">
+            <div id="user-profile-avatar-box" style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #1d4ed8); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; color: #fff; border: 3px solid var(--accent); box-shadow: 0 0 20px var(--accent-glow); overflow: hidden; margin: 0 auto;">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <label for="profile-avatar-file-input" title="Upload New Photo" style="position: absolute; bottom: 0; right: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; cursor: pointer; border: 2px solid var(--bg-card); box-shadow: 0 2px 6px rgba(0,0,0,0.4);">
+              <i class="fa-solid fa-camera"></i>
+            </label>
+            <input type="file" id="profile-avatar-file-input" accept="image/*" style="display: none;" onchange="handleProfilePhotoUpload(event)">
           </div>
-          <h3 style="font-size: 1.35rem; font-weight: 800;">Log In to Virtual Hub</h3>
-          <p style="color: var(--text-muted); font-size: 0.85rem;">Access 1-Click Quick Buy & Direct UPI Activation</p>
+
+          <h3 style="font-size: 1.35rem; font-weight: 800; margin: 0;" id="user-profile-name">Alex Rivers</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.25rem 0 0.5rem 0;" id="user-profile-email">alex@virtualhub.io</p>
+          <span class="badge badge-success" style="font-size: 0.7rem;"><i class="fa-solid fa-crown"></i> PRO VIP ACCOUNT</span>
         </div>
 
-        <div style="margin-bottom: 1rem;">
-          <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.35rem;">Email Address</label>
-          <input type="email" id="login-email-input" class="search-input" value="alex@virtualhub.io" placeholder="name@example.com">
+        <!-- Profile Sub-tabs -->
+        <div style="display: flex; gap: 0.5rem; background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.25rem; margin-bottom: 1.25rem;">
+          <button type="button" class="btn btn-sm btn-primary profile-tab-btn active" id="profile-tab-photo-btn" onclick="switchProfileTab('photo')" style="flex: 1; font-size: 0.78rem; font-weight: 700;">
+            <i class="fa-solid fa-image"></i> Photo & Avatars
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary profile-tab-btn" id="profile-tab-edit-btn" onclick="switchProfileTab('edit')" style="flex: 1; font-size: 0.78rem; font-weight: 700;">
+            <i class="fa-solid fa-user-pen"></i> Edit Profile
+          </button>
         </div>
 
-        <div style="margin-bottom: 1.25rem;">
-          <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.35rem;">Password</label>
-          <input type="password" id="login-pass-input" class="search-input" value="••••••••" placeholder="Enter password">
+        <!-- Sub-tab 1: Preset Avatars & Photo Upload -->
+        <div id="profile-tab-photo-section">
+          <div style="margin-bottom: 1.25rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Select Preset Avatar:</label>
+            <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;" id="preset-avatars-grid">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Or Image URL:</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="url" id="profile-image-url-input" class="search-input" placeholder="https://example.com/photo.jpg" style="flex: 1;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="savePhotoFromUrl()">Apply URL</button>
+            </div>
+          </div>
         </div>
 
-        <button class="btn btn-primary" style="width: 100%; padding: 0.75rem;" onclick="handleLoginSubmit()">
-          <i class="fa-solid fa-right-to-bracket"></i> Log In & Enable Quick Buy
-        </button>
+        <!-- Sub-tab 2: Edit Details Form -->
+        <div id="profile-tab-edit-section" style="display: none;">
+          <div style="margin-bottom: 0.85rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Full Name</label>
+            <input type="text" id="profile-edit-name-input" class="search-input">
+          </div>
+          <div style="margin-bottom: 0.85rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Email Address</label>
+            <input type="email" id="profile-edit-email-input" class="search-input">
+          </div>
+          <div style="margin-bottom: 1.25rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Phone Number</label>
+            <input type="tel" id="profile-edit-phone-input" class="search-input">
+          </div>
+          <button type="button" class="btn btn-primary" style="width: 100%; padding: 0.65rem; font-weight: 800; font-size: 0.9rem; margin-bottom: 1rem;" onclick="saveProfileDetails()">
+            <i class="fa-solid fa-floppy-disk"></i> Save Profile Details
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+          <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeModal('user-modal')">Close</button>
+          <button type="button" class="btn btn-danger" style="flex: 1; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;" onclick="logoutUser()">
+            <i class="fa-solid fa-right-from-bracket"></i> Log Out
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -5271,24 +5509,177 @@
       openModal('payment-modal');
     }
 
-    function handleLoginSubmit() {
-      const emailInput = document.getElementById('login-email-input');
-      const email = emailInput ? emailInput.value.trim() : 'alex@virtualhub.io';
-      const name = email.split('@')[0] ? email.split('@')[0].replace('.', ' ') : 'Alex Rivers';
-      loginUser(email, name);
+    /* ==========================================
+       AUTHENTICATION & USER PROFILE ENGINE
+       ========================================== */
+    let currentAuthTab = 'signin';
+    let currentAuthMethod = 'email';
+
+    function closeMobileSidebar() {
+      document.getElementById('mobile-sidebar')?.classList.remove('open');
+      document.getElementById('sidebar-backdrop')?.classList.remove('open');
     }
 
-    function loginUser(email, name) {
+    function switchAuthTab(tab) {
+      currentAuthTab = tab;
+      const signinBtn = document.getElementById('auth-tab-signin-btn');
+      const signupBtn = document.getElementById('auth-tab-signup-btn');
+      const signinForm = document.getElementById('auth-signin-form');
+      const signupForm = document.getElementById('auth-signup-form');
+
+      if (tab === 'signin') {
+        signinBtn?.classList.add('active', 'btn-primary');
+        signinBtn?.classList.remove('btn-secondary');
+        signupBtn?.classList.remove('active', 'btn-primary');
+        signupBtn?.classList.add('btn-secondary');
+        if (signinForm) signinForm.style.display = 'block';
+        if (signupForm) signupForm.style.display = 'none';
+      } else {
+        signupBtn?.classList.add('active', 'btn-primary');
+        signupBtn?.classList.remove('btn-secondary');
+        signinBtn?.classList.remove('active', 'btn-primary');
+        signinBtn?.classList.add('btn-secondary');
+        if (signinForm) signinForm.style.display = 'none';
+        if (signupForm) signupForm.style.display = 'block';
+      }
+    }
+
+    function switchAuthMethod(method) {
+      currentAuthMethod = method;
+      const emailBtn = document.getElementById('auth-method-email-btn');
+      const phoneBtn = document.getElementById('auth-method-phone-btn');
+
+      const signinEmailFields = document.getElementById('auth-signin-email-fields');
+      const signinPhoneFields = document.getElementById('auth-signin-phone-fields');
+      const signupEmailFields = document.getElementById('auth-signup-email-fields');
+      const signupPhoneFields = document.getElementById('auth-signup-phone-fields');
+
+      if (method === 'email') {
+        emailBtn?.classList.add('active', 'btn-primary');
+        emailBtn?.classList.remove('btn-secondary');
+        phoneBtn?.classList.remove('active', 'btn-primary');
+        phoneBtn?.classList.add('btn-secondary');
+
+        if (signinEmailFields) signinEmailFields.style.display = 'block';
+        if (signinPhoneFields) signinPhoneFields.style.display = 'none';
+        if (signupEmailFields) signupEmailFields.style.display = 'block';
+        if (signupPhoneFields) signupPhoneFields.style.display = 'none';
+      } else {
+        phoneBtn?.classList.add('active', 'btn-primary');
+        phoneBtn?.classList.remove('btn-secondary');
+        emailBtn?.classList.remove('active', 'btn-primary');
+        emailBtn?.classList.add('btn-secondary');
+
+        if (signinEmailFields) signinEmailFields.style.display = 'none';
+        if (signinPhoneFields) signinPhoneFields.style.display = 'block';
+        if (signupEmailFields) signupEmailFields.style.display = 'none';
+        if (signupPhoneFields) signupPhoneFields.style.display = 'block';
+      }
+    }
+
+    function handleLoginSubmit() {
+      let identifier = '';
+      let password = '';
+
+      if (currentAuthMethod === 'email') {
+        const emailInput = document.getElementById('login-email-input');
+        identifier = emailInput ? emailInput.value.trim() : '';
+        const passInput = document.getElementById('login-pass-input');
+        password = passInput ? passInput.value.trim() : '';
+        if (!identifier || !identifier.includes('@')) {
+          showToast('Please enter a valid email address', 'error');
+          return;
+        }
+      } else {
+        const codeSelect = document.getElementById('login-phone-code');
+        const phoneInput = document.getElementById('login-phone-input');
+        const phoneNum = phoneInput ? phoneInput.value.trim() : '';
+        const code = codeSelect ? codeSelect.value : '+91';
+        identifier = `${code} ${phoneNum}`;
+        const passInput = document.getElementById('login-pass-input');
+        password = passInput ? passInput.value.trim() : '';
+        if (!phoneNum || phoneNum.length < 6) {
+          showToast('Please enter a valid phone number', 'error');
+          return;
+        }
+      }
+
+      if (!password) {
+        showToast('Please enter your password', 'error');
+        return;
+      }
+
+      const name = currentAuthMethod === 'email' 
+        ? (identifier.split('@')[0] ? identifier.split('@')[0].replace(/[\._-]/g, ' ') : 'User')
+        : `User (${identifier})`;
+
+      loginUser(currentAuthMethod === 'email' ? identifier : 'user@virtualhub.io', name, currentAuthMethod === 'phone' ? identifier : '');
+    }
+
+    function handleSignupSubmit() {
+      const nameInput = document.getElementById('signup-name-input');
+      const name = nameInput ? nameInput.value.trim() : '';
+      if (!name) {
+        showToast('Please enter your full name', 'error');
+        return;
+      }
+
+      let email = '';
+      let phone = '';
+
+      if (currentAuthMethod === 'email') {
+        const emailInput = document.getElementById('signup-email-input');
+        email = emailInput ? emailInput.value.trim() : '';
+        const phoneOpt = document.getElementById('signup-phone-optional');
+        phone = phoneOpt ? phoneOpt.value.trim() : '';
+        if (!email || !email.includes('@')) {
+          showToast('Please enter a valid email address', 'error');
+          return;
+        }
+      } else {
+        const codeSelect = document.getElementById('signup-phone-code');
+        const phoneInput = document.getElementById('signup-phone-input');
+        const phoneNum = phoneInput ? phoneInput.value.trim() : '';
+        const code = codeSelect ? codeSelect.value : '+91';
+        phone = `${code} ${phoneNum}`;
+        const emailOpt = document.getElementById('signup-email-optional');
+        email = emailOpt ? emailOpt.value.trim() : '';
+        if (!phoneNum || phoneNum.length < 6) {
+          showToast('Please enter a valid phone number', 'error');
+          return;
+        }
+      }
+
+      const passInput = document.getElementById('signup-pass-input');
+      const passConfirmInput = document.getElementById('signup-pass-confirm-input');
+      const pass = passInput ? passInput.value.trim() : '';
+      const passConfirm = passConfirmInput ? passConfirmInput.value.trim() : '';
+
+      if (!pass || pass.length < 4) {
+        showToast('Password must be at least 4 characters long', 'error');
+        return;
+      }
+      if (pass !== passConfirm) {
+        showToast('Passwords do not match', 'error');
+        return;
+      }
+
+      loginUser(email || 'user@virtualhub.io', name, phone);
+      showToast('🎉 Account created successfully! Welcome to Virtual Hub.', 'success');
+    }
+
+    function loginUser(email, name, phone = '') {
       AppState.isLoggedIn = true;
-      AppState.currentUser = {
-        name: name || 'Alex Rivers',
-        email: email || 'alex@virtualhub.io',
-        tier: 'Pro VIP'
-      };
+      if (!AppState.currentUser) AppState.currentUser = {};
+      AppState.currentUser.name = name || AppState.currentUser.name || 'Alex Rivers';
+      AppState.currentUser.email = email || AppState.currentUser.email || 'alex@virtualhub.io';
+      if (phone) AppState.currentUser.phone = phone;
+      if (!AppState.currentUser.tier) AppState.currentUser.tier = 'Pro VIP';
+
       SafeStorage.setItem('vnh_is_logged_in', JSON.stringify(true));
       SafeStorage.setItem('vnh_user', JSON.stringify(AppState.currentUser));
       updateUserAuthUI();
-      showToast('🎉 Logged in as ' + AppState.currentUser.name + '! Quick Buy enabled.', 'success');
+      showToast('🎉 Signed in as ' + AppState.currentUser.name + '!', 'success');
       closeModal('user-modal');
     }
 
@@ -5296,8 +5687,141 @@
       AppState.isLoggedIn = false;
       SafeStorage.setItem('vnh_is_logged_in', JSON.stringify(false));
       updateUserAuthUI();
-      showToast('Logged out. Log in anytime to use Quick Buy.', 'info');
+      showToast('Logged out successfully.', 'info');
       closeModal('user-modal');
+    }
+
+    // Profile Sub-tab Switching
+    function switchProfileTab(tab) {
+      const photoBtn = document.getElementById('profile-tab-photo-btn');
+      const editBtn = document.getElementById('profile-tab-edit-btn');
+      const photoSection = document.getElementById('profile-tab-photo-section');
+      const editSection = document.getElementById('profile-tab-edit-section');
+
+      if (tab === 'photo') {
+        photoBtn?.classList.add('active', 'btn-primary');
+        photoBtn?.classList.remove('btn-secondary');
+        editBtn?.classList.remove('active', 'btn-primary');
+        editBtn?.classList.add('btn-secondary');
+        if (photoSection) photoSection.style.display = 'block';
+        if (editSection) editSection.style.display = 'none';
+      } else {
+        editBtn?.classList.add('active', 'btn-primary');
+        editBtn?.classList.remove('btn-secondary');
+        photoBtn?.classList.remove('active', 'btn-primary');
+        photoBtn?.classList.add('btn-secondary');
+        if (photoSection) photoSection.style.display = 'none';
+        if (editSection) editSection.style.display = 'block';
+
+        // Pre-fill edit fields
+        const nameIn = document.getElementById('profile-edit-name-input');
+        const emailIn = document.getElementById('profile-edit-email-input');
+        const phoneIn = document.getElementById('profile-edit-phone-input');
+        if (nameIn) nameIn.value = AppState.currentUser?.name || '';
+        if (emailIn) emailIn.value = AppState.currentUser?.email || '';
+        if (phoneIn) phoneIn.value = AppState.currentUser?.phone || '+91 9876543210';
+      }
+    }
+
+    // Handle Profile Photo Upload via File Input
+    function handleProfilePhotoUpload(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        showToast('Please select a valid image file', 'error');
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        showToast('Image size should be less than 5MB', 'error');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        if (!AppState.currentUser) AppState.currentUser = {};
+        AppState.currentUser.photo = dataUrl;
+        SafeStorage.setItem('vnh_user', JSON.stringify(AppState.currentUser));
+        updateUserAuthUI();
+        showToast('📸 Profile photo updated successfully!', 'success');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Save Photo from Preset Avatar Selection
+    function selectPresetAvatar(iconClass) {
+      if (!AppState.currentUser) AppState.currentUser = {};
+      AppState.currentUser.photo = ''; // clear image data url
+      AppState.currentUser.avatarIcon = iconClass;
+      SafeStorage.setItem('vnh_user', JSON.stringify(AppState.currentUser));
+      updateUserAuthUI();
+      showToast('✨ Avatar icon selected!', 'success');
+    }
+
+    // Save Photo from Image URL
+    function savePhotoFromUrl() {
+      const urlInput = document.getElementById('profile-image-url-input');
+      const url = urlInput ? urlInput.value.trim() : '';
+      if (!url) {
+        showToast('Please enter an image URL', 'error');
+        return;
+      }
+
+      if (!AppState.currentUser) AppState.currentUser = {};
+      AppState.currentUser.photo = url;
+      SafeStorage.setItem('vnh_user', JSON.stringify(AppState.currentUser));
+      updateUserAuthUI();
+      showToast('📸 Profile photo updated from URL!', 'success');
+      if (urlInput) urlInput.value = '';
+    }
+
+    // Save Edit Profile Details
+    function saveProfileDetails() {
+      const name = document.getElementById('profile-edit-name-input')?.value.trim();
+      const email = document.getElementById('profile-edit-email-input')?.value.trim();
+      const phone = document.getElementById('profile-edit-phone-input')?.value.trim();
+
+      if (!name) {
+        showToast('Name cannot be empty', 'error');
+        return;
+      }
+
+      if (!AppState.currentUser) AppState.currentUser = {};
+      AppState.currentUser.name = name;
+      if (email) AppState.currentUser.email = email;
+      if (phone) AppState.currentUser.phone = phone;
+
+      SafeStorage.setItem('vnh_user', JSON.stringify(AppState.currentUser));
+      updateUserAuthUI();
+      showToast('✅ Profile details updated successfully!', 'success');
+    }
+
+    const presetAvatarsList = [
+      { id: 'user-ast', icon: 'fa-solid fa-user-astronaut', title: 'Astronaut' },
+      { id: 'robot', icon: 'fa-solid fa-robot', title: 'Cyber Bot' },
+      { id: 'crown', icon: 'fa-solid fa-crown', title: 'VIP Crown' },
+      { id: 'ninja', icon: 'fa-solid fa-user-ninja', title: 'Ninja' },
+      { id: 'tie', icon: 'fa-solid fa-user-tie', title: 'Executive' },
+      { id: 'shield', icon: 'fa-solid fa-shield-cat', title: 'Cyber Cat' }
+    ];
+
+    function renderPresetAvatars() {
+      const container = document.getElementById('preset-avatars-grid');
+      if (!container) return;
+
+      const activeIcon = AppState.currentUser?.avatarIcon || 'fa-solid fa-user';
+      const hasPhoto = !!AppState.currentUser?.photo;
+
+      container.innerHTML = presetAvatarsList.map(a => {
+        const isSelected = !hasPhoto && activeIcon === a.icon;
+        return `
+          <div onclick="selectPresetAvatar('${a.icon}')" title="${a.title}" style="width: 48px; height: 48px; border-radius: 50%; background: ${isSelected ? 'var(--accent)' : 'var(--bg-card)'}; border: 2px solid ${isSelected ? 'var(--accent)' : 'var(--border-color)'}; color: ${isSelected ? '#fff' : 'var(--text-main)'}; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; transition: all 0.2s ease; box-shadow: ${isSelected ? '0 0 12px var(--accent-glow)' : 'none'};">
+            <i class="${a.icon}"></i>
+          </div>
+        `;
+      }).join('');
     }
 
     function updateUserAuthUI() {
@@ -5306,27 +5830,78 @@
       const loggedOutBox = document.getElementById('user-modal-logged-out-content');
       const profileNameEl = document.getElementById('user-profile-name');
       const profileEmailEl = document.getElementById('user-profile-email');
+      const sidebarUserProfile = document.getElementById('mobile-sidebar-user-card');
 
-      if (AppState.isLoggedIn) {
-        if (userHeaderBtn) {
+      const user = AppState.currentUser || { name: 'Alex Rivers', email: 'alex@virtualhub.io' };
+      const firstName = user.name ? user.name.split(' ')[0] : 'User';
+
+      // Build Avatar HTML snippet
+      let avatarHtml = '';
+      if (user.photo) {
+        avatarHtml = `<img src="${user.photo}" alt="${user.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`;
+      } else {
+        const icon = user.avatarIcon || 'fa-solid fa-user';
+        avatarHtml = `<i class="${icon}" style="color: #fff;"></i>`;
+      }
+
+      // Update Header Button
+      if (userHeaderBtn) {
+        if (AppState.isLoggedIn) {
           userHeaderBtn.className = 'user-chip';
-          userHeaderBtn.title = `Logged in as ${AppState.currentUser.name}`;
-          userHeaderBtn.innerHTML = `<i class="fa-solid fa-circle-user" style="color: var(--accent); font-size: 0.9rem;"></i> <span>${AppState.currentUser.name.split(' ')[0]}</span>`;
+          userHeaderBtn.title = `Logged in as ${user.name}`;
+          userHeaderBtn.innerHTML = `
+            <div style="width: 22px; height: 22px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--accent);">
+              ${user.photo ? `<img src="${user.photo}" style="width:100%; height:100%; object-fit:cover;" />` : `<i class="${user.avatarIcon || 'fa-solid fa-circle-user'}" style="color: #fff; font-size: 0.8rem;"></i>`}
+            </div>
+            <span>${firstName}</span>
+          `;
+          userHeaderBtn.onclick = () => openModal('user-modal');
+        } else {
+          userHeaderBtn.className = 'btn btn-primary btn-sm';
+          userHeaderBtn.title = 'Sign In / Register';
+          userHeaderBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Sign In`;
           userHeaderBtn.onclick = () => openModal('user-modal');
         }
+      }
+
+      // Update Modal Display
+      if (AppState.isLoggedIn) {
         if (loggedInBox) loggedInBox.style.display = 'block';
         if (loggedOutBox) loggedOutBox.style.display = 'none';
-        if (profileNameEl) profileNameEl.innerText = AppState.currentUser.name;
-        if (profileEmailEl) profileEmailEl.innerText = AppState.currentUser.email;
+        if (profileNameEl) profileNameEl.innerText = user.name;
+        if (profileEmailEl) profileEmailEl.innerText = user.email || user.phone || 'User Account';
+
+        const modalAvatarBox = document.getElementById('user-profile-avatar-box');
+        if (modalAvatarBox) modalAvatarBox.innerHTML = avatarHtml;
+
+        renderPresetAvatars();
       } else {
-        if (userHeaderBtn) {
-          userHeaderBtn.className = 'btn btn-primary btn-sm';
-          userHeaderBtn.title = 'Log in to enable Quick Buy';
-          userHeaderBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Log In`;
-          userHeaderBtn.onclick = () => openModal('user-modal');
-        }
         if (loggedInBox) loggedInBox.style.display = 'none';
         if (loggedOutBox) loggedOutBox.style.display = 'block';
+      }
+
+      // Update Mobile Sidebar User Display
+      if (sidebarUserProfile) {
+        sidebarUserProfile.innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer;" onclick="openModal('user-modal'); closeMobileSidebar();">
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid var(--accent); box-shadow: 0 0 8px var(--accent-glow);">
+                ${user.photo ? `<img src="${user.photo}" style="width:100%; height:100%; object-fit:cover;" />` : `<i class="${user.avatarIcon || 'fa-solid fa-circle-user'}" style="color: #fff; font-size: 1.1rem;"></i>`}
+              </div>
+              <div>
+                <div style="font-weight: 800; font-size: 0.9rem; color: var(--text-main); line-height: 1.2;">${user.name}</div>
+                <div style="font-size: 0.72rem; color: var(--text-muted);">${AppState.isLoggedIn ? (user.email || user.phone) : 'Tap to Sign In'}</div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('topup-modal'); closeMobileSidebar();" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">
+              <i class="fa-solid fa-plus"></i> Top Up
+            </button>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 0.5rem; border-top: 1px dashed var(--border-color); font-size: 0.8rem;">
+            <span style="color: var(--text-muted);">Wallet Balance:</span>
+            <span style="font-weight: 800; color: var(--success);" id="mobile-sidebar-wallet">₹${AppState.walletBalance.toFixed(2)}</span>
+          </div>
+        `;
       }
 
       renderMarketplace();
