@@ -1032,6 +1032,78 @@
       vertical-align: middle;
       flex-shrink: 0;
     }
+
+    /* Bulk Action Bar Fluid Animations & Styling */
+    .floating-bulk-bar {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 999;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.96) 0%, rgba(15, 23, 42, 0.98) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius-lg);
+      padding: 0.85rem 1.25rem;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 25px rgba(59, 130, 246, 0.25);
+      display: none;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+      transform: translateY(90px) scale(0.92);
+      transition: transform 0.4s cubic-bezier(0.34, 1.45, 0.64, 1), 
+                  opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                  box-shadow 0.3s ease, 
+                  border-color 0.3s ease;
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+
+    .floating-bulk-bar.visible {
+      display: flex !important;
+      opacity: 1 !important;
+      transform: translateY(0) scale(1) !important;
+      pointer-events: auto !important;
+    }
+
+    .floating-bulk-bar.exiting {
+      opacity: 0 !important;
+      transform: translateY(80px) scale(0.9) !important;
+      pointer-events: none !important;
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s ease !important;
+    }
+
+    .marketplace-bulk-toolbar {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      transition: border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .marketplace-bulk-toolbar.has-selection {
+      background: rgba(30, 41, 59, 0.88);
+      border-color: rgba(59, 130, 246, 0.65);
+      box-shadow: 0 6px 24px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transform: translateY(-2px);
+    }
+
+    @keyframes countPop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.22); color: #60a5fa; }
+      100% { transform: scale(1); }
+    }
+
+    .count-pop {
+      display: inline-block;
+      animation: countPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
     .number-card-header {
       display: flex;
       align-items: center;
@@ -2396,9 +2468,12 @@
             </p>
           </div>
 
-          <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+          <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
             <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="copyText(document.getElementById('hero-demo-otp')?.innerText || '483920', 'OTP Copied!')">
               <i class="fa-solid fa-copy"></i> Copy OTP
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="speakOtpCode(document.getElementById('hero-demo-otp')?.innerText || '483920', 'Telegram', this)" title="Voice-to-Text Readout (Speech Synthesis)">
+              <i class="fa-solid fa-volume-high" style="color: #a855f7;"></i> Speak
             </button>
             <button class="btn btn-outline btn-sm" id="hero-refresh-otp-btn" title="Generate New OTP">
               <i class="fa-solid fa-rotate"></i> Refresh
@@ -2549,7 +2624,7 @@
         </div>
 
         <!-- Bulk Selection Action Bar -->
-        <div id="marketplace-bulk-toolbar" style="background: rgba(30, 41, 59, 0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.75rem 1.25rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+        <div id="marketplace-bulk-toolbar" class="marketplace-bulk-toolbar">
           <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
             <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 700; cursor: pointer; user-select: none;">
               <input type="checkbox" id="bulk-select-all-checkbox" class="card-bulk-checkbox" onchange="toggleSelectAllVisible(this.checked)">
@@ -2784,7 +2859,12 @@
                     <i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn <span class="badge badge-warning" id="referral-earnings-badge" style="margin-left: 0.25rem; font-size: 0.65rem; background: rgba(245, 158, 11, 0.2); color: #f59e0b;">₹175.00</span>
                   </button>
                 </div>
-                <button class="btn btn-secondary btn-sm" id="refresh-history-btn"><i class="fa-solid fa-rotate"></i> Sync</button>
+                <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+                  <button class="btn btn-secondary btn-sm auto-speak-toggle-btn" onclick="toggleAutoSpeakOtp()" title="Toggle automatic Speech Synthesis readout when new OTPs arrive" style="font-size: 0.75rem; border: 1px solid var(--border-color);">
+                    <i class="fa-solid fa-square" style="color: var(--text-muted);"></i> Auto Voice Readout: OFF
+                  </button>
+                  <button class="btn btn-secondary btn-sm" id="refresh-history-btn"><i class="fa-solid fa-rotate"></i> Sync</button>
+                </div>
               </div>
 
               <div id="purchased-history-list" style="display: flex; flex-direction: column; gap: 1rem;">
@@ -2865,6 +2945,31 @@
         <h2 class="section-title">Frequently Asked Questions</h2>
       </div>
 
+      <!-- FAQ Search Input Box -->
+      <div style="max-width: 650px; margin: 0 auto 2rem auto; position: relative;">
+        <div style="position: relative; display: flex; align-items: center;">
+          <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 1.1rem; color: var(--accent); font-size: 1rem; pointer-events: none;"></i>
+          <input type="text" id="faq-search-input" placeholder="Search questions by keywords (e.g. OTP, refund, UPI, UTR, SIM, referral)..." class="search-input" style="padding-left: 2.8rem; padding-right: 2.8rem; height: 50px; border-radius: var(--radius-md); font-size: 0.95rem; width: 100%; border: 1px solid var(--border-color); background: var(--bg-card); transition: all 0.2s ease;">
+          <button id="faq-search-clear-btn" onclick="clearFaqSearch()" style="position: absolute; right: 0.8rem; background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); color: var(--text-muted); cursor: pointer; display: none; padding: 0.35rem 0.6rem; border-radius: 50%; font-size: 0.85rem;" title="Clear FAQ search">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.6rem; padding: 0 0.25rem;">
+          <span id="faq-search-count" style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Showing all questions</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted);"><i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> Type keywords to instantly filter questions</span>
+        </div>
+      </div>
+
+      <!-- No Matching Results Empty State -->
+      <div id="faq-empty-state" style="display: none; text-align: center; padding: 3rem 1.5rem; background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: var(--radius-md); margin-bottom: 2rem;">
+        <div style="font-size: 2.5rem; color: var(--text-muted); margin-bottom: 0.75rem;"><i class="fa-solid fa-circle-question"></i></div>
+        <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">No matching questions found</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Try searching for different keywords like "SMS", "payment", "bonus", "cancel", or "wallet".</p>
+        <button class="btn btn-secondary btn-sm" onclick="clearFaqSearch()">
+          <i class="fa-solid fa-rotate-left"></i> Reset FAQ Search
+        </button>
+      </div>
+
       <div class="faq-list">
         <div class="faq-item">
           <div class="faq-question">
@@ -2893,6 +2998,46 @@
           </div>
           <div class="faq-answer">
             After clicking "Proceed to Pay", scan the UPI QR code or pay via your UPI application. Submit your 12-digit UTR reference number to unlock your virtual number immediately.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>What happens if an SMS code is delayed or does not arrive?</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            If the SMS code does not arrive within the timer window, you can cancel the order directly from your Active Purchases dashboard. Your payment or wallet credits will be immediately refunded with zero cancellation fees.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>How does the Refer & Earn 10% lifetime rewards program work?</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            When you invite friends using your unique referral link or code, your friend gets an instant ₹50 welcome bonus! Whenever they rent virtual numbers or top up their wallet, you automatically earn 10% cash credits directly in your wallet.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Can I rent multiple virtual numbers in bulk?</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            Yes! Use the multi-select checkboxes in the Marketplace or the "Bulk Operations" toolbar to select multiple numbers across different countries and platforms, then checkout in a single UPI transaction.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Does my wallet balance expire?</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            No, your wallet balance and referral earnings never expire. You can use your credits whenever you need to activate virtual numbers.
           </div>
         </div>
       </div>
@@ -2971,7 +3116,7 @@
   </nav>
 
   <!-- Floating Sticky Bulk Buy Bar -->
-  <div id="floating-bulk-bar" style="position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%); border: 1px solid rgba(59, 130, 246, 0.5); backdrop-filter: blur(12px); border-radius: var(--radius-lg); padding: 0.85rem 1.25rem; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.2); display: none; align-items: center; gap: 1rem; transform: translateY(100px); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease; opacity: 0;">
+  <div id="floating-bulk-bar" class="floating-bulk-bar">
     <div>
       <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Bulk Cart</div>
       <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -3242,10 +3387,21 @@
         <div id="utr-validation-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; margin-top: 0.35rem; display: none;"></div>
       </div>
 
-      <div id="payment-progress-box" style="display: none; margin-bottom: 1.25rem;">
-        <p style="font-size: 0.85rem; color: var(--accent); font-weight: 700;" id="progress-text">Verifying Payment with Bank...</p>
-        <div class="loading-bar" style="width: 100%; margin-top: 0.4rem;">
-          <div class="loading-bar-fill" id="payment-bar-fill"></div>
+      <div id="payment-progress-box" style="display: none; margin-bottom: 1.25rem; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.4rem;">
+          <span style="font-size: 0.82rem; color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 0.4rem;" id="progress-text">
+            <i class="fa-solid fa-robot" style="color: var(--accent);"></i> Automated UTR Status Checker
+          </span>
+          <span id="utr-checker-attempt-badge" class="badge badge-secondary" style="font-size: 0.68rem; font-weight: 700;">Attempt 1/3</span>
+        </div>
+        <div class="loading-bar" style="width: 100%; margin-top: 0.2rem; margin-bottom: 0.65rem;">
+          <div class="loading-bar-fill" id="payment-bar-fill" style="width: 0%;"></div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem; font-size: 0.7rem; color: var(--text-muted);">
+          <span>Mock Gateway API: <strong style="color: #38bdf8; font-family: var(--font-mono);">POST /v1/upi/verify-utr</strong></span>
+          <span style="color: #10b981; font-weight: 700;"><i class="fa-solid fa-signal"></i> 200 OK Live</span>
+        </div>
+        <div id="utr-api-terminal-log" style="background: #090d16; border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); padding: 0.55rem 0.75rem; font-family: var(--font-mono); font-size: 0.72rem; color: #38bdf8; max-height: 110px; overflow-y: auto; text-align: left; line-height: 1.45;">
         </div>
       </div>
 
@@ -3526,9 +3682,17 @@
             <input type="password" id="signup-pass-input" class="search-input" placeholder="Min 4 characters">
           </div>
 
-          <div style="margin-bottom: 1.25rem;">
+          <div style="margin-bottom: 0.85rem;">
             <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Confirm Password</label>
             <input type="password" id="signup-pass-confirm-input" class="search-input" placeholder="Re-enter password">
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Referral Code (Optional)</label>
+              <span class="badge badge-warning" id="signup-ref-applied-badge" style="display: none; font-size: 0.68rem;">🎁 Bonus Applied</span>
+            </div>
+            <input type="text" id="signup-referral-code-input" class="search-input" placeholder="e.g. VNH-ALEX-8829" style="text-transform: uppercase; font-family: var(--font-mono);">
           </div>
 
           <button type="button" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-weight: 800; font-size: 0.95rem;" onclick="handleSignupSubmit()">
@@ -3791,6 +3955,7 @@
 
     const AppState = {
       theme: SafeStorage.getItem('vnh_theme') || 'dark',
+      autoSpeakOtp: SafeStorage.getItem('vnh_auto_speak_otp') === 'true',
       walletBalance: (() => {
         const saved = SafeStorage.getItem('vnh_wallet');
         if (saved === null || saved === '500' || saved === '500.00') {
@@ -4300,7 +4465,25 @@
       const finalTotal = rawTotal - discountAmt;
 
       const countBadge = document.getElementById('bulk-selected-count-badge');
-      if (countBadge) countBadge.innerText = `${count} Selected`;
+      if (countBadge) {
+        const newBadgeText = `${count} Selected`;
+        if (countBadge.innerText !== newBadgeText) {
+          countBadge.innerText = newBadgeText;
+          countBadge.classList.remove('count-pop');
+          void countBadge.offsetWidth;
+          countBadge.classList.add('count-pop');
+        }
+      }
+
+      // Marketplace Bulk Toolbar highlight animation
+      const marketToolbar = document.getElementById('marketplace-bulk-toolbar');
+      if (marketToolbar) {
+        if (count > 0) {
+          marketToolbar.classList.add('has-selection');
+        } else {
+          marketToolbar.classList.remove('has-selection');
+        }
+      }
 
       const priceDisplay = document.getElementById('bulk-total-price-display');
       if (priceDisplay) {
@@ -4333,28 +4516,42 @@
       }
       if (bulkBuyCount) bulkBuyCount.innerText = `(${count})`;
 
-      // Floating Action Bar UI
+      // Floating Action Bar UI Entry / Exit Spring Animation
       const floatingBar = document.getElementById('floating-bulk-bar');
       const floatCount = document.getElementById('floating-bulk-count');
       const floatPrice = document.getElementById('floating-bulk-price');
 
       if (floatingBar) {
         if (count > 0) {
-          floatingBar.style.display = 'flex';
-          requestAnimationFrame(() => {
-            floatingBar.style.transform = 'translateY(0)';
-            floatingBar.style.opacity = '1';
-          });
-          if (floatCount) floatCount.innerText = `${count} ${count === 1 ? 'Number' : 'Numbers'}`;
-          if (floatPrice) floatPrice.innerText = `₹${finalTotal}`;
-        } else {
-          floatingBar.style.transform = 'translateY(100px)';
-          floatingBar.style.opacity = '0';
-          setTimeout(() => {
-            if ((AppState.selectedNumberIds || []).length === 0) {
-              floatingBar.style.display = 'none';
+          if (floatCount) {
+            const countText = `${count} ${count === 1 ? 'Number' : 'Numbers'}`;
+            if (floatCount.innerText !== countText) {
+              floatCount.innerText = countText;
+              floatCount.classList.remove('count-pop');
+              void floatCount.offsetWidth;
+              floatCount.classList.add('count-pop');
             }
-          }, 300);
+          }
+          if (floatPrice) floatPrice.innerText = `₹${finalTotal}`;
+
+          if (!floatingBar.classList.contains('visible')) {
+            floatingBar.classList.remove('exiting');
+            floatingBar.style.display = 'flex';
+            requestAnimationFrame(() => {
+              floatingBar.classList.add('visible');
+            });
+          }
+        } else {
+          if (floatingBar.classList.contains('visible')) {
+            floatingBar.classList.remove('visible');
+            floatingBar.classList.add('exiting');
+            setTimeout(() => {
+              if (!floatingBar.classList.contains('visible') && (AppState.selectedNumberIds || []).length === 0) {
+                floatingBar.style.display = 'none';
+                floatingBar.classList.remove('exiting');
+              }
+            }, 300);
+          }
         }
       }
 
@@ -4609,12 +4806,132 @@
     /* ==========================================
        REFERRAL SECTION LOGIC & REWARDS ENGINE
        ========================================== */
+    function getReferralBaseUrl() {
+      const customUrl = SafeStorage.getItem('vnh_custom_base_url');
+      if (customUrl && (customUrl.startsWith('http://') || customUrl.startsWith('https://'))) {
+        return customUrl.trim().replace(/\/+$/, '');
+      }
+
+      try {
+        let current = window.location.href.split('?')[0].split('#')[0];
+        if (current && (current.startsWith('https://') || current.startsWith('http://')) && 
+            !current.includes('ais-dev-') && !current.includes('localhost') && !current.includes('127.0.0.1')) {
+          if (current.endsWith('/index.html')) {
+            current = current.substring(0, current.length - 11);
+          }
+          return current.replace(/\/+$/, '');
+        }
+      } catch(e) {}
+      return 'https://urnprincerahul-ai.github.io/GitStudio.ai';
+    }
+
+    function promptCustomBaseUrl() {
+      const current = getReferralBaseUrl();
+      const input = prompt('Enter your live website URL for referral links:', current);
+      if (input !== null) {
+        let trimmed = input.trim().replace(/\/+$/, '');
+        if (trimmed) {
+          if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+            trimmed = 'https://' + trimmed;
+          }
+          SafeStorage.setItem('vnh_custom_base_url', trimmed);
+          renderReferralTab();
+          showToast('Referral base URL updated successfully!', 'success');
+        }
+      }
+    }
+
+    function checkAndProcessIncomingReferral() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        let refCode = urlParams.get('ref') || urlParams.get('referral') || urlParams.get('refCode');
+        
+        if (!refCode && window.location.hash) {
+          const hashStr = window.location.hash;
+          if (hashStr.includes('?')) {
+            const hp = new URLSearchParams(hashStr.split('?')[1]);
+            refCode = hp.get('ref') || hp.get('referral');
+          }
+        }
+
+        if (refCode) {
+          refCode = refCode.trim().toUpperCase();
+          SafeStorage.setItem('vnh_incoming_ref_code', refCode);
+          AppState.incomingRefCode = refCode;
+        } else {
+          AppState.incomingRefCode = SafeStorage.getItem('vnh_incoming_ref_code') || '';
+        }
+
+        if (AppState.incomingRefCode) {
+          const refInput = document.getElementById('signup-referral-code-input');
+          if (refInput) refInput.value = AppState.incomingRefCode;
+          
+          const badge = document.getElementById('signup-ref-applied-badge');
+          if (badge) {
+            badge.style.display = 'inline-block';
+            badge.innerText = `🎁 ${AppState.incomingRefCode} Applied (+₹50 Bonus)`;
+          }
+
+          if (refCode) {
+            showToast(`🎁 Referral Code Active (${refCode})! Sign up to claim your ₹50 welcome bonus!`, 'success');
+            
+            if (!AppState.isLoggedIn) {
+              setTimeout(() => {
+                switchAuthTab('signup');
+                openModal('user-modal');
+              }, 1000);
+            }
+          }
+        }
+      } catch(e) {
+        console.warn('Referral param parse err:', e);
+      }
+    }
+
+    function getReferralLeaderboardData() {
+      const userName = (AppState.currentUser && AppState.currentUser.name) ? AppState.currentUser.name : 'Alex Rivers';
+      const userPhoto = AppState.currentUser?.photo || '';
+      const userIcon = AppState.currentUser?.avatarIcon || 'fa-solid fa-crown';
+      
+      const userInvites = (AppState.referralsList ? AppState.referralsList.length : 0) + 8;
+      const userTotalEarned = AppState.referralEarnings || 0;
+
+      const baseLeaderboard = [
+        { name: 'Priya Sharma', country: '🇮🇳', invites: 154, totalEarned: 4850.00, badge: 'Pro VIP', photo: '', avatarIcon: 'fa-solid fa-user-astronaut', isCurrentUser: false },
+        { name: 'David Miller', country: '🇺🇸', invites: 112, totalEarned: 3420.00, badge: 'Pro VIP', photo: '', avatarIcon: 'fa-solid fa-user-ninja', isCurrentUser: false },
+        { name: 'Vikram Malhotra', country: '🇮🇳', invites: 86, totalEarned: 2680.00, badge: 'Standard', photo: '', avatarIcon: 'fa-solid fa-user-tie', isCurrentUser: false },
+        { name: 'Marcus Vance', country: '🇬🇧', invites: 45, totalEarned: 1350.00, badge: 'Standard', photo: '', avatarIcon: 'fa-solid fa-user-gear', isCurrentUser: false },
+        { name: 'Elena Rostova', country: '🇩🇪', invites: 34, totalEarned: 1020.00, badge: 'Pro VIP', photo: '', avatarIcon: 'fa-solid fa-user-graduate', isCurrentUser: false },
+        { name: 'Ananya Gupta', country: '🇮🇳', invites: 28, totalEarned: 840.00, badge: 'Pro VIP', photo: '', avatarIcon: 'fa-solid fa-user-check', isCurrentUser: false },
+        { 
+          name: `${userName}`, 
+          country: '👑', 
+          invites: userInvites, 
+          totalEarned: userTotalEarned, 
+          badge: AppState.currentUser?.tier || 'Pro VIP', 
+          photo: userPhoto,
+          avatarIcon: userIcon,
+          isCurrentUser: true 
+        }
+      ];
+
+      // Sort descending by totalEarned
+      baseLeaderboard.sort((a, b) => b.totalEarned - a.totalEarned);
+
+      // Assign ranks 1..N
+      return baseLeaderboard.map((item, idx) => ({
+        ...item,
+        rank: idx + 1
+      }));
+    }
+
     function renderReferralTab(filter = AppState.referralFilter || 'ALL') {
       AppState.referralFilter = filter;
       const container = document.getElementById('referral-tab-content');
       if (!container) return;
 
-      const fullLink = `https://virtualnumberhub.app/register?ref=${AppState.referralCode}`;
+      const baseUrl = getReferralBaseUrl();
+      const fullLink = `${baseUrl}?ref=${AppState.referralCode}`;
       
       const totalEarned = AppState.referralEarnings;
       const totalCount = AppState.referralsList.length;
@@ -4636,6 +4953,8 @@
       } else if (filter === 'PENDING') {
         filteredList = pendingList;
       }
+
+      const leaderboardData = getReferralLeaderboardData();
 
       container.innerHTML = `
         <!-- Top Banner & Link Generator -->
@@ -4664,6 +4983,16 @@
               </button>
               <button class="btn btn-secondary btn-sm" onclick="regenerateReferralCode()" title="Generate new code" style="padding: 0.5rem 0.75rem;">
                 <i class="fa-solid fa-arrows-rotate"></i>
+              </button>
+            </div>
+
+            <!-- Target Domain Settings Display -->
+            <div style="margin-top: 0.6rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem; color: var(--text-muted); background: rgba(255,255,255,0.03); padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); border: 1px dashed rgba(255,255,255,0.08);">
+              <div>
+                <i class="fa-solid fa-globe" style="color: var(--accent);"></i> Base URL: <span style="color: var(--text-main); font-weight: 700; font-family: var(--font-mono);">${baseUrl}</span>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="promptCustomBaseUrl()" style="font-size: 0.7rem; padding: 0.15rem 0.55rem;">
+                <i class="fa-solid fa-pen-to-square"></i> Change Domain
               </button>
             </div>
 
@@ -4708,8 +5037,126 @@
           </div>
         </div>
 
+        <!-- Top Referrers Leaderboard Section -->
+        <div style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.8) 100%); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-top: 0.5rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <h4 style="font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem; color: #f59e0b; margin: 0;">
+                <i class="fa-solid fa-trophy" style="color: #f59e0b; font-size: 1.15rem;"></i> Top Referrers Leaderboard
+              </h4>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.25rem; margin-bottom: 0;">Top community partners earning the highest cash credits & 10% lifetime rewards</p>
+            </div>
+            <span class="badge badge-warning" style="font-size: 0.72rem; padding: 0.35rem 0.65rem;">
+              <i class="fa-solid fa-rotate" style="margin-right: 0.25rem;"></i> Live Standings
+            </span>
+          </div>
+
+          <!-- Podium Top 3 Cards -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; margin-bottom: 1.25rem;">
+            ${leaderboardData.slice(0, 3).map((item) => {
+              let cardBorder = 'rgba(217, 119, 6, 0.4)';
+              let cardBg = 'linear-gradient(135deg, rgba(217, 119, 6, 0.12) 0%, rgba(180, 83, 9, 0.05) 100%)';
+              let rankIcon = '🥉';
+              let rankLabel = '3rd Place';
+              let crownColor = '#d97706';
+
+              if (item.rank === 1) {
+                cardBorder = 'rgba(245, 158, 11, 0.6)';
+                cardBg = 'linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(217, 119, 6, 0.08) 100%)';
+                rankIcon = '🥇';
+                rankLabel = '#1 Champion';
+                crownColor = '#f59e0b';
+              } else if (item.rank === 2) {
+                cardBorder = 'rgba(148, 163, 184, 0.5)';
+                cardBg = 'linear-gradient(135deg, rgba(148, 163, 184, 0.18) 0%, rgba(71, 85, 105, 0.05) 100%)';
+                rankIcon = '🥈';
+                rankLabel = '2nd Place';
+                crownColor = '#94a3b8';
+              }
+
+              return `
+                <div style="background: ${cardBg}; border: 1px solid ${cardBorder}; border-radius: var(--radius-md); padding: 1rem; position: relative; text-align: center; ${item.isCurrentUser ? 'box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); border-color: rgba(59, 130, 246, 0.8);' : ''}">
+                  <div style="position: absolute; top: 0.6rem; right: 0.6rem; font-size: 0.7rem; font-weight: 800; background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 12px; border: 1px solid ${cardBorder}; color: ${crownColor};">
+                    ${rankIcon} ${rankLabel}
+                  </div>
+                  <div style="width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 0.6rem auto; background: rgba(0,0,0,0.3); border: 2px solid ${crownColor}; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                    ${item.photo ? `<img src="${item.photo}" style="width:100%;height:100%;object-fit:cover;" />` : `<i class="${item.avatarIcon}" style="color: var(--text-main);"></i>`}
+                  </div>
+                  <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 0.35rem;">
+                    <span>${item.name}</span>
+                    ${item.isCurrentUser ? '<span class="badge badge-primary" style="font-size: 0.62rem; padding: 0.1rem 0.35rem;">YOU</span>' : ''}
+                  </div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem;">
+                    ${item.country} ${item.invites} Invited Friends
+                  </div>
+                  <div style="font-family: var(--font-mono); font-weight: 800; font-size: 1.15rem; color: #10b981; margin-top: 0.5rem;">
+                    ₹${item.totalEarned.toFixed(2)}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Full Standings Table -->
+          <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: rgba(0, 0, 0, 0.25);">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+              <thead>
+                <tr style="background: rgba(255, 255, 255, 0.04); border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600;">
+                  <th style="padding: 0.65rem 0.85rem; width: 60px; text-align: center;">Rank</th>
+                  <th style="padding: 0.65rem 0.85rem;">Referrer</th>
+                  <th style="padding: 0.65rem 0.85rem;">Tier</th>
+                  <th style="padding: 0.65rem 0.85rem; text-align: center;">Total Invites</th>
+                  <th style="padding: 0.65rem 0.85rem; text-align: right;">Rewards Earned</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${leaderboardData.map(item => {
+                  let rankBadgeHtml = `<span style="font-weight: 800; font-family: var(--font-mono); color: var(--text-muted);">#${item.rank}</span>`;
+                  if (item.rank === 1) rankBadgeHtml = `<span style="font-size: 1.1rem;" title="1st Place Champion">🥇</span>`;
+                  if (item.rank === 2) rankBadgeHtml = `<span style="font-size: 1.1rem;" title="2nd Place">🥈</span>`;
+                  if (item.rank === 3) rankBadgeHtml = `<span style="font-size: 1.1rem;" title="3rd Place">🥉</span>`;
+
+                  const rowStyle = item.isCurrentUser 
+                    ? 'background: rgba(59, 130, 246, 0.12); border-left: 3px solid var(--accent);' 
+                    : 'border-bottom: 1px solid rgba(255, 255, 255, 0.05);';
+
+                  return `
+                    <tr style="${rowStyle}">
+                      <td style="padding: 0.65rem 0.85rem; text-align: center;">
+                        ${rankBadgeHtml}
+                      </td>
+                      <td style="padding: 0.65rem 0.85rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                          <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; overflow: hidden; flex-shrink: 0;">
+                            ${item.photo ? `<img src="${item.photo}" style="width:100%;height:100%;object-fit:cover;" />` : `<i class="${item.avatarIcon}" style="color: var(--text-main);"></i>`}
+                          </div>
+                          <div>
+                            <span style="font-weight: 700; color: var(--text-main);">${item.name}</span>
+                            ${item.isCurrentUser ? '<span class="badge badge-primary" style="font-size: 0.6rem; padding: 0.1rem 0.35rem; margin-left: 0.3rem;">YOU</span>' : ''}
+                          </div>
+                        </div>
+                      </td>
+                      <td style="padding: 0.65rem 0.85rem;">
+                        <span class="badge badge-secondary" style="font-size: 0.68rem; font-weight: 600;">
+                          <i class="fa-solid fa-crown" style="color: #f59e0b; margin-right: 0.2rem;"></i> ${item.badge}
+                        </span>
+                      </td>
+                      <td style="padding: 0.65rem 0.85rem; text-align: center; font-family: var(--font-mono); font-weight: 700; color: var(--text-main);">
+                        ${item.invites}
+                      </td>
+                      <td style="padding: 0.65rem 0.85rem; text-align: right; font-family: var(--font-mono); font-weight: 800; color: #10b981;">
+                        ₹${item.totalEarned.toFixed(2)}
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <!-- Rewards & Referred Users Activity Table -->
-        <div style="margin-top: 0.5rem;">
+        <div style="margin-top: 1.25rem;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
             <h4 style="font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem;">
               <i class="fa-solid fa-list-check" style="color: var(--accent);"></i> Invited Users & Reward Logs
@@ -4779,7 +5226,8 @@
 
     function copyReferralLink() {
       const linkInput = document.getElementById('referral-link-input');
-      const textToCopy = linkInput ? linkInput.value : `https://virtualnumberhub.app/register?ref=${AppState.referralCode}`;
+      const baseUrl = getReferralBaseUrl();
+      const textToCopy = linkInput ? linkInput.value : `${baseUrl}?ref=${AppState.referralCode}`;
       
       if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(textToCopy).then(() => {
@@ -4817,7 +5265,8 @@
     }
 
     function shareReferral(platform) {
-      const fullLink = `https://virtualnumberhub.app/register?ref=${AppState.referralCode}`;
+      const baseUrl = getReferralBaseUrl();
+      const fullLink = `${baseUrl}?ref=${AppState.referralCode}`;
       const msg = `Hey! Join Virtual Number Hub using my link & get instant virtual numbers for WhatsApp, Telegram, Google & 200+ services: ${fullLink}`;
 
       if (platform === 'whatsapp') {
@@ -5169,6 +5618,9 @@
             <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
               <button class="btn btn-secondary btn-sm" onclick="copyText('${p.latestOtp}', 'OTP Code Copied!')">
                 <i class="fa-solid fa-copy"></i> Copy OTP
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="speakOtpCode('${p.latestOtp}', '${p.platform}', this)" title="Voice-to-Text Readout (Speech Synthesis)">
+                <i class="fa-solid fa-volume-high" style="color: #a855f7;"></i> Speak
               </button>
               <button class="btn btn-outline btn-sm" onclick="regenerateOtpForPurchase('${p.id}')">
                 <i class="fa-solid fa-rotate"></i> New Code
@@ -5661,8 +6113,44 @@
         return;
       }
 
+      const refInput = document.getElementById('signup-referral-code-input');
+      const enteredRefCode = refInput ? refInput.value.trim().toUpperCase() : '';
+
       loginUser(email || 'user@virtualhub.io', name, phone);
-      showToast('🎉 Account created successfully! Welcome to Virtual Hub.', 'success');
+
+      if (enteredRefCode) {
+        // Welcome bonus for new user
+        const welcomeBonus = 50.00;
+        AppState.walletBalance += welcomeBonus;
+        SafeStorage.setItem('vnh_wallet', AppState.walletBalance.toString());
+        updateWalletUI();
+
+        // Referrer reward
+        AppState.referralEarnings += 25.00;
+        SafeStorage.setItem('vnh_ref_earnings', AppState.referralEarnings.toString());
+
+        // Track referral
+        const newRef = {
+          id: `ref_${Date.now()}`,
+          name: name,
+          email: email || phone,
+          date: new Date().toISOString().split('T')[0],
+          tier: 'Standard',
+          status: 'COMPLETED',
+          spent: 0,
+          reward: 25.00
+        };
+        AppState.referralsList.unshift(newRef);
+        SafeStorage.setItem('vnh_ref_list', JSON.stringify(AppState.referralsList));
+        renderReferralTab();
+
+        SafeStorage.removeItem('vnh_incoming_ref_code');
+        AppState.incomingRefCode = '';
+
+        showToast(`🎉 Welcome ${name}! Applied referral code ${enteredRefCode} & credited ₹50 Welcome Bonus!`, 'success');
+      } else {
+        showToast('🎉 Account created successfully! Welcome to Virtual Hub.', 'success');
+      }
     }
 
     function loginUser(email, name, phone = '') {
@@ -5941,6 +6429,162 @@
       }
     }
 
+    /* ==========================================
+       AUTOMATED UTR PAYMENT CHECKER & MOCK API
+       ========================================== */
+    async function checkUtrStatusMockApi(utr, orderId, attempt) {
+      // Simulate network latency to Mock UPI Gateway API
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      // Special test case: UTR starting with '000' triggers a simulated bank rejection
+      if (utr.startsWith('000')) {
+        return {
+          status: 'FAILED',
+          statusCode: 400,
+          utr: utr,
+          message: 'Bank Settlement Record Not Found for UTR ' + utr,
+          gatewayRef: null,
+          timestamp: new Date().toLocaleTimeString()
+        };
+      }
+
+      // Simulate multi-poll checking sequence: attempts 1 & 2 return PENDING, attempt 3 resolves as VERIFIED
+      if (attempt < 3) {
+        return {
+          status: 'PENDING',
+          statusCode: 202,
+          utr: utr,
+          message: `Attempt ${attempt}: NPCI Banking Switch querying beneficiary bank settlement...`,
+          gatewayRef: `NPCI-IN-BUSY-${Math.floor(10000 + Math.random() * 89999)}`,
+          timestamp: new Date().toLocaleTimeString()
+        };
+      }
+
+      // Verified status
+      const amount = AppState.pendingOrder ? AppState.pendingOrder.price : 0;
+      return {
+        status: 'VERIFIED',
+        statusCode: 200,
+        utr: utr,
+        orderId: orderId,
+        amount: amount,
+        message: 'Payment Verified & Settled via NPCI Fast Switch',
+        gatewayRef: `NPCI-UPI-${Math.floor(100000 + Math.random() * 899999)}`,
+        timestamp: new Date().toLocaleTimeString()
+      };
+    }
+
+    function appendTerminalLogLine(msg, type = 'info') {
+      const terminal = document.getElementById('utr-api-terminal-log');
+      if (!terminal) return;
+
+      const line = document.createElement('div');
+      let color = '#38bdf8'; // default blue
+      if (type === 'success') color = '#10b981';
+      if (type === 'warning') color = '#f59e0b';
+      if (type === 'error') color = '#ef4444';
+
+      const timeStr = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      line.style.color = color;
+      line.style.marginBottom = '0.15rem';
+      line.innerHTML = `<span style="color: #64748b;">[${timeStr}]</span> ${msg}`;
+
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function startAutomatedUtrChecker(utr) {
+      const btn = document.getElementById('submit-utr-btn');
+      if (btn) btn.disabled = true;
+
+      const progressBox = document.getElementById('payment-progress-box');
+      if (progressBox) progressBox.style.display = 'block';
+
+      const progressFill = document.getElementById('payment-bar-fill');
+      const progressText = document.getElementById('progress-text');
+      const attemptBadge = document.getElementById('utr-checker-attempt-badge');
+      const terminal = document.getElementById('utr-api-terminal-log');
+
+      if (terminal) terminal.innerHTML = '';
+      if (progressFill) {
+        progressFill.style.width = '10%';
+        progressFill.style.background = 'var(--accent)';
+      }
+
+      appendTerminalLogLine(`Initializing Automated UTR Verification for #${utr}...`, 'info');
+      appendTerminalLogLine(`Connecting to Mock UPI Settlement Gateway Endpoint...`, 'info');
+
+      const maxAttempts = 3;
+      let attempt = 1;
+      const orderId = AppState.pendingOrder ? AppState.pendingOrder.orderId : `ORD-${Date.now()}`;
+
+      const runCheckCycle = async () => {
+        if (attemptBadge) {
+          attemptBadge.innerText = `Attempt ${attempt}/${maxAttempts}`;
+          attemptBadge.className = 'badge badge-secondary';
+        }
+        if (progressText) progressText.innerHTML = `<i class="fa-solid fa-robot fa-spin" style="color: var(--accent);"></i> Polling Gateway API (Attempt ${attempt}/${maxAttempts})...`;
+        if (progressFill) progressFill.style.width = `${Math.min(25 + attempt * 25, 90)}%`;
+
+        appendTerminalLogLine(`POST /v1/upi/verify-utr [Attempt ${attempt}] Payload: { utr: "${utr}", orderId: "${orderId}" }`, 'warning');
+
+        try {
+          const apiResponse = await checkUtrStatusMockApi(utr, orderId, attempt);
+
+          if (apiResponse.status === 'VERIFIED') {
+            if (progressFill) progressFill.style.width = '100%';
+            if (attemptBadge) {
+              attemptBadge.innerText = 'Verified ✅';
+              attemptBadge.className = 'badge badge-success';
+            }
+            if (progressText) progressText.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Payment Verified! Settled (Ref: ${apiResponse.gatewayRef})`;
+
+            appendTerminalLogLine(`HTTP 200 OK - Status: VERIFIED (Ref: ${apiResponse.gatewayRef})`, 'success');
+            appendTerminalLogLine(`Settlement Confirmed: ₹${apiResponse.amount.toFixed(2)} received! Activating Virtual Number...`, 'success');
+
+            setTimeout(() => {
+              completePurchaseSuccess();
+            }, 900);
+            return;
+          } else if (apiResponse.status === 'FAILED') {
+            if (progressFill) {
+              progressFill.style.width = '100%';
+              progressFill.style.background = '#ef4444';
+            }
+            if (attemptBadge) {
+              attemptBadge.innerText = 'Failed ❌';
+              attemptBadge.className = 'badge badge-danger';
+            }
+            if (progressText) progressText.innerHTML = `<i class="fa-solid fa-circle-xmark" style="color: #ef4444;"></i> Verification Failed`;
+
+            appendTerminalLogLine(`HTTP 400 Bad Request - ${apiResponse.message}`, 'error');
+            appendTerminalLogLine(`Automatic verification halted. Please check your 12-digit UTR and retry.`, 'error');
+
+            if (btn) btn.disabled = false;
+            showToast('UTR Verification failed: ' + apiResponse.message, 'error');
+            return;
+          } else {
+            // PENDING status - prepare next polling attempt
+            appendTerminalLogLine(`HTTP 202 Accepted - ${apiResponse.message}`, 'warning');
+            attempt++;
+
+            if (attempt <= maxAttempts) {
+              setTimeout(runCheckCycle, 1200);
+            } else {
+              // Final poll attempt resolves as verified
+              attempt = maxAttempts;
+              setTimeout(runCheckCycle, 1000);
+            }
+          }
+        } catch (err) {
+          appendTerminalLogLine(`Network Error: ${err.message}. Retrying...`, 'error');
+          if (btn) btn.disabled = false;
+        }
+      };
+
+      runCheckCycle();
+    }
+
     function submitUtrPayment() {
       const input = document.getElementById('utr-input');
       const isValid = validateUtrInput();
@@ -5961,31 +6605,8 @@
         return;
       }
 
-      const btn = document.getElementById('submit-utr-btn');
-      btn.disabled = true;
-      document.getElementById('payment-progress-box').style.display = 'block';
-
-      const progressFill = document.getElementById('payment-bar-fill');
-      const progressText = document.getElementById('progress-text');
-
-      let step = 0;
-      const steps = [
-        'Checking Transaction...',
-        'Verifying Payment with Bank...',
-        'Processing Order...',
-        'Activating Number...'
-      ];
-
-      const interval = setInterval(() => {
-        step++;
-        progressFill.style.width = `${step * 25}%`;
-        if (step < steps.length) {
-          progressText.innerText = steps[step];
-        } else {
-          clearInterval(interval);
-          completePurchaseSuccess();
-        }
-      }, 800);
+      const utrVal = input.value.trim();
+      startAutomatedUtrChecker(utrVal);
     }
 
     function completePurchaseSuccess() {
@@ -6084,6 +6705,9 @@
         if (isAuto) {
           playOtpSoundNotification();
         }
+        if (AppState.autoSpeakOtp) {
+          speakOtpCode(p.latestOtp, p.platform);
+        }
         showToast(isAuto ? `🔔 Auto-Received New OTP (${p.latestOtp}) for ${p.platform}!` : `✨ New OTP Code Generated (${p.latestOtp})!`, 'info');
       }
     }
@@ -6170,6 +6794,81 @@
         }
       });
       showToast(isOtpAudioMuted ? '🔇 OTP Sound Alerts Muted' : '🔊 OTP Sound Alerts Activated!', 'info');
+    }
+
+    /* ==========================================
+       VOICE-TO-TEXT SPEECH SYNTHESIS READOUT ENGINE
+       ========================================== */
+    function speakOtpCode(otp, platform = 'Service', btnElement = null) {
+      if (!('speechSynthesis' in window)) {
+        showToast('⚠️ Speech Synthesis Voice Readout is not supported in this browser.', 'warning');
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const cleanOtp = String(otp).trim();
+      if (!cleanOtp) return;
+
+      // Spacing digits with commas forces SpeechSynthesis to pronounce digits individually
+      const spacedDigits = cleanOtp.split('').join(', ');
+      const textToSpeak = `Your ${platform} verification code is ${spacedDigits}. I repeat, ${spacedDigits}.`;
+
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.rate = 0.85; // Slightly measured pace for maximum accessibility
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      utterance.lang = 'en-US';
+
+      let originalBtnHtml = '';
+      if (btnElement) {
+        originalBtnHtml = btnElement.innerHTML;
+        btnElement.innerHTML = `<i class="fa-solid fa-volume-high fa-beat" style="color: #a855f7;"></i> Speaking...`;
+        btnElement.disabled = true;
+      }
+
+      utterance.onstart = () => {
+        showToast(`🗣️ Voice Readout: "${cleanOtp.split('').join(' ')}"`, 'info');
+      };
+
+      utterance.onend = () => {
+        if (btnElement) {
+          btnElement.innerHTML = originalBtnHtml;
+          btnElement.disabled = false;
+        }
+      };
+
+      utterance.onerror = (err) => {
+        console.warn('SpeechSynthesis error:', err);
+        if (btnElement) {
+          btnElement.innerHTML = originalBtnHtml;
+          btnElement.disabled = false;
+        }
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function toggleAutoSpeakOtp() {
+      AppState.autoSpeakOtp = !AppState.autoSpeakOtp;
+      SafeStorage.setItem('vnh_auto_speak_otp', AppState.autoSpeakOtp ? 'true' : 'false');
+      updateAutoSpeakToggleUI();
+      showToast(AppState.autoSpeakOtp ? '🔊 Auto Voice Readout Enabled!' : '🔇 Auto Voice Readout Disabled', 'info');
+    }
+
+    function updateAutoSpeakToggleUI() {
+      const btns = document.querySelectorAll('.auto-speak-toggle-btn');
+      btns.forEach(btn => {
+        if (AppState.autoSpeakOtp) {
+          btn.innerHTML = `<i class="fa-solid fa-square-check" style="color: #a855f7;"></i> Auto Voice Readout: ON`;
+          btn.style.borderColor = '#a855f7';
+          btn.style.background = 'rgba(168, 85, 247, 0.15)';
+        } else {
+          btn.innerHTML = `<i class="fa-solid fa-square" style="color: var(--text-muted);"></i> Auto Voice Readout: OFF`;
+          btn.style.borderColor = 'var(--border-color)';
+          btn.style.background = 'transparent';
+        }
+      });
     }
 
     /* Automatic Periodic Dashboard OTP Refresh Engine (30s) */
@@ -6508,6 +7207,65 @@
       if (sortSelect) sortSelect.value = 'PRICE_LOW';
 
       applyMarketplaceFilters();
+    }
+
+    /* ==========================================
+       FAQ SEARCH & ACCORDION FILTER
+       ========================================== */
+    function filterFaqs() {
+      const input = document.getElementById('faq-search-input');
+      const clearBtn = document.getElementById('faq-search-clear-btn');
+      const countSpan = document.getElementById('faq-search-count');
+      const emptyState = document.getElementById('faq-empty-state');
+
+      if (!input) return;
+      const query = input.value.trim().toLowerCase();
+
+      if (clearBtn) {
+        clearBtn.style.display = query.length > 0 ? 'inline-block' : 'none';
+      }
+
+      const items = document.querySelectorAll('.faq-item');
+      let visibleCount = 0;
+
+      items.forEach(item => {
+        const qText = item.querySelector('.faq-question')?.innerText.toLowerCase() || '';
+        const aText = item.querySelector('.faq-answer')?.innerText.toLowerCase() || '';
+
+        if (qText.includes(query) || aText.includes(query)) {
+          item.style.display = 'block';
+          visibleCount++;
+          if (query.length > 0) {
+            item.classList.add('open');
+          } else {
+            item.classList.remove('open');
+          }
+        } else {
+          item.style.display = 'none';
+          item.classList.remove('open');
+        }
+      });
+
+      if (countSpan) {
+        if (query.length === 0) {
+          countSpan.innerText = `Showing all ${items.length} questions`;
+        } else {
+          countSpan.innerText = `Found ${visibleCount} matching question${visibleCount === 1 ? '' : 's'} for "${query}"`;
+        }
+      }
+
+      if (emptyState) {
+        emptyState.style.display = (visibleCount === 0 && items.length > 0) ? 'block' : 'none';
+      }
+    }
+
+    function clearFaqSearch() {
+      const input = document.getElementById('faq-search-input');
+      if (input) {
+        input.value = '';
+        filterFaqs();
+        input.focus();
+      }
     }
 
     /* ==========================================
@@ -7643,8 +8401,10 @@
         try { renderPurchasesHistory(); } catch(e) { console.error('Purchases err:', e); }
         try { updateFavoritesUI(); } catch(e) { console.error('Favorites err:', e); }
         try { renderReferralTab(); } catch(e) { console.error('Referral err:', e); }
+        try { checkAndProcessIncomingReferral(); } catch(e) { console.error('Incoming referral err:', e); }
         try { updateWalletUI(); } catch(e) { console.error('Wallet err:', e); }
         try { updateUserAuthUI(); } catch(e) { console.error('User auth err:', e); }
+        try { updateAutoSpeakToggleUI(); } catch(e) { console.error('Auto speak UI err:', e); }
         try { initCanvasBackground(); } catch(e) { console.error('Canvas err:', e); }
         try { renderDashboardActivationChart(); } catch(e) { console.error('Chart err:', e); }
         try { initResponsiveChartObservers(); } catch(e) { console.error('Chart observer err:', e); }
@@ -7713,6 +8473,9 @@
       document.getElementById('filter-status-select')?.addEventListener('change', applyMarketplaceFilters);
       document.getElementById('sort-select')?.addEventListener('change', applyMarketplaceFilters);
       document.getElementById('reset-filters-btn')?.addEventListener('click', resetMarketplaceFilters);
+
+      // FAQ Search Listener
+      document.getElementById('faq-search-input')?.addEventListener('input', filterFaqs);
 
       // FAQ Accordion Toggle
       document.querySelectorAll('.faq-question').forEach(q => {
