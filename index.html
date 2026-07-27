@@ -4944,7 +4944,7 @@
     const AppState = {
       theme: SafeStorage.getItem('vnh_theme') || 'dark',
       selectedTimezone: SafeStorage.getItem('vnh_selected_tz') || 'Asia/Kolkata',
-      autoSpeakOtp: SafeStorage.getItem('vnh_auto_speak_otp') === 'true',
+      autoSpeakOtp: SafeStorage.getItem('vnh_auto_speak_otp') !== 'false',
       walletBalance: (() => {
         const saved = SafeStorage.getItem('vnh_wallet');
         if (saved === null || saved === '500' || saved === '500.00') {
@@ -4958,6 +4958,7 @@
       smsLogs: safeParseJSON('vnh_sms_logs', defaultSeedSmsLogs),
       smsLogsFilter: 'ALL',
       smsLogsSearch: '',
+      autoDeleteOldSmsLogs: SafeStorage.getItem('vnh_auto_delete_sms_7d') === 'true',
       favorites: safeParseJSON('vnh_favorites', ['num_1', 'num_3', 'num_5']),
       priceAlerts: safeParseJSON('vnh_price_alerts', [
         {
@@ -6634,7 +6635,52 @@
       }
     }
 
+    function purgeOldSmsLogs(showToastNotification = false) {
+      if (!AppState.smsLogs || !Array.isArray(AppState.smsLogs)) return 0;
+
+      const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+      const now = Date.now();
+      const originalCount = AppState.smsLogs.length;
+
+      AppState.smsLogs = AppState.smsLogs.filter(log => {
+        if (!log.timestamp) return true;
+        const logTime = new Date(log.timestamp).getTime();
+        if (isNaN(logTime)) return true;
+        return (now - logTime) < SEVEN_DAYS_MS;
+      });
+
+      const removedCount = originalCount - AppState.smsLogs.length;
+      if (removedCount > 0) {
+        SafeStorage.setItem('vnh_sms_logs', JSON.stringify(AppState.smsLogs));
+        updateSmsLogsCountBadge();
+        if (showToastNotification) {
+          showToast(`🧹 Auto-cleaned ${removedCount} log entry${removedCount > 1 ? 's' : ''} older than 7 days!`, 'info');
+        }
+      } else if (showToastNotification) {
+        showToast('✨ No SMS logs older than 7 days found.', 'info');
+      }
+      return removedCount;
+    }
+
+    function toggleAutoDeleteOldSmsLogs() {
+      AppState.autoDeleteOldSmsLogs = !AppState.autoDeleteOldSmsLogs;
+      SafeStorage.setItem('vnh_auto_delete_sms_7d', AppState.autoDeleteOldSmsLogs ? 'true' : 'false');
+      if (AppState.autoDeleteOldSmsLogs) {
+        const cleaned = purgeOldSmsLogs(true);
+        if (cleaned === 0) {
+          showToast('✅ Auto-delete logs older than 7 days enabled.', 'success');
+        }
+      } else {
+        showToast('⏸️ Auto-delete logs older than 7 days disabled.', 'info');
+      }
+      renderSmsLogsTab();
+    }
+
     function addSmsLog(data) {
+      if (AppState.autoDeleteOldSmsLogs) {
+        purgeOldSmsLogs(false);
+      }
+
       const now = Date.now();
       const newLog = {
         id: `log_${now}_${Math.floor(1000 + Math.random() * 8999)}`,
@@ -6731,6 +6777,8 @@
         renderPurchasesHistory();
       }
 
+      const rawSms = `Your security verification code for ${pObj.platform || pObj.name} is: ${newCode}. Do not share this code. Ref #${Math.floor(100000 + Math.random() * 900000)}.`;
+
       addSmsLog({
         purchaseId: target ? target.id : 'p_simulated',
         phone: pObj.phone,
@@ -6738,7 +6786,7 @@
         flag: pObj.flag,
         platform: pObj.platform || pObj.name,
         sender: `${pObj.platform || pObj.name}-SMS (${selectedGateway})`,
-        rawMessage: `Your security verification code for ${pObj.platform || pObj.name} is: ${newCode}. Do not share this code. Ref #${Math.floor(100000 + Math.random() * 900000)}.`,
+        rawMessage: rawSms,
         otpCode: newCode,
         status: 'RECEIVED',
         latency: latencyVal,
@@ -6747,7 +6795,7 @@
 
       playOtpSoundNotification();
       if (AppState.autoSpeakOtp) {
-        speakOtpCode(newCode, pObj.platform || pObj.name);
+        speakIncomingSms(rawSms, pObj.platform || pObj.name, pObj.phone, newCode);
       }
 
       showToast(`⚡ Simulated SMS received for ${pObj.phone}: OTP is ${newCode}`, 'success');
@@ -6823,6 +6871,30 @@
             <button class="btn btn-secondary btn-sm" onclick="clearSmsLogs()" title="Clear logs" style="font-size: 0.78rem; color: #ef4444;">
               <i class="fa-solid fa-trash-can"></i>
             </button>
+          </div>
+        </div>
+
+        <!-- Auto-delete 7 Days Settings Bar -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: rgba(168, 85, 247, 0.08); padding: 0.65rem 1rem; border-radius: var(--radius-md); border: 1px solid rgba(168, 85, 247, 0.22); flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <i class="fa-solid fa-broom" style="color: #c084fc; font-size: 0.95rem;"></i>
+            <div>
+              <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-main);">Auto-delete logs older than 7 days</span>
+              <span style="font-size: 0.72rem; color: var(--text-muted); display: block;">Automatically purges SMS records past 7 days to keep dashboard clutter-free.</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; user-select: none;">
+              <input type="checkbox" ${AppState.autoDeleteOldSmsLogs ? 'checked' : ''} onchange="toggleAutoDeleteOldSmsLogs()" style="cursor: pointer; width: 16px; height: 16px; accent-color: #a855f7;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: ${AppState.autoDeleteOldSmsLogs ? 'var(--success)' : 'var(--text-muted)'};">
+                ${AppState.autoDeleteOldSmsLogs ? 'Enabled' : 'Disabled'}
+              </span>
+            </label>
+            ${AppState.autoDeleteOldSmsLogs ? `
+              <button class="btn btn-secondary btn-sm" onclick="purgeOldSmsLogs(true); renderSmsLogsTab();" style="font-size: 0.7rem; padding: 0.2rem 0.5rem; border-color: rgba(168, 85, 247, 0.3); color: #c084fc;" title="Scan and purge logs older than 7 days right now">
+                <i class="fa-solid fa-arrows-rotate"></i> Clean Now
+              </button>
+            ` : ''}
           </div>
         </div>
 
@@ -6905,7 +6977,7 @@
                       <button class="btn btn-success btn-sm" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;" onclick="navigator.clipboard.writeText('${log.otpCode}'); showToast('OTP Code ${log.otpCode} copied!', 'success');">
                         <i class="fa-solid fa-copy"></i> Copy OTP
                       </button>
-                      <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;" onclick="speakOtpCode('${log.otpCode}', '${log.platform}')" title="Voice readout OTP">
+                      <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;" onclick="speakIncomingSms(\`${log.rawMessage.replace(/`/g, '\\`')}\`, '${log.platform}', '${log.phone}', '${log.otpCode || ''}', this)" title="Voice readout SMS">
                         <i class="fa-solid fa-volume-high"></i>
                       </button>
                     ` : `
@@ -7019,7 +7091,7 @@
               <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.35rem 0.2rem; justify-content: center; text-align: center; width: 100%; white-space: nowrap;" onclick="copyText('${p.latestOtp}', 'OTP Code Copied!')">
                 <i class="fa-solid fa-copy"></i> Copy OTP
               </button>
-              <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.35rem 0.2rem; justify-content: center; text-align: center; width: 100%; white-space: nowrap;" onclick="speakOtpCode('${p.latestOtp}', '${p.platform}', this)" title="Voice-to-Text Readout (Speech Synthesis)">
+              <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.35rem 0.2rem; justify-content: center; text-align: center; width: 100%; white-space: nowrap;" onclick="speakIncomingSms('Your ${p.platform} verification code is ${p.latestOtp}', '${p.platform}', '${p.phone}', '${p.latestOtp}', this)" title="Voice-to-Text Readout (Speech Synthesis)">
                 <i class="fa-solid fa-volume-high" style="color: #a855f7;"></i> Speak
               </button>
             </div>
@@ -8375,7 +8447,7 @@
     /* ==========================================
        VOICE-TO-TEXT SPEECH SYNTHESIS READOUT ENGINE
        ========================================== */
-    function speakOtpCode(otp, platform = 'Service', btnElement = null) {
+    function speakIncomingSms(rawMessage = '', platform = 'Service', phone = '', otpCode = '', btnElement = null) {
       if (!('speechSynthesis' in window)) {
         showToast('⚠️ Speech Synthesis Voice Readout is not supported in this browser.', 'warning');
         return;
@@ -8383,15 +8455,26 @@
 
       window.speechSynthesis.cancel();
 
-      const cleanOtp = String(otp).trim();
-      if (!cleanOtp) return;
+      let textToSpeak = '';
+      const cleanOtp = String(otpCode || '').trim();
+      const spacedDigits = cleanOtp ? cleanOtp.split('').join(', ') : '';
 
-      // Spacing digits with commas forces SpeechSynthesis to pronounce digits individually
-      const spacedDigits = cleanOtp.split('').join(', ');
-      const textToSpeak = `Your ${platform} verification code is ${spacedDigits}. I repeat, ${spacedDigits}.`;
+      if (rawMessage) {
+        let msg = String(rawMessage).trim();
+        if (cleanOtp && msg.includes(cleanOtp)) {
+          msg = msg.replace(cleanOtp, `code ${spacedDigits}`);
+        } else if (cleanOtp) {
+          msg += `. Verification code is ${spacedDigits}`;
+        }
+        textToSpeak = `Incoming SMS for ${platform}${phone ? ' line ' + phone : ''}. ${msg}`;
+      } else if (cleanOtp) {
+        textToSpeak = `Your ${platform} verification code is ${spacedDigits}. I repeat, ${spacedDigits}.`;
+      } else {
+        textToSpeak = `New SMS message received for ${platform}.`;
+      }
 
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
-      utterance.rate = 0.85; // Slightly measured pace for maximum accessibility
+      utterance.rate = 0.88; // Pace for clear articulation
       utterance.pitch = 1.0;
       utterance.volume = 1.0;
       utterance.lang = 'en-US';
@@ -8404,7 +8487,7 @@
       }
 
       utterance.onstart = () => {
-        showToast(`🗣️ Voice Readout: "${cleanOtp.split('').join(' ')}"`, 'info');
+        showToast(`🗣️ Voice Readout: SMS for ${platform}${cleanOtp ? ' (' + cleanOtp + ')' : ''}`, 'info');
       };
 
       utterance.onend = () => {
@@ -8423,6 +8506,10 @@
       };
 
       window.speechSynthesis.speak(utterance);
+    }
+
+    function speakOtpCode(otp, platform = 'Service', btnElement = null) {
+      speakIncomingSms('', platform, '', otp, btnElement);
     }
 
     function toggleAutoSpeakOtp() {
