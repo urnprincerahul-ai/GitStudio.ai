@@ -5136,29 +5136,29 @@
     };
 
     const RawCountries = [
-      { name: 'United States', code: '+1', flag: '🇺🇸', price: 169 },
-      { name: 'United Kingdom', code: '+44', flag: '🇬🇧', price: 189 },
-      { name: 'India', code: '+91', flag: '🇮🇳', price: 149 },
-      { name: 'Canada', code: '+1', flag: '🇨🇦', price: 169 },
-      { name: 'Germany', code: '+49', flag: '🇩🇪', price: 199 },
-      { name: 'France', code: '+33', flag: '🇫🇷', price: 199 },
-      { name: 'Japan', code: '+81', flag: '🇯🇵', price: 229 },
-      { name: 'Brazil', code: '+55', flag: '🇧🇷', price: 159 },
-      { name: 'Australia', code: '+61', flag: '🇦🇺', price: 209 },
-      { name: 'Netherlands', code: '+31', flag: '🇳🇱', price: 199 },
-      { name: 'Spain', code: '+34', flag: '🇪🇸', price: 189 },
-      { name: 'Italy', code: '+39', flag: '🇮🇹', price: 189 },
-      { name: 'Mexico', code: '+52', flag: '🇲🇽', price: 159 },
-      { name: 'Philippines', code: '+63', flag: '🇵🇭', price: 149 },
+      { name: 'United States', code: '+1', flag: '🇺🇸', price: 189 },
+      { name: 'United Kingdom', code: '+44', flag: '🇬🇧', price: 219 },
+      { name: 'India', code: '+91', flag: '🇮🇳', price: 249 },
+      { name: 'Canada', code: '+1', flag: '🇨🇦', price: 199 },
+      { name: 'Germany', code: '+49', flag: '🇩🇪', price: 229 },
+      { name: 'France', code: '+33', flag: '🇫🇷', price: 239 },
+      { name: 'Japan', code: '+81', flag: '🇯🇵', price: 279 },
+      { name: 'Brazil', code: '+55', flag: '🇧🇷', price: 169 },
+      { name: 'Australia', code: '+61', flag: '🇦🇺', price: 259 },
+      { name: 'Netherlands', code: '+31', flag: '🇳🇱', price: 229 },
+      { name: 'Spain', code: '+34', flag: '🇪🇸', price: 209 },
+      { name: 'Italy', code: '+39', flag: '🇮🇹', price: 209 },
+      { name: 'Mexico', code: '+52', flag: '🇲🇽', price: 179 },
+      { name: 'Philippines', code: '+63', flag: '🇵🇭', price: 159 },
       { name: 'Vietnam', code: '+84', flag: '🇻🇳', price: 149 },
-      { name: 'Thailand', code: '+66', flag: '🇹🇭', price: 159 },
-      { name: 'Singapore', code: '+65', flag: '🇸🇬', price: 219 },
-      { name: 'South Korea', code: '+82', flag: '🇰🇷', price: 229 },
-      { name: 'Turkey', code: '+90', flag: '🇹🇷', price: 159 },
-      { name: 'UAE', code: '+971', flag: '🇦🇪', price: 239 },
+      { name: 'Thailand', code: '+66', flag: '🇹🇭', price: 169 },
+      { name: 'Singapore', code: '+65', flag: '🇸🇬', price: 289 },
+      { name: 'South Korea', code: '+82', flag: '🇰🇷', price: 269 },
+      { name: 'Turkey', code: '+90', flag: '🇹🇷', price: 189 },
+      { name: 'UAE', code: '+971', flag: '🇦🇪', price: 299 },
       { name: 'Bangladesh', code: '+880', flag: '🇧🇩', price: 149 },
-      { name: 'Indonesia', code: '+62', flag: '🇮🇩', price: 149 },
-      { name: 'Malaysia', code: '+60', flag: '🇲🇾', price: 169 },
+      { name: 'Indonesia', code: '+62', flag: '🇮🇩', price: 159 },
+      { name: 'Malaysia', code: '+60', flag: '🇲🇾', price: 179 },
       { name: 'Pakistan', code: '+92', flag: '🇵🇰', price: 149 },
       { name: 'Egypt', code: '+20', flag: '🇪🇬', price: 149 },
       { name: 'Nigeria', code: '+234', flag: '🇳🇬', price: 149 },
@@ -5259,19 +5259,32 @@
       return { icon: 'fa-solid fa-sim-card', color: 'var(--accent)' };
     }
 
-    function getUniqueNumberPrice(baseCountryPrice, platformName, digits, index) {
+    function getUniqueNumberPrice(countryName, baseCountryPrice, platformName, digits, index) {
       const digitsStr = String(digits);
       const last4 = parseInt(digitsStr.slice(-4)) || (index * 137);
-      
-      let platformBonus = 10;
-      if (platformName.includes('WhatsApp')) platformBonus = 28;
-      else if (platformName.includes('OpenAI') || platformName.includes('ChatGPT') || platformName.includes('Claude')) platformBonus = 35;
-      else if (platformName.includes('Telegram')) platformBonus = 22;
-      else if (platformName.includes('Binance') || platformName.includes('Coinbase') || platformName.includes('Bybit')) platformBonus = 40;
-      else if (platformName.includes('Google')) platformBonus = 18;
-      else if (platformName.includes('Tinder')) platformBonus = 25;
-      else if (platformName.includes('Instagram')) platformBonus = 20;
-      else if (platformName.includes('TikTok')) platformBonus = 20;
+
+      // Generate country & platform hash offsets so no two country/platform combinations have identical prices
+      let countryHash = 0;
+      const cStr = String(countryName || '');
+      for (let c = 0; c < cStr.length; c++) {
+        countryHash = (countryHash * 31 + cStr.charCodeAt(c)) % 43;
+      }
+
+      let platformHash = 0;
+      const pStr = String(platformName || '');
+      for (let p = 0; p < pStr.length; p++) {
+        platformHash = (platformHash * 17 + pStr.charCodeAt(p)) % 53;
+      }
+
+      let platformBonus = 12 + platformHash;
+      if (platformName.includes('WhatsApp')) platformBonus += 25;
+      else if (platformName.includes('OpenAI') || platformName.includes('ChatGPT') || platformName.includes('Claude')) platformBonus += 45;
+      else if (platformName.includes('Telegram')) platformBonus += 20;
+      else if (platformName.includes('Binance') || platformName.includes('Coinbase') || platformName.includes('Bybit')) platformBonus += 50;
+      else if (platformName.includes('Google')) platformBonus += 15;
+      else if (platformName.includes('Tinder')) platformBonus += 30;
+      else if (platformName.includes('Instagram')) platformBonus += 22;
+      else if (platformName.includes('TikTok')) platformBonus += 22;
 
       let vanityBonus = 0;
       if (digitsStr.endsWith('777') || digitsStr.endsWith('888') || digitsStr.endsWith('999') || digitsStr.endsWith('000')) {
@@ -5282,9 +5295,17 @@
         vanityBonus = 60;
       }
 
-      const numberVariation = (last4 * 19 + index * 43) % 35;
+      const numberVariation = (last4 * 13 + index * 37 + countryHash * 7 + platformHash * 11) % 41;
       let calculatedPrice = baseCountryPrice + platformBonus + vanityBonus + numberVariation;
-      if (calculatedPrice < 149) calculatedPrice = 149;
+
+      // Enforce Indian number pricing >= ₹249
+      const isIndia = cStr.toLowerCase().includes('india') || cStr === 'India';
+      if (isIndia) {
+        if (calculatedPrice < 249) calculatedPrice = 249;
+      } else {
+        if (calculatedPrice < 149) calculatedPrice = 149;
+      }
+
       return calculatedPrice;
     }
 
@@ -5308,7 +5329,7 @@
         const baseDigit = (100000000 + (index * 1234567 + (country.name.length * 98765) + (platform.name.length * 54321)) % 899999999);
         const phone = `${country.code} ${baseDigit}`;
         const isPurchased = AppState.purchases.some(p => p.phone === phone);
-        const price = getUniqueNumberPrice(country.price, platform.name, baseDigit, index);
+        const price = getUniqueNumberPrice(country.name, country.price, platform.name, baseDigit, index);
 
         AppState.numbers.push({
           id: `num_${country.code.replace('+', '')}_${platform.name.replace(/[^a-zA-Z]/g, '')}_${index+1}`,
@@ -5967,7 +5988,16 @@
       renderPurchasesHistory();
       updateBulkToolbarUI();
 
-      showToast(`🎉 Bulk Purchase Complete! Activated ${selectedItems.length} virtual numbers.`, 'success');
+      const uniqueCountries = [...new Set(selectedItems.map(num => `${num.countryName || num.country || ''} ${num.flag || ''}`.trim()))].filter(Boolean).join(', ');
+      const uniquePlatforms = [...new Set(selectedItems.map(num => num.platformName || num.platform || ''))].filter(Boolean).join(', ');
+
+      const bulkToastMsg = `🎉 <strong>Purchase Successful!</strong><br>` +
+        `<span style="display: block; margin-top: 0.2rem; font-size: 0.83rem; line-height: 1.35; color: var(--text-muted); font-weight: 500;">` +
+        `Country: <strong style="color: var(--text-main);">${uniqueCountries}</strong> • ` +
+        `Platform: <strong style="color: var(--accent);">${uniquePlatforms}</strong> • ` +
+        `Total Cost: <strong style="color: var(--success);">₹${finalTotal}</strong></span>`;
+
+      showToast(bulkToastMsg, 'success');
 
       // Navigate to Dashboard tab
       scrollToSection('dashboard');
@@ -8495,7 +8525,32 @@
       if (valMsg) valMsg.style.display = 'none';
 
       triggerConfetti();
-      showToast(order.isBulk ? `🎉 Bulk Payment Successful! Activated ${order.items.length} Virtual Numbers.` : '🎉 Payment Successful! Virtual Number Activated.', 'success');
+
+      if (order.isBulk && order.items && order.items.length > 0) {
+        const uniqueCountries = [...new Set(order.items.map(num => `${num.countryName || num.country || ''} ${num.flag || ''}`.trim()))].filter(Boolean).join(', ');
+        const uniquePlatforms = [...new Set(order.items.map(num => num.platformName || num.platform || ''))].filter(Boolean).join(', ');
+        const totalCostVal = order.price !== undefined ? order.price : order.items.reduce((acc, i) => acc + (i.price || 0), 0);
+
+        const bulkToastMsg = `🎉 <strong>Purchase Successful!</strong><br>` +
+          `<span style="display: block; margin-top: 0.2rem; font-size: 0.83rem; line-height: 1.35; color: var(--text-muted); font-weight: 500;">` +
+          `Country: <strong style="color: var(--text-main);">${uniqueCountries}</strong> • ` +
+          `Platform: <strong style="color: var(--accent);">${uniquePlatforms}</strong> • ` +
+          `Total Cost: <strong style="color: var(--success);">₹${totalCostVal}</strong></span>`;
+
+        showToast(bulkToastMsg, 'success');
+      } else {
+        const countryText = `${order.country || order.countryName || ''} ${order.flag || ''}`.trim();
+        const platformText = order.platform || order.platformName || '';
+        const priceText = order.price !== undefined ? `₹${order.price}` : '₹0';
+
+        const singleToastMsg = `🎉 <strong>Purchase Successful!</strong><br>` +
+          `<span style="display: block; margin-top: 0.2rem; font-size: 0.83rem; line-height: 1.35; color: var(--text-muted); font-weight: 500;">` +
+          `Country: <strong style="color: var(--text-main);">${countryText}</strong> • ` +
+          `Platform: <strong style="color: var(--accent);">${platformText}</strong> • ` +
+          `Total Cost: <strong style="color: var(--success);">${priceText}</strong></span>`;
+
+        showToast(singleToastMsg, 'success');
+      }
       updateWalletUI();
       renderMarketplace();
       renderPurchasesHistory();
@@ -9605,7 +9660,7 @@
     /* ==========================================
        UTILITIES & HELPERS
        ========================================== */
-    function showToast(msg, type = 'info') {
+    function showToast(msg, type = 'info', duration = null) {
       const container = document.getElementById('toast-container');
       if (!container) return;
       const toast = document.createElement('div');
@@ -9627,11 +9682,12 @@
         info: 'fa-circle-info',
         deal: 'fa-fire-flame-curved'
       };
-      const iconColor = type === 'deal' ? 'var(--warning)' : 'var(--accent)';
+      const iconColor = type === 'deal' ? 'var(--warning)' : (type === 'success' ? '#22c55e' : 'var(--accent)');
 
-      toast.innerHTML = `<i class="fa-solid ${icons[type] || 'fa-circle-info'}" style="color: ${iconColor}; font-size: 1.1rem;"></i> <span>${msg}</span>`;
+      toast.innerHTML = `<i class="fa-solid ${icons[type] || 'fa-circle-info'}" style="color: ${iconColor}; font-size: 1.2rem; flex-shrink: 0; align-self: flex-start; margin-top: 0.15rem;"></i> <div style="flex: 1;">${msg}</div>`;
       container.appendChild(toast);
-      setTimeout(() => toast.remove(), type === 'deal' ? 5500 : 3200);
+      const displayDuration = duration || (type === 'deal' ? 6000 : (msg.includes('<br>') ? 5500 : 3500));
+      setTimeout(() => toast.remove(), displayDuration);
     }
 
     /* ==========================================
