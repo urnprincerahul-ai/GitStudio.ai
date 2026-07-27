@@ -1863,20 +1863,6 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    .pricing-grid,
-    .features-grid,
-    .dash-stats-grid,
-    .faq-list {
-      scroll-snap-type: y proximity;
-    }
-
-    .pricing-card,
-    .feature-card,
-    .dash-stat-card,
-    .faq-category-block {
-      scroll-snap-align: start;
-    }
-
     .chips-carousel {
       scrollbar-width: none;
       display: flex;
@@ -1943,27 +1929,33 @@
     /* Tablet & Mobile Screens (Max 900px) */
     @media (max-width: 900px) {
       .container {
-        padding: 0 1.25rem;
+        padding: 0 1rem;
         max-width: 100%;
         box-sizing: border-box;
+      }
+      section.container, #pricing, #faq {
+        padding-top: 1.75rem !important;
+        padding-bottom: 1.75rem !important;
       }
       .nav-menu { display: none !important; }
       .hamburger-btn { display: flex !important; align-items: center; justify-content: center; }
 
       .pricing-grid {
         grid-template-columns: 1fr !important;
-        gap: 1.5rem;
-        margin-top: 2rem;
+        gap: 1.25rem;
+        margin-top: 1.5rem;
         width: 100%;
         box-sizing: border-box;
       }
       .pricing-card {
-        padding: 1.75rem 1.25rem !important;
+        padding: 1.5rem 1.25rem !important;
         width: 100%;
         box-sizing: border-box;
         transform: none !important;
-        box-shadow: var(--shadow-sm) !important;
-        border-radius: var(--radius-lg);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: var(--radius-lg) !important;
+        background: var(--bg-card) !important;
       }
       .pricing-card.popular {
         transform: none !important;
@@ -1972,18 +1964,43 @@
       .faq-category-block {
         width: 100%;
         box-sizing: border-box;
-        margin-bottom: 1.25rem;
+        margin-bottom: 1rem;
+        border: 1px solid var(--border-color) !important;
+        border-radius: var(--radius-lg) !important;
+        background: var(--bg-card) !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+        overflow: hidden;
       }
       .faq-category-header {
-        padding: 1rem 1.25rem !important;
+        padding: 0.85rem 1rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 0.5rem !important;
+      }
+      .faq-category-title {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        font-size: 0.9rem !important;
+        flex: 1 !important;
+        min-width: 0 !important;
+      }
+      .faq-category-count-badge {
+        font-size: 0.68rem !important;
+        padding: 0.15rem 0.45rem !important;
+        flex-shrink: 0 !important;
+      }
+      .faq-category-chevron {
+        flex-shrink: 0 !important;
       }
       .faq-category-body {
-        padding: 1rem 1.15rem !important;
+        padding: 0.85rem 0.85rem !important;
       }
       .faq-category-filters {
         gap: 0.5rem;
-        margin-bottom: 1.5rem;
-        padding: 0 0.5rem;
+        margin-bottom: 1.25rem;
+        padding: 0 0.25rem;
       }
       .faq-cat-btn {
         padding: 0.45rem 0.85rem;
@@ -1991,16 +2008,17 @@
       }
 
       .app-footer {
-        padding: 3.5rem 0 7rem 0 !important;
-        margin-top: 5rem !important;
+        padding: 2.25rem 0 6.5rem 0 !important;
+        margin-top: 1.5rem !important;
       }
 
       .floating-fab {
         bottom: calc(60px + 1rem) !important;
-        left: 1rem !important;
-        width: 46px !important;
-        height: 46px !important;
-        font-size: 1.15rem !important;
+        right: 1rem !important;
+        left: auto !important;
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 1.1rem !important;
         z-index: 990 !important;
       }
 
