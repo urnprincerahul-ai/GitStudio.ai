@@ -2393,6 +2393,10 @@
       }
     }
 
+    section, [id] {
+      scroll-margin-top: 85px;
+    }
+
     /* Mobile Bottom Navigation Bar */
     .mobile-bottom-nav {
       display: none;
@@ -2701,14 +2705,14 @@
       </a>
 
       <ul class="nav-menu">
-        <li><a href="#hero" class="nav-link active"><i class="fa-solid fa-house"></i> Home</a></li>
-        <li><a href="#numbers" class="nav-link"><i class="fa-solid fa-phone"></i> Numbers</a></li>
-        <li><a href="#countries" class="nav-link"><i class="fa-solid fa-globe"></i> Countries</a></li>
-        <li><a href="#platforms" class="nav-link"><i class="fa-solid fa-layer-group"></i> Platforms</a></li>
-        <li><a href="#pricing" class="nav-link"><i class="fa-solid fa-tags"></i> Pricing</a></li>
-        <li><a href="#dashboard" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
-        <li><a href="#dashboard" onclick="switchDashboardTab('referrals')" class="nav-link"><i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn</a></li>
-        <li><a href="#faq" class="nav-link"><i class="fa-solid fa-circle-question"></i> FAQ</a></li>
+        <li><a href="#hero" class="nav-link active" onclick="scrollToSection('hero', event)"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="#numbers" class="nav-link" onclick="scrollToSection('numbers', event)"><i class="fa-solid fa-phone"></i> Numbers</a></li>
+        <li><a href="#countries" class="nav-link" onclick="scrollToSection('countries', event)"><i class="fa-solid fa-globe"></i> Countries</a></li>
+        <li><a href="#platforms" class="nav-link" onclick="scrollToSection('platforms', event)"><i class="fa-solid fa-layer-group"></i> Platforms</a></li>
+        <li><a href="#pricing" class="nav-link" onclick="scrollToSection('pricing', event)"><i class="fa-solid fa-tags"></i> Pricing</a></li>
+        <li><a href="#dashboard" class="nav-link" onclick="scrollToSection('dashboard', event); switchDashboardTab('purchases');"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+        <li><a href="#dashboard" onclick="scrollToSection('dashboard', event); switchDashboardTab('referrals');" class="nav-link"><i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn</a></li>
+        <li><a href="#faq" class="nav-link" onclick="scrollToSection('faq', event)"><i class="fa-solid fa-circle-question"></i> FAQ</a></li>
       </ul>
 
       <div class="header-actions">
@@ -2717,9 +2721,9 @@
           <span>Alex</span>
         </div>
 
-        <div class="server-time-chip" id="server-time-header-widget" title="Real-time Global Server Time (UTC). Click for details." onclick="openModal('server-time-modal')">
+        <div class="server-time-chip" id="server-time-header-widget" title="Local Timezone & Global Server Clock. Click for details." onclick="openModal('server-time-modal')">
           <i class="fa-solid fa-clock" style="color: var(--accent); font-size: 0.85rem;"></i>
-          <span id="header-utc-clock" style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--text-main);">00:00:00 UTC</span>
+          <span id="header-utc-clock" style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--text-main);">00:00:00 Local</span>
         </div>
 
         <div class="wallet-chip" id="wallet-chip-btn">
@@ -2777,56 +2781,63 @@
     <!-- Full Height Spacious Navigation Menu -->
     <ul class="mobile-sidebar-nav-container">
       <li>
-        <a href="#hero" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+        <a href="#hero" class="nav-link mobile-nav-item" onclick="scrollToSection('hero', event); closeMobileSidebar();">
           <div class="mobile-nav-icon-badge"><i class="fa-solid fa-house"></i></div>
           <span>Home</span>
           <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
         </a>
       </li>
       <li>
-        <a href="#numbers" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+        <a href="#numbers" class="nav-link mobile-nav-item" onclick="scrollToSection('numbers', event); closeMobileSidebar();">
           <div class="mobile-nav-icon-badge"><i class="fa-solid fa-phone"></i></div>
           <span>Numbers</span>
           <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
         </a>
       </li>
       <li>
-        <a href="#countries" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+        <a href="#countries" class="nav-link mobile-nav-item" onclick="scrollToSection('countries', event); closeMobileSidebar();">
           <div class="mobile-nav-icon-badge"><i class="fa-solid fa-globe"></i></div>
           <span>Countries</span>
           <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
         </a>
       </li>
       <li>
-        <a href="#platforms" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+        <a href="#platforms" class="nav-link mobile-nav-item" onclick="scrollToSection('platforms', event); closeMobileSidebar();">
           <div class="mobile-nav-icon-badge"><i class="fa-solid fa-layer-group"></i></div>
           <span>Platforms</span>
           <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
         </a>
       </li>
       <li>
-        <a href="#pricing" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+        <a href="#pricing" class="nav-link mobile-nav-item" onclick="scrollToSection('pricing', event); closeMobileSidebar();">
           <div class="mobile-nav-icon-badge"><i class="fa-solid fa-tags"></i></div>
           <span>Pricing</span>
           <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
         </a>
       </li>
       <li>
-        <a href="#dashboard" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+        <a href="#dashboard" class="nav-link mobile-nav-item" onclick="scrollToSection('dashboard', event); switchDashboardTab('purchases'); closeMobileSidebar();">
           <div class="mobile-nav-icon-badge"><i class="fa-solid fa-chart-line"></i></div>
           <span>Dashboard</span>
           <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
         </a>
       </li>
       <li>
-        <a href="#dashboard" onclick="switchDashboardTab('referrals'); closeMobileSidebar();" class="nav-link mobile-nav-item">
+        <a href="#dashboard" class="nav-link mobile-nav-item" onclick="scrollToSection('dashboard', event); switchDashboardTab('favorites'); closeMobileSidebar();">
+          <div class="mobile-nav-icon-badge" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;"><i class="fa-solid fa-heart"></i></div>
+          <span>Saved Favorites</span>
+          <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
+        </a>
+      </li>
+      <li>
+        <a href="#dashboard" onclick="scrollToSection('dashboard', event); switchDashboardTab('referrals'); closeMobileSidebar();" class="nav-link mobile-nav-item">
           <div class="mobile-nav-icon-badge" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.3); color: #f59e0b;"><i class="fa-solid fa-gift"></i></div>
           <span>Refer & Earn</span>
           <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
         </a>
       </li>
       <li>
-        <a href="#faq" class="nav-link mobile-nav-item" onclick="closeMobileSidebar()">
+        <a href="#faq" class="nav-link mobile-nav-item" onclick="scrollToSection('faq', event); closeMobileSidebar();">
           <div class="mobile-nav-icon-badge"><i class="fa-solid fa-circle-question"></i></div>
           <span>FAQ</span>
           <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
@@ -2840,8 +2851,13 @@
     <section class="hero-section" id="hero">
       <div class="container hero-grid">
         <div>
-          <div class="hero-badge">
-            <i class="fa-solid fa-bolt"></i> Instant Automated Activation Engine
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.85rem;">
+            <div class="hero-badge" style="margin-bottom: 0;">
+              <i class="fa-solid fa-bolt"></i> Instant Automated Activation
+            </div>
+            <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #10b981; padding: 0.3rem 0.75rem; border-radius: var(--radius-full); font-weight: 700; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer;" onclick="openModal('server-time-modal')" title="Your Device Local Timezone">
+              <i class="fa-solid fa-location-dot"></i> Local Time: <span id="hero-local-clock" style="font-family: var(--font-mono); font-weight: 800;">--:--:--</span> (<span id="hero-local-tz">Local Zone</span>)
+            </div>
           </div>
           <h1 class="hero-title">
             Buy <span class="gradient-text">Virtual Numbers</span> Instantly Online
@@ -3674,34 +3690,34 @@
 
   <!-- Mobile Bottom Navigation Bar -->
   <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
-    <a href="#numbers" class="mobile-bottom-nav-item active" id="mob-nav-marketplace" onclick="setActiveMobileBottomNav(this); scrollToSection('numbers');">
+    <button type="button" class="mobile-bottom-nav-item active" id="mob-nav-marketplace" onclick="setActiveMobileBottomNav('mob-nav-marketplace'); scrollToSection('numbers', event);">
       <div class="mobile-bottom-nav-icon"><i class="fa-solid fa-store"></i></div>
       <span class="mobile-bottom-nav-label">Marketplace</span>
-    </a>
+    </button>
     
-    <a href="#dashboard" class="mobile-bottom-nav-item mob-nav-active-numbers-btn" id="mob-nav-active-numbers" onclick="setActiveMobileBottomNav(this); scrollToSection('dashboard'); switchDashboardTab('purchases');">
+    <button type="button" class="mobile-bottom-nav-item mob-nav-active-numbers-btn" id="mob-nav-active-numbers" onclick="setActiveMobileBottomNav('mob-nav-active-numbers'); scrollToSection('dashboard', event); switchDashboardTab('purchases');">
       <div class="mobile-bottom-nav-icon">
         <i class="fa-solid fa-sim-card"></i>
         <span class="mobile-nav-badge" id="mob-nav-active-count-badge">0</span>
       </div>
       <span class="mobile-bottom-nav-label" style="font-weight: 700;">Active Numbers</span>
-    </a>
+    </button>
 
-    <button type="button" class="mobile-bottom-nav-item" id="mob-nav-recent-activity" onclick="setActiveMobileBottomNav(this); openRecentActivityModal();">
+    <button type="button" class="mobile-bottom-nav-item" id="mob-nav-recent-activity" onclick="setActiveMobileBottomNav('mob-nav-recent-activity'); openRecentActivityModal();">
       <div class="mobile-bottom-nav-icon">
         <i class="fa-solid fa-clock-rotate-left" style="color: #a855f7;"></i>
       </div>
       <span class="mobile-bottom-nav-label">Activity</span>
     </button>
 
-    <a href="#dashboard" class="mobile-bottom-nav-item" id="mob-nav-favorites" onclick="setActiveMobileBottomNav(this); scrollToSection('dashboard'); switchDashboardTab('favorites');">
+    <button type="button" class="mobile-bottom-nav-item" id="mob-nav-favorites" onclick="setActiveMobileBottomNav('mob-nav-favorites'); scrollToSection('dashboard', event); switchDashboardTab('favorites');">
       <div class="mobile-bottom-nav-icon">
         <i class="fa-solid fa-heart" style="color: #ef4444;"></i>
       </div>
       <span class="mobile-bottom-nav-label">Saved</span>
-    </a>
+    </button>
 
-    <button type="button" class="mobile-bottom-nav-item" id="mob-nav-topup" onclick="openModal('topup-modal');">
+    <button type="button" class="mobile-bottom-nav-item" id="mob-nav-topup" onclick="setActiveMobileBottomNav('mob-nav-topup'); openModal('topup-modal');">
       <div class="mobile-bottom-nav-icon">
         <i class="fa-solid fa-wallet" style="color: var(--success);"></i>
       </div>
@@ -8915,30 +8931,42 @@
       const optionsUtcDate = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' };
       const utcDateStr = now.toLocaleDateString('en-US', optionsUtcDate);
 
-      // Header Clock
-      const headerClockEl = document.getElementById('header-utc-clock');
-      if (headerClockEl) headerClockEl.innerText = utcClockStr;
+      // Local Time & Local Timezone
+      const localTimeStr = now.toLocaleTimeString([], { hour12: false });
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local Zone';
+      const shortTzName = userTimeZone.includes('/') ? userTimeZone.split('/')[1].replace(/_/g, ' ') : userTimeZone;
 
-      // Dashboard Clock
+      // Header Clock (Shows Local Time & Zone UPFRONT)
+      const headerClockEl = document.getElementById('header-utc-clock');
+      if (headerClockEl) {
+        headerClockEl.innerText = `${localTimeStr} (${shortTzName})`;
+      }
+
+      // Hero Section Badge Clock
+      const heroLocalClockEl = document.getElementById('hero-local-clock');
+      const heroLocalTzEl = document.getElementById('hero-local-tz');
+      if (heroLocalClockEl) heroLocalClockEl.innerText = localTimeStr;
+      if (heroLocalTzEl) heroLocalTzEl.innerText = userTimeZone;
+
+      // Dashboard Clocks
       const dashClockEl = document.getElementById('dashboard-utc-clock');
       const dashDateEl = document.getElementById('dashboard-utc-date');
       if (dashClockEl) dashClockEl.innerText = utcClockStr;
       if (dashDateEl) dashDateEl.innerText = utcDateStr;
 
-      // Modal UTC Clock
+      const dashLocalEl = document.getElementById('dashboard-local-clock');
+      if (dashLocalEl) dashLocalEl.innerText = `${localTimeStr} (${userTimeZone})`;
+
+      // Modal Clocks
       const modalClockEl = document.getElementById('modal-utc-clock');
       const modalFullDateEl = document.getElementById('modal-utc-full-date');
       if (modalClockEl) modalClockEl.innerText = utcClockStr;
       if (modalFullDateEl) modalFullDateEl.innerText = `${utcDateStr} (${now.toISOString()})`;
 
-      // Local Time
-      const localTimeStr = now.toLocaleTimeString([], { hour12: false });
-      const dashLocalEl = document.getElementById('dashboard-local-clock');
       const modalLocalEl = document.getElementById('modal-local-time');
       const modalLocalTzEl = document.getElementById('modal-local-tz');
-      if (dashLocalEl) dashLocalEl.innerText = localTimeStr;
       if (modalLocalEl) modalLocalEl.innerText = localTimeStr;
-      if (modalLocalTzEl) modalLocalTzEl.innerText = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local Zone';
+      if (modalLocalTzEl) modalLocalTzEl.innerText = userTimeZone;
 
       // US Eastern Time (EST/EDT)
       const estTimeStr = now.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour12: false });
@@ -9236,8 +9264,20 @@
       }
     }
 
-    function scrollToSection(id) {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    function scrollToSection(id, event) {
+      if (event && event.preventDefault) {
+        event.preventDefault();
+      }
+      const el = document.getElementById(id);
+      if (el) {
+        const headerOffset = 80;
+        const elementPosition = el.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        window.scrollTo({
+          top: Math.max(0, offsetPosition),
+          behavior: 'smooth'
+        });
+      }
       if (id === 'dashboard') {
         setTimeout(() => animateDashboardStats(true), 200);
       }
