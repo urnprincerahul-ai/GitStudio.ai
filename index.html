@@ -2179,12 +2179,26 @@
       }
 
       .filter-row {
-        flex-direction: column;
-        align-items: stretch;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        width: 100%;
+        align-items: center;
+        box-sizing: border-box;
       }
       .select-input, .auto-refresh-control {
-        width: 100%;
-        flex: 1 1 100%;
+        flex: 1 1 calc(50% - 0.35rem);
+        min-width: 110px;
+        max-width: 100%;
+        font-size: 0.8rem;
+        padding: 0.4rem 0.5rem;
+        box-sizing: border-box;
+      }
+      .filter-row .btn {
+        flex: 1 1 auto;
+        padding: 0.4rem 0.55rem;
+        font-size: 0.78rem;
+        box-sizing: border-box;
       }
 
       .grid-display {
@@ -2262,6 +2276,44 @@
         right: 0.65rem;
         font-size: 1rem;
       }
+
+    /* Ultra-small Mobile Devices (Max 380px) */
+    @media (max-width: 380px) {
+      .search-filter-box {
+        padding: 0.5rem 0.4rem;
+        gap: 0.45rem;
+        box-sizing: border-box;
+      }
+      .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .select-input {
+        flex: 1 1 calc(50% - 0.25rem);
+        min-width: 95px;
+        font-size: 0.75rem;
+        padding: 0.35rem 0.4rem;
+        box-sizing: border-box;
+      }
+      .filter-row .btn {
+        flex: 1 1 auto;
+        padding: 0.35rem 0.45rem;
+        font-size: 0.72rem;
+        box-sizing: border-box;
+      }
+      .search-input {
+        padding: 0.5rem 0.6rem 0.5rem 2.2rem;
+        font-size: 0.78rem;
+        box-sizing: border-box;
+      }
+      .search-input-wrapper i {
+        left: 0.75rem;
+        font-size: 0.85rem;
+      }
+    }
 
       .mobile-sidebar {
         width: min(280px, 85vw);
@@ -2972,7 +3024,7 @@
     </section>
 
     <!-- COUNTRY & PLATFORM QUICK CAROUSELS -->
-    <section class="container" style="padding: 2rem 0;" id="countries">
+    <section class="container" style="padding-top: 2rem; padding-bottom: 2rem;" id="countries">
       <div class="section-header" style="margin-bottom: 1.5rem;">
         <span class="section-subtitle">Supported Regions</span>
         <h2 class="section-title">Select Country & Service</h2>
@@ -6775,15 +6827,15 @@
               </p>
             </div>
 
-            <!-- Action Controls -->
-            <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; align-items: center;">
-              <button class="btn btn-primary btn-sm" style="font-weight: 700; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);" onclick="reorderPurchasedNumberById('${p.id}')" title="Re-order line for ${p.country} (${p.platform})">
+            <!-- Action Controls (3 Inline Buttons in 1 Row) -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem; margin-top: 0.75rem; align-items: center;">
+              <button class="btn btn-primary btn-sm" style="font-weight: 700; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); font-size: 0.72rem; padding: 0.35rem 0.2rem; justify-content: center; text-align: center; width: 100%; white-space: nowrap;" onclick="reorderPurchasedNumberById('${p.id}')" title="Re-order line for ${p.country} (${p.platform})">
                 <i class="fa-solid fa-rotate-right"></i> Re-order
               </button>
-              <button class="btn btn-secondary btn-sm" onclick="copyText('${p.latestOtp}', 'OTP Code Copied!')">
+              <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.35rem 0.2rem; justify-content: center; text-align: center; width: 100%; white-space: nowrap;" onclick="copyText('${p.latestOtp}', 'OTP Code Copied!')">
                 <i class="fa-solid fa-copy"></i> Copy OTP
               </button>
-              <button class="btn btn-outline btn-sm" onclick="speakOtpCode('${p.latestOtp}', '${p.platform}', this)" title="Voice-to-Text Readout (Speech Synthesis)">
+              <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.35rem 0.2rem; justify-content: center; text-align: center; width: 100%; white-space: nowrap;" onclick="speakOtpCode('${p.latestOtp}', '${p.platform}', this)" title="Voice-to-Text Readout (Speech Synthesis)">
                 <i class="fa-solid fa-volume-high" style="color: #a855f7;"></i> Speak
               </button>
             </div>
