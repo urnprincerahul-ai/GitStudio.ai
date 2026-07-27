@@ -2089,8 +2089,17 @@
       }
 
       .app-footer {
-        padding: 2.25rem 0 6.5rem 0 !important;
+        padding: 2rem 0 4.25rem 0 !important;
         margin-top: 1.5rem !important;
+      }
+      .footer-grid-container {
+        gap: 1.5rem !important;
+        margin-bottom: 1.25rem !important;
+      }
+      .footer-copyright-container {
+        padding-top: 1rem !important;
+        padding-bottom: 0.25rem !important;
+        font-size: 0.8rem !important;
       }
 
       .floating-fab {
@@ -3883,7 +3892,7 @@
 
   <!-- FOOTER -->
   <footer class="app-footer" style="background: var(--bg-surface); border-top: 1px solid var(--border-color); margin-top: 4rem;">
-    <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2.5rem; margin-bottom: 3rem;">
+    <div class="container footer-grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2.5rem; margin-bottom: 3rem;">
       <div>
         <div class="logo" style="margin-bottom: 1rem;">
           <div class="logo-icon"><i class="fa-solid fa-sim-card"></i></div>
@@ -3910,7 +3919,7 @@
       </div>
     </div>
 
-    <div class="container" style="text-align: center; border-top: 1px solid var(--border-color); padding-top: 1.5rem; color: var(--text-muted); font-size: 0.85rem;">
+    <div class="container footer-copyright-container" style="text-align: center; border-top: 1px solid var(--border-color); padding-top: 1.5rem; color: var(--text-muted); font-size: 0.85rem;">
       &copy; 2026 Virtual Number Hub. All rights reserved. Designed for Portfolio Showcase.
     </div>
   </footer>
