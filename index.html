@@ -1879,14 +1879,47 @@
 
     .chips-carousel {
       scrollbar-width: none;
+      display: flex;
+      gap: 0.6rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+      padding-bottom: 0.5rem;
     }
     .chips-carousel::-webkit-scrollbar {
       display: none;
     }
+    .chip-item {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
 
-    /* Prevent overflow on small displays */
+    /* Prevent text overflow and text clipping on small displays */
     .phone-number-display, .otp-code, .price-val {
-      word-break: break-word;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+    }
+
+    .responsive-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 0.65rem 0.85rem;
+      white-space: nowrap;
+      box-sizing: border-box;
     }
 
     /* Laptop & Medium Displays (Max 1024px) */
@@ -2168,8 +2201,48 @@
       }
 
       .dash-stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
+        width: 100%;
+      }
+      .dash-stat-card {
+        padding: 0.65rem 0.6rem;
+        min-width: 0;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+      .dash-stat-header {
+        margin-bottom: 0.35rem;
+        gap: 0.25rem;
+      }
+      .dash-stat-label {
+        font-size: 0.72rem;
+        letter-spacing: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .dash-stat-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+      }
+      .dash-stat-number {
+        font-size: 1.25rem;
+        word-break: break-all;
+        overflow-wrap: anywhere;
+      }
+      .dash-stat-footer {
+        font-size: 0.68rem;
+        gap: 0.2rem;
+        margin-top: 0.25rem;
+        line-height: 1.2;
+      }
+      .dash-stat-footer span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .otp-code {
@@ -2232,6 +2305,33 @@
         font-size: 0.9rem;
       }
 
+      .dash-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.45rem;
+      }
+      .dash-stat-card {
+        padding: 0.55rem 0.5rem;
+        border-radius: var(--radius-sm);
+      }
+      .dash-stat-header {
+        margin-bottom: 0.25rem;
+        gap: 0.2rem;
+      }
+      .dash-stat-label {
+        font-size: 0.68rem;
+      }
+      .dash-stat-icon {
+        width: 24px;
+        height: 24px;
+        font-size: 0.78rem;
+      }
+      .dash-stat-number {
+        font-size: 1.12rem;
+      }
+      .dash-stat-footer {
+        font-size: 0.62rem;
+      }
+
       .mobile-bottom-nav-item {
         padding: 0.25rem 0.2rem;
         font-size: 0.6rem;
@@ -2239,6 +2339,57 @@
 
       .mobile-bottom-nav-icon {
         font-size: 1.1rem;
+      }
+    }
+
+    /* Narrow & Ultra-Compact Mobile Displays (Max 360px) */
+    @media (max-width: 360px) {
+      .container {
+        padding: 0 0.25rem;
+      }
+
+      .dash-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.35rem;
+      }
+      .dash-stat-card {
+        padding: 0.45rem 0.4rem;
+        border-radius: var(--radius-sm);
+        min-width: 0;
+        overflow: hidden;
+      }
+      .dash-stat-header {
+        margin-bottom: 0.2rem;
+        gap: 0.15rem;
+      }
+      .dash-stat-label {
+        font-size: 0.6rem;
+        letter-spacing: 0;
+        line-height: 1.1;
+      }
+      .dash-stat-icon {
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .dash-stat-number {
+        font-size: 1rem;
+        line-height: 1.1;
+        word-break: break-all;
+        overflow-wrap: anywhere;
+      }
+      .dash-stat-footer {
+        font-size: 0.58rem;
+        gap: 0.15rem;
+        margin-top: 0.15rem;
+        line-height: 1.1;
+      }
+      .dash-stat-footer span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
 
@@ -2891,19 +3042,9 @@
             <button class="btn btn-primary btn-sm" id="search-filter-trigger-btn" onclick="applyMarketplaceFilters()" title="Search Numbers">
               <i class="fa-solid fa-magnifying-glass"></i> Search
             </button>
-
-            <!-- Auto-Refresh Toggle (60s) -->
-            <div class="auto-refresh-control" id="auto-refresh-wrapper">
-              <label class="switch-toggle-label" title="Automatically refresh inventory every 60 seconds">
-                <input type="checkbox" id="auto-refresh-checkbox" onchange="toggleAutoRefresh(this.checked)">
-                <span class="switch-slider"></span>
-                <span class="switch-text"><i class="fa-solid fa-arrows-rotate" id="auto-refresh-icon"></i> Auto-Refresh (60s)</span>
-              </label>
-              <span class="auto-refresh-badge" id="auto-refresh-timer-badge">OFF</span>
-              <button class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.72rem; border-radius: 4px;" onclick="refreshMarketplaceInventory(false)" title="Refresh Inventory Now">
-                <i class="fa-solid fa-rotate"></i>
-              </button>
-            </div>
+            <button class="btn btn-secondary btn-sm" style="padding: 0.45rem 0.75rem; font-size: 0.8rem;" onclick="refreshMarketplaceInventory(false)" title="Refresh Inventory Now">
+              <i class="fa-solid fa-rotate"></i> Refresh
+            </button>
           </div>
         </div>
 
@@ -3067,6 +3208,38 @@
               </div>
             </div>
 
+            <!-- Firebase Cloud Messaging (FCM) Widget Card -->
+            <div class="glass-card" style="padding: 1.5rem;">
+              <div class="widget-title">
+                <span><i class="fa-solid fa-bell" style="color: var(--accent);"></i> FCM Push Notifications</span>
+                <span class="badge badge-warning" id="fcm-status-badge"><i class="fa-solid fa-bell-slash"></i> FCM Pending</span>
+              </div>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+                Receive instant native system notifications when new OTP codes or SMS messages arrive, even when the app is backgrounded or closed.
+              </p>
+              
+              <div style="background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); padding: 0.6rem 0.75rem; border-radius: var(--radius-sm); margin-bottom: 0.85rem; font-size: 0.75rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                  <span style="color: var(--text-muted); font-weight: 600;">FCM Token:</span>
+                  <button class="btn btn-secondary btn-sm" style="font-size: 0.68rem; padding: 0.15rem 0.45rem;" onclick="copyFcmToken()">
+                    <i class="fa-solid fa-copy"></i> Copy
+                  </button>
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); word-break: break-all;" id="fcm-token-display">
+                  Fetching FCM registration token...
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn btn-primary btn-sm" style="flex: 1; font-size: 0.78rem;" onclick="requestFcmPushPermission()">
+                  <i class="fa-solid fa-shield-halved"></i> Request FCM Access
+                </button>
+                <button class="btn btn-secondary btn-sm" style="flex: 1; font-size: 0.78rem;" onclick="testFcmPushNotification()">
+                  <i class="fa-solid fa-paper-plane"></i> Test FCM Push
+                </button>
+              </div>
+            </div>
+
             <!-- Price Alerts Watchlist Card -->
             <div class="glass-card" style="padding: 1.5rem;">
               <div class="widget-title">
@@ -3098,17 +3271,16 @@
               </button>
             </div>
 
-            <!-- Auto OTP Refresh Toggle Card -->
-            <div class="glass-card" style="padding: 1.5rem;">
-              <div style="display: flex; align-items: center; justify-content: space-between;">
-                <div>
-                  <h4 style="font-weight: 700;">Auto OTP Refresh</h4>
-                  <p style="font-size: 0.8rem; color: var(--text-muted);">Simulate live incoming SMS every 10s</p>
+            <!-- Single OTP Verification Info Card -->
+            <div class="glass-card" style="padding: 1.25rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 38px; height: 38px; border-radius: 50%; background: rgba(59, 130, 246, 0.15); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
+                  <i class="fa-solid fa-shield-check"></i>
                 </div>
-                <label style="position: relative; display: inline-block; width: 48px; height: 26px;">
-                  <input type="checkbox" id="auto-otp-toggle" checked style="opacity: 0; width: 0; height: 0;">
-                  <span style="position: absolute; cursor: pointer; inset: 0; background-color: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 34px; transition: .4s;" id="toggle-slider"></span>
-                </label>
+                <div>
+                  <h4 style="font-weight: 700; font-size: 0.92rem; margin-bottom: 0.15rem;">Single OTP Guarantee</h4>
+                  <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0;">1 Purchase = 1 OTP Code. Active for 5 Minutes.</p>
+                </div>
               </div>
             </div>
 
@@ -3142,6 +3314,9 @@
                   <button class="btn btn-secondary btn-sm" id="dash-tab-referrals" onclick="switchDashboardTab('referrals')">
                     <i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn <span class="badge badge-warning" id="referral-earnings-badge" style="margin-left: 0.25rem; font-size: 0.65rem; background: rgba(245, 158, 11, 0.2); color: #f59e0b;">₹175.00</span>
                   </button>
+                  <button class="btn btn-secondary btn-sm" id="dash-tab-sms-logs" onclick="switchDashboardTab('sms-logs')">
+                    <i class="fa-solid fa-receipt" style="color: #38bdf8;"></i> SMS Logs <span class="badge badge-primary" id="sms-logs-count-badge" style="margin-left: 0.25rem; font-size: 0.65rem;">0</span>
+                  </button>
                 </div>
                 <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
                   <button class="btn btn-secondary btn-sm auto-speak-toggle-btn" onclick="toggleAutoSpeakOtp()" title="Toggle automatic Speech Synthesis readout when new OTPs arrive" style="font-size: 0.75rem; border: 1px solid var(--border-color);">
@@ -3161,6 +3336,10 @@
 
               <div id="referral-tab-content" style="display: none; flex-direction: column; gap: 1.25rem;">
                 <!-- Dynamically Rendered Referral Section -->
+              </div>
+
+              <div id="sms-logs-tab-content" style="display: none; flex-direction: column; gap: 1.25rem;">
+                <!-- Dynamically Rendered SMS Logs Section -->
               </div>
             </div>
           </div>
@@ -3183,7 +3362,7 @@
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">Ideal for single OTP verification</p>
             <div class="price-val">₹79</div>
             <ul style="list-style: none; text-align: left; margin: 1.5rem 0; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem; color: var(--text-muted);">
-              <li><i class="fa-solid fa-check" style="color: var(--success);"></i> 20-Minute Line Validity</li>
+              <li><i class="fa-solid fa-check" style="color: var(--success);"></i> 5-Minute Line Validity</li>
               <li><i class="fa-solid fa-check" style="color: var(--success);"></i> Single Service Lock</li>
               <li><i class="fa-solid fa-check" style="color: var(--success);"></i> 100% Refund if no SMS</li>
             </ul>
@@ -3311,7 +3490,7 @@
                 <i class="fa-solid fa-chevron-down"></i>
               </div>
               <div class="faq-answer">
-                If the SMS code does not arrive within the 20-minute timer window, you can cancel the order directly from your Active Purchases dashboard. Your payment or wallet credits will be immediately refunded with zero cancellation fees.
+                If the SMS code does not arrive within the 5-minute timer window, you can cancel the order directly from your Active Purchases dashboard. Your payment or wallet credits will be immediately refunded with zero cancellation fees.
               </div>
             </div>
 
@@ -3321,7 +3500,7 @@
                 <i class="fa-solid fa-chevron-down"></i>
               </div>
               <div class="faq-answer">
-                Temporary lines lock single service for 20 minutes with automatic line refresh option. For multiple OTPs over 24 hours or 7 days, select our Rental Line or Premium Line options in Marketplace.
+                Temporary lines lock single service for 5 minutes with a single guaranteed OTP code. For multiple OTPs over 24 hours or 7 days, select our Rental Line or Premium Line options in Marketplace.
               </div>
             </div>
           </div>
@@ -3507,6 +3686,13 @@
       </div>
       <span class="mobile-bottom-nav-label" style="font-weight: 700;">Active Numbers</span>
     </a>
+
+    <button type="button" class="mobile-bottom-nav-item" id="mob-nav-recent-activity" onclick="setActiveMobileBottomNav(this); openRecentActivityModal();">
+      <div class="mobile-bottom-nav-icon">
+        <i class="fa-solid fa-clock-rotate-left" style="color: #a855f7;"></i>
+      </div>
+      <span class="mobile-bottom-nav-label">Activity</span>
+    </button>
 
     <a href="#dashboard" class="mobile-bottom-nav-item" id="mob-nav-favorites" onclick="setActiveMobileBottomNav(this); scrollToSection('dashboard'); switchDashboardTab('favorites');">
       <div class="mobile-bottom-nav-icon">
@@ -4267,6 +4453,35 @@
     </div>
   </div>
 
+  <!-- Recent Activity Quick Access Modal -->
+  <div class="modal-backdrop" id="recent-activity-modal">
+    <div class="modal-box" style="max-width: 620px;">
+      <button class="modal-close" onclick="closeModal('recent-activity-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+        <h3 style="font-size: 1.35rem; font-weight: 800; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+          <i class="fa-solid fa-clock-rotate-left" style="color: #a855f7;"></i> Recent Activity
+        </h3>
+        <span class="badge badge-primary" style="font-size: 0.72rem;"><i class="fa-solid fa-bolt"></i> Last 5 Transactions</span>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem;">
+        Quick access to your most recent virtual line activations & transactions.
+      </p>
+
+      <div id="recent-activity-modal-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <!-- Dynamically rendered via JS -->
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center; margin-top: 1.25rem; border-top: 1px solid var(--border-color); padding-top: 1rem; flex-wrap: wrap;">
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('recent-activity-modal'); scrollToSection('dashboard'); switchDashboardTab('purchases');">
+          <i class="fa-solid fa-list-check"></i> View All in Dashboard
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="closeModal('recent-activity-modal'); scrollToSection('numbers');">
+          <i class="fa-solid fa-cart-plus"></i> New Line Purchase
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Area -->
   <div id="toast-container"></div>
 
@@ -4326,9 +4541,9 @@
         price: 49,
         orderId: 'ORD-2026-881920',
         latestOtp: '849201',
-        time: new Date(seedNow - 2 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        createdAt: seedNow - 2 * 60 * 1000,
-        expiresAt: seedNow + 18 * 60 * 1000 + 45 * 1000
+        time: new Date(seedNow - 1 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        createdAt: seedNow - 1 * 60 * 1000,
+        expiresAt: seedNow + 4 * 60 * 1000
       },
       {
         id: 'p_seed_2',
@@ -4339,9 +4554,9 @@
         price: 39,
         orderId: 'ORD-2026-773109',
         latestOtp: '391048',
-        time: new Date(seedNow - 8 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        createdAt: seedNow - 8 * 60 * 1000,
-        expiresAt: seedNow + 11 * 60 * 1000 + 20 * 1000
+        time: new Date(seedNow - 3 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        createdAt: seedNow - 3 * 60 * 1000,
+        expiresAt: seedNow + 2 * 60 * 1000
       },
       {
         id: 'p_seed_3',
@@ -4352,9 +4567,76 @@
         price: 29,
         orderId: 'ORD-2026-551029',
         latestOtp: '109283',
-        time: new Date(seedNow - 16 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        createdAt: seedNow - 16 * 60 * 1000,
-        expiresAt: seedNow + 3 * 60 * 1000 + 50 * 1000
+        time: new Date(seedNow - 6 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        createdAt: seedNow - 6 * 60 * 1000,
+        expiresAt: seedNow - 1 * 60 * 1000
+      }
+    ];
+
+    const defaultSeedSmsLogs = [
+      {
+        id: 'log_seed_1',
+        purchaseId: 'p_seed_1',
+        phone: '+1 415 892 3012',
+        country: 'United States',
+        flag: '🇺🇸',
+        platform: 'WhatsApp',
+        sender: 'WhatsApp-AUTH (US-East #402)',
+        timestamp: new Date(seedNow - 1 * 60 * 1000).toISOString(),
+        formattedTime: new Date(seedNow - 1 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        rawMessage: 'Your WhatsApp verification code is: 849201. Do not share this code with anyone.',
+        otpCode: '849201',
+        status: 'RECEIVED',
+        latency: '820ms',
+        carrierGateway: 'Bandwidth / Telnyx US'
+      },
+      {
+        id: 'log_seed_2',
+        purchaseId: 'p_seed_2',
+        phone: '+44 7911 123456',
+        country: 'United Kingdom',
+        flag: '🇬🇧',
+        platform: 'Telegram',
+        sender: 'Telegram-SMS (UK-London #108)',
+        timestamp: new Date(seedNow - 3 * 60 * 1000).toISOString(),
+        formattedTime: new Date(seedNow - 3 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        rawMessage: 'Telegram code: 391048. You can also tap here to log in: https://t.me/login/391048',
+        otpCode: '391048',
+        status: 'RECEIVED',
+        latency: '1.10s',
+        carrierGateway: 'BT Group / Vodafone UK'
+      },
+      {
+        id: 'log_seed_3',
+        purchaseId: 'p_seed_3',
+        phone: '+91 98765 43210',
+        country: 'India',
+        flag: '🇮🇳',
+        platform: 'OpenAI / ChatGPT',
+        sender: 'OpenAI-MSG (IN-Mumbai #992)',
+        timestamp: new Date(seedNow - 6 * 60 * 1000).toISOString(),
+        formattedTime: new Date(seedNow - 6 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        rawMessage: '109283 is your verification code for OpenAI.',
+        otpCode: '109283',
+        status: 'RECEIVED',
+        latency: '940ms',
+        carrierGateway: 'Airtel / Jio IN'
+      },
+      {
+        id: 'log_seed_4',
+        purchaseId: 'p_seed_1',
+        phone: '+1 415 892 3012',
+        country: 'United States',
+        flag: '🇺🇸',
+        platform: 'WhatsApp',
+        sender: 'WhatsApp-INIT (Ping check)',
+        timestamp: new Date(seedNow - 12 * 60 * 1000).toISOString(),
+        formattedTime: new Date(seedNow - 12 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        rawMessage: 'Virtual Number line initialized. Route active for incoming SMS.',
+        otpCode: null,
+        status: 'DELIVERED',
+        latency: '450ms',
+        carrierGateway: 'T-Mobile US Direct'
       }
     ];
 
@@ -4363,8 +4645,10 @@
       storedPurchases = defaultSeedPurchases;
     } else {
       storedPurchases.forEach(p => {
-        if (!p.createdAt) p.createdAt = Date.now() - 5 * 60 * 1000;
-        if (!p.expiresAt) p.expiresAt = p.createdAt + 20 * 60 * 1000;
+        if (!p.createdAt) p.createdAt = Date.now() - 1 * 60 * 1000;
+        if (!p.expiresAt || p.expiresAt - p.createdAt > 5 * 60 * 1000) {
+          p.expiresAt = p.createdAt + 5 * 60 * 1000;
+        }
       });
     }
 
@@ -4381,6 +4665,9 @@
         return isNaN(val) ? 0.00 : val;
       })(),
       purchases: storedPurchases,
+      smsLogs: safeParseJSON('vnh_sms_logs', defaultSeedSmsLogs),
+      smsLogsFilter: 'ALL',
+      smsLogsSearch: '',
       favorites: safeParseJSON('vnh_favorites', ['num_1', 'num_3', 'num_5']),
       priceAlerts: safeParseJSON('vnh_price_alerts', [
         {
@@ -5105,7 +5392,7 @@
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           price: num.price,
           createdAt: purchaseNow,
-          expiresAt: purchaseNow + 20 * 60 * 1000
+          expiresAt: purchaseNow + 5 * 60 * 1000
         };
         AppState.purchases.unshift(purchaseEntry);
       });
@@ -5182,39 +5469,58 @@
       const purchasesList = document.getElementById('purchased-history-list');
       const favoritesList = document.getElementById('favorites-tab-list');
       const referralContent = document.getElementById('referral-tab-content');
+      const smsLogsContent = document.getElementById('sms-logs-tab-content');
 
       const tabPurchasesBtn = document.getElementById('dash-tab-purchases');
       const tabFavoritesBtn = document.getElementById('dash-tab-favorites');
       const tabReferralsBtn = document.getElementById('dash-tab-referrals');
+      const tabSmsLogsBtn = document.getElementById('dash-tab-sms-logs');
 
       if (tab === 'purchases') {
         if (purchasesList) purchasesList.style.display = 'flex';
         if (favoritesList) favoritesList.style.display = 'none';
         if (referralContent) referralContent.style.display = 'none';
+        if (smsLogsContent) smsLogsContent.style.display = 'none';
 
         if (tabPurchasesBtn) tabPurchasesBtn.className = 'btn btn-primary btn-sm';
         if (tabFavoritesBtn) tabFavoritesBtn.className = 'btn btn-secondary btn-sm';
         if (tabReferralsBtn) tabReferralsBtn.className = 'btn btn-secondary btn-sm';
+        if (tabSmsLogsBtn) tabSmsLogsBtn.className = 'btn btn-secondary btn-sm';
         setActiveMobileBottomNav('mob-nav-active-numbers');
       } else if (tab === 'favorites') {
         if (purchasesList) purchasesList.style.display = 'none';
         if (favoritesList) favoritesList.style.display = 'flex';
         if (referralContent) referralContent.style.display = 'none';
+        if (smsLogsContent) smsLogsContent.style.display = 'none';
 
         if (tabPurchasesBtn) tabPurchasesBtn.className = 'btn btn-secondary btn-sm';
         if (tabFavoritesBtn) tabFavoritesBtn.className = 'btn btn-primary btn-sm';
         if (tabReferralsBtn) tabReferralsBtn.className = 'btn btn-secondary btn-sm';
+        if (tabSmsLogsBtn) tabSmsLogsBtn.className = 'btn btn-secondary btn-sm';
         setActiveMobileBottomNav('mob-nav-favorites');
         renderFavoritesTab();
       } else if (tab === 'referrals') {
         if (purchasesList) purchasesList.style.display = 'none';
         if (favoritesList) favoritesList.style.display = 'none';
         if (referralContent) referralContent.style.display = 'flex';
+        if (smsLogsContent) smsLogsContent.style.display = 'none';
 
         if (tabPurchasesBtn) tabPurchasesBtn.className = 'btn btn-secondary btn-sm';
         if (tabFavoritesBtn) tabFavoritesBtn.className = 'btn btn-secondary btn-sm';
         if (tabReferralsBtn) tabReferralsBtn.className = 'btn btn-primary btn-sm';
+        if (tabSmsLogsBtn) tabSmsLogsBtn.className = 'btn btn-secondary btn-sm';
         renderReferralTab();
+      } else if (tab === 'sms-logs') {
+        if (purchasesList) purchasesList.style.display = 'none';
+        if (favoritesList) favoritesList.style.display = 'none';
+        if (referralContent) referralContent.style.display = 'none';
+        if (smsLogsContent) smsLogsContent.style.display = 'flex';
+
+        if (tabPurchasesBtn) tabPurchasesBtn.className = 'btn btn-secondary btn-sm';
+        if (tabFavoritesBtn) tabFavoritesBtn.className = 'btn btn-secondary btn-sm';
+        if (tabReferralsBtn) tabReferralsBtn.className = 'btn btn-secondary btn-sm';
+        if (tabSmsLogsBtn) tabSmsLogsBtn.className = 'btn btn-primary btn-sm';
+        renderSmsLogsTab();
       }
     }
 
@@ -5513,7 +5819,7 @@
           </div>
 
           <!-- Full Standings Table -->
-          <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: rgba(0, 0, 0, 0.25);">
+          <div class="responsive-table-wrapper">
             <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
               <thead>
                 <tr style="background: rgba(255, 255, 255, 0.04); border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600;">
@@ -5583,7 +5889,7 @@
             </div>
           </div>
 
-          <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: rgba(0, 0, 0, 0.15);">
+          <div class="responsive-table-wrapper">
             <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
               <thead>
                 <tr style="background: rgba(255, 255, 255, 0.04); border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600;">
@@ -5875,8 +6181,8 @@
         const now = Date.now();
 
         AppState.purchases.forEach(p => {
-          const createdAt = p.createdAt || (now - 5 * 60 * 1000);
-          const expiresAt = p.expiresAt || (createdAt + 20 * 60 * 1000);
+          const createdAt = p.createdAt || (now - 1 * 60 * 1000);
+          const expiresAt = p.expiresAt || (createdAt + 5 * 60 * 1000);
           const totalDuration = Math.max(1, expiresAt - createdAt);
           const remainingMs = Math.max(0, expiresAt - now);
           const isExpired = remainingMs <= 0;
@@ -5889,7 +6195,7 @@
 
           let timerColor = 'var(--success)';
           if (isExpired) timerColor = '#ef4444';
-          else if (remainingMs < 300000) timerColor = '#f59e0b';
+          else if (remainingMs < 60000) timerColor = '#f59e0b';
 
           if (timerTextEl) {
             timerTextEl.innerText = isExpired ? '00m 00s (Expired)' : formatTimeRemaining(remainingMs);
@@ -5914,10 +6220,10 @@
             if (isExpired && badgeEl.innerText !== 'EXPIRED') {
               badgeEl.className = 'badge badge-danger';
               badgeEl.innerText = 'EXPIRED';
-            } else if (!isExpired && remainingMs < 300000 && badgeEl.innerText !== 'EXPIRING SOON') {
+            } else if (!isExpired && remainingMs < 60000 && badgeEl.innerText !== 'EXPIRING SOON') {
               badgeEl.className = 'badge badge-warning';
               badgeEl.innerText = 'EXPIRING SOON';
-            } else if (!isExpired && remainingMs >= 300000 && badgeEl.innerText !== 'ACTIVE') {
+            } else if (!isExpired && remainingMs >= 60000 && badgeEl.innerText !== 'ACTIVE') {
               badgeEl.className = 'badge badge-success';
               badgeEl.innerText = 'ACTIVE';
             }
@@ -5947,8 +6253,394 @@
       }
     }
 
+    function openRecentActivityModal() {
+      renderRecentActivityList();
+      openModal('recent-activity-modal');
+    }
+
+    function renderRecentActivityList() {
+      const container = document.getElementById('recent-activity-modal-list');
+      if (!container) return;
+
+      const recent = (AppState.purchases || []).slice(0, 5);
+
+      if (recent.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 2rem 1rem; color: var(--text-muted); background: rgba(255, 255, 255, 0.03); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+            <i class="fa-solid fa-receipt" style="font-size: 2.2rem; margin-bottom: 0.5rem; opacity: 0.6;"></i>
+            <p style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--text-main);">No Recent Activity</p>
+            <p style="font-size: 0.8rem;">Your last 5 purchases & transactions will be listed here for quick access.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const now = Date.now();
+      container.innerHTML = recent.map((p) => {
+        p.createdAt = p.createdAt || (now - 1 * 60 * 1000);
+        p.expiresAt = p.expiresAt || (p.createdAt + 5 * 60 * 1000);
+        const isExpired = now > p.expiresAt;
+        const orderNum = p.orderId || `ORD-${p.id}`;
+
+        return `
+          <div class="glass-card" style="padding: 0.85rem 1rem; border-radius: var(--radius-md); border-left: 3px solid ${isExpired ? 'var(--text-muted)' : 'var(--accent)'};">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <span style="font-size: 1.5rem; line-height: 1;">${p.flag || '🌐'}</span>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.92rem; color: var(--text-main); display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                    ${p.platform}
+                    <span class="badge ${isExpired ? 'badge-secondary' : 'badge-success'}" style="font-size: 0.62rem; padding: 0.1rem 0.35rem;">
+                      ${isExpired ? 'Expired' : 'Active Line'}
+                    </span>
+                  </div>
+                  <div style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent); font-weight: 600; margin-top: 0.1rem;">
+                    ${p.phone}
+                  </div>
+                </div>
+              </div>
+              <div style="text-align: right; flex-shrink: 0;">
+                <div style="font-weight: 800; font-size: 0.95rem; color: var(--success);">
+                  ₹${p.price}
+                </div>
+                <div style="font-size: 0.68rem; color: var(--text-muted);">
+                  ${p.time || 'Just now'}
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.6rem; padding-top: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.75rem;">
+              <div style="color: var(--text-muted); font-size: 0.7rem; font-family: var(--font-mono);">
+                <i class="fa-solid fa-hashtag"></i> ${orderNum}
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                ${p.latestOtp ? `
+                  <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--success); padding: 0.15rem 0.45rem; border-radius: 4px; font-family: var(--font-mono); font-weight: 700; font-size: 0.72rem;">
+                    OTP: ${p.latestOtp}
+                  </span>
+                  <button class="btn btn-secondary btn-sm" style="font-size: 0.65rem; padding: 0.15rem 0.45rem;" onclick="navigator.clipboard.writeText('${p.latestOtp}'); showToast('OTP ${p.latestOtp} Copied!', 'success');">
+                    <i class="fa-solid fa-copy"></i>
+                  </button>
+                ` : `
+                  <span style="color: var(--text-muted); font-size: 0.7rem; font-style: italic;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Waiting OTP...
+                  </span>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /* ==========================================
+       DETAILED SMS LOGS ENGINE & DASHBOARD VIEW
+       ========================================== */
+    function updateSmsLogsCountBadge() {
+      const badge = document.getElementById('sms-logs-count-badge');
+      if (badge) {
+        const total = AppState.smsLogs ? AppState.smsLogs.length : 0;
+        badge.innerText = total;
+      }
+    }
+
+    function addSmsLog(data) {
+      const now = Date.now();
+      const newLog = {
+        id: `log_${now}_${Math.floor(1000 + Math.random() * 8999)}`,
+        purchaseId: data.purchaseId || 'p_unknown',
+        phone: data.phone || 'Virtual Line',
+        country: data.country || 'Global',
+        flag: data.flag || '🌐',
+        platform: data.platform || 'Service OTP',
+        sender: data.sender || `${data.platform || 'System'}-Gateway #${Math.floor(100 + Math.random() * 899)}`,
+        timestamp: data.timestamp || new Date(now).toISOString(),
+        formattedTime: data.formattedTime || new Date(now).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        rawMessage: data.rawMessage || `Verification code: ${data.otpCode || '123456'}`,
+        otpCode: data.otpCode || null,
+        status: data.status || 'RECEIVED',
+        latency: data.latency || `${(Math.random() * 0.8 + 0.3).toFixed(2)}s`,
+        carrierGateway: data.carrierGateway || 'Cloud Telecom Gateway'
+      };
+
+      if (!AppState.smsLogs) AppState.smsLogs = [];
+      AppState.smsLogs.unshift(newLog);
+      SafeStorage.setItem('vnh_sms_logs', JSON.stringify(AppState.smsLogs));
+      updateSmsLogsCountBadge();
+
+      // If SMS logs tab is visible, dynamically update it
+      const smsLogsTabContent = document.getElementById('sms-logs-tab-content');
+      if (smsLogsTabContent && smsLogsTabContent.style.display !== 'none') {
+        renderSmsLogsTab();
+      }
+    }
+
+    function filterSmsLogsSearch(query) {
+      AppState.smsLogsSearch = query || '';
+      renderSmsLogsTab();
+    }
+
+    function filterSmsLogsStatus(status) {
+      AppState.smsLogsFilter = status || 'ALL';
+      renderSmsLogsTab();
+    }
+
+    function clearSmsLogs() {
+      if (confirm('Are you sure you want to clear all recorded SMS delivery logs?')) {
+        AppState.smsLogs = [];
+        SafeStorage.setItem('vnh_sms_logs', JSON.stringify([]));
+        updateSmsLogsCountBadge();
+        renderSmsLogsTab();
+        showToast('🗑️ Detailed SMS delivery logs cleared!', 'info');
+      }
+    }
+
+    function exportSmsLogs() {
+      const logs = AppState.smsLogs || [];
+      if (logs.length === 0) {
+        showToast('⚠️ No SMS logs available to export!', 'warning');
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(logs, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `vnh_sms_logs_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast(`📥 Exported ${logs.length} SMS log records to JSON!`, 'success');
+    }
+
+    function simulateIncomingSms() {
+      let target = (AppState.purchases && AppState.purchases.length > 0)
+        ? AppState.purchases[Math.floor(Math.random() * AppState.purchases.length)]
+        : null;
+
+      const mockPlatforms = [
+        { name: 'WhatsApp', flag: '🇺🇸', country: 'United States', phone: '+1 (415) 892-3012' },
+        { name: 'Telegram', flag: '🇬🇧', country: 'United Kingdom', phone: '+44 7911 123456' },
+        { name: 'OpenAI / ChatGPT', flag: '🇮🇳', country: 'India', phone: '+91 98765 43210' },
+        { name: 'Google Workspace', flag: '🇨🇦', country: 'Canada', phone: '+1 (604) 555-0192' },
+        { name: 'Discord', flag: '🇩🇪', country: 'Germany', phone: '+49 151 23456789' },
+        { name: 'Instagram', flag: '🇫🇷', country: 'France', phone: '+33 6 12 34 56 78' }
+      ];
+
+      const pObj = target || mockPlatforms[Math.floor(Math.random() * mockPlatforms.length)];
+      const newCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const gateways = ['US-East Gateway #402', 'UK-London Gateway #108', 'IN-Mumbai Gateway #992', 'EU-Frankfurt Route #304'];
+      const carriers = ['Bandwidth / Telnyx US', 'BT Group / Vodafone UK', 'Airtel / Jio IN', 'Deutsche Telekom DE'];
+
+      const selectedGateway = gateways[Math.floor(Math.random() * gateways.length)];
+      const selectedCarrier = carriers[Math.floor(Math.random() * carriers.length)];
+      const latencyVal = `${(Math.random() * 0.7 + 0.25).toFixed(2)}s`;
+
+      if (target) {
+        target.latestOtp = newCode;
+        target.time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        SafeStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
+        renderPurchasesHistory();
+      }
+
+      addSmsLog({
+        purchaseId: target ? target.id : 'p_simulated',
+        phone: pObj.phone,
+        country: pObj.country,
+        flag: pObj.flag,
+        platform: pObj.platform || pObj.name,
+        sender: `${pObj.platform || pObj.name}-SMS (${selectedGateway})`,
+        rawMessage: `Your security verification code for ${pObj.platform || pObj.name} is: ${newCode}. Do not share this code. Ref #${Math.floor(100000 + Math.random() * 900000)}.`,
+        otpCode: newCode,
+        status: 'RECEIVED',
+        latency: latencyVal,
+        carrierGateway: selectedCarrier
+      });
+
+      playOtpSoundNotification();
+      if (AppState.autoSpeakOtp) {
+        speakOtpCode(newCode, pObj.platform || pObj.name);
+      }
+
+      showToast(`⚡ Simulated SMS received for ${pObj.phone}: OTP is ${newCode}`, 'success');
+      triggerFcmPushNotification(`📩 Incoming SMS for ${pObj.platform || pObj.name}`, `Number ${pObj.phone} received OTP: ${newCode}`, newCode);
+    }
+
+    function renderSmsLogsTab() {
+      updateSmsLogsCountBadge();
+      const container = document.getElementById('sms-logs-tab-content');
+      if (!container) return;
+
+      const logs = AppState.smsLogs || [];
+      const search = (AppState.smsLogsSearch || '').toLowerCase().trim();
+      const statusFilter = AppState.smsLogsFilter || 'ALL';
+
+      const filteredLogs = logs.filter(log => {
+        const matchStatus = (statusFilter === 'ALL') || (log.status === statusFilter);
+        const matchSearch = !search ||
+          (log.phone && log.phone.toLowerCase().includes(search)) ||
+          (log.platform && log.platform.toLowerCase().includes(search)) ||
+          (log.sender && log.sender.toLowerCase().includes(search)) ||
+          (log.otpCode && log.otpCode.includes(search)) ||
+          (log.rawMessage && log.rawMessage.toLowerCase().includes(search));
+        return matchStatus && matchSearch;
+      });
+
+      const totalCount = logs.length;
+      const otpsExtracted = logs.filter(l => l.otpCode).length;
+
+      container.innerHTML = `
+        <!-- Top Statistics Banner -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem;">
+          <div class="glass-card" style="padding: 0.85rem 1rem; border-radius: var(--radius-md); text-align: center;">
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Total SMS Tracked</div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: var(--accent); margin-top: 0.1rem;">${totalCount}</div>
+          </div>
+          <div class="glass-card" style="padding: 0.85rem 1rem; border-radius: var(--radius-md); text-align: center;">
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">OTPs Extracted</div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: var(--success); margin-top: 0.1rem;">${otpsExtracted}</div>
+          </div>
+          <div class="glass-card" style="padding: 0.85rem 1rem; border-radius: var(--radius-md); text-align: center;">
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Avg Route Latency</div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: #a855f7; margin-top: 0.1rem;">0.82s</div>
+          </div>
+          <div class="glass-card" style="padding: 0.85rem 1rem; border-radius: var(--radius-md); text-align: center;">
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Success Rate</div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: #38bdf8; margin-top: 0.1rem;">100%</div>
+          </div>
+        </div>
+
+        <!-- Log Controls Toolbar -->
+        <div style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center; flex-wrap: wrap; background: rgba(255, 255, 255, 0.02); padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          <div style="display: flex; gap: 0.5rem; flex: 1; min-width: 260px; align-items: center; flex-wrap: wrap;">
+            <div style="position: relative; flex: 1; min-width: 160px;">
+              <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.8rem;"></i>
+              <input type="text" class="input-field" style="padding-left: 2.2rem; height: 36px; font-size: 0.82rem;" placeholder="Search phone, OTP, sender..." value="${AppState.smsLogsSearch || ''}" oninput="filterSmsLogsSearch(this.value)">
+            </div>
+            <select class="input-field" style="width: auto; height: 36px; font-size: 0.82rem; padding: 0 0.75rem; cursor: pointer;" onchange="filterSmsLogsStatus(this.value)">
+              <option value="ALL" ${statusFilter === 'ALL' ? 'selected' : ''}>Status: All Logs</option>
+              <option value="RECEIVED" ${statusFilter === 'RECEIVED' ? 'selected' : ''}>RECEIVED (SMS)</option>
+              <option value="DELIVERED" ${statusFilter === 'DELIVERED' ? 'selected' : ''}>DELIVERED (System)</option>
+              <option value="PENDING" ${statusFilter === 'PENDING' ? 'selected' : ''}>PENDING</option>
+            </select>
+          </div>
+
+          <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+            <button class="btn btn-primary btn-sm" onclick="simulateIncomingSms()" style="font-size: 0.78rem;">
+              <i class="fa-solid fa-bolt"></i> Simulate SMS
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="exportSmsLogs()" title="Export logs as JSON" style="font-size: 0.78rem;">
+              <i class="fa-solid fa-download"></i> Export
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="clearSmsLogs()" title="Clear logs" style="font-size: 0.78rem; color: #ef4444;">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Log Entries List -->
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;" id="sms-logs-entries-list">
+          ${filteredLogs.length === 0 ? `
+            <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted); background: rgba(255, 255, 255, 0.02); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+              <i class="fa-solid fa-receipt" style="font-size: 2.8rem; margin-bottom: 0.75rem; opacity: 0.5;"></i>
+              <p style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;">No SMS Delivery Logs Found</p>
+              <p style="font-size: 0.85rem; max-width: 420px; margin: 0 auto 1.25rem auto;">
+                ${search || statusFilter !== 'ALL' ? 'No log entries match your filter search.' : 'Whenever a virtual number receives an incoming SMS or OTP, detailed routing metadata and timestamps will be logged here.'}
+              </p>
+              <button class="btn btn-primary btn-sm" onclick="simulateIncomingSms()">
+                <i class="fa-solid fa-bolt"></i> Simulate Test Incoming SMS
+              </button>
+            </div>
+          ` : filteredLogs.map(log => {
+            const isReceived = log.status === 'RECEIVED';
+            const isDelivered = log.status === 'DELIVERED';
+            const statusBadgeClass = isReceived ? 'badge-success' : (isDelivered ? 'badge-primary' : 'badge-warning');
+            const statusIcon = isReceived ? 'fa-envelope-open-text' : (isDelivered ? 'fa-check-double' : 'fa-clock');
+
+            return `
+              <div class="glass-card" style="padding: 1.1rem; border-radius: var(--radius-md); border-left: 3px solid ${isReceived ? 'var(--success)' : (isDelivered ? 'var(--accent)' : '#f59e0b')}; position: relative; transition: all 0.2s ease;">
+                <!-- Log Header Row -->
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap;">
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="font-size: 1.6rem; line-height: 1;">${log.flag || '🌐'}</span>
+                    <div>
+                      <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="font-weight: 800; font-size: 0.98rem; color: var(--text-main);">${log.platform}</span>
+                        <span class="badge ${statusBadgeClass}" style="font-size: 0.68rem; padding: 0.12rem 0.45rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+                          <i class="fa-solid ${statusIcon}"></i> ${log.status}
+                        </span>
+                        <span style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); font-size: 0.65rem; padding: 0.1rem 0.35rem; border-radius: 4px; font-weight: 600;">
+                          <i class="fa-solid fa-bolt"></i> ${log.latency || '850ms'}
+                        </span>
+                      </div>
+                      <div style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--accent); font-weight: 700; margin-top: 0.15rem;">
+                        ${log.phone}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="text-align: right; flex-shrink: 0;">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">
+                      <i class="fa-regular fa-clock"></i> ${log.formattedTime || 'Just now'}
+                    </div>
+                    <div style="font-size: 0.68rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 0.1rem;">
+                      ${log.timestamp ? log.timestamp.split('T')[0] : ''}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sender Metadata & Gateway Route Bar -->
+                <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(0, 0, 0, 0.25); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem;">
+                  <div style="color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                    <strong style="color: var(--text-main);"><i class="fa-solid fa-server" style="color: #38bdf8;"></i> Sender:</strong>
+                    <span style="font-family: var(--font-mono); color: #cbd5e1;">${log.sender}</span>
+                  </div>
+                  <div style="color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                    <strong style="color: var(--text-main);"><i class="fa-solid fa-tower-cell" style="color: #f59e0b;"></i> Carrier:</strong>
+                    <span style="font-family: var(--font-mono); color: #cbd5e1;">${log.carrierGateway || 'Cloud Telecom Gateway'}</span>
+                  </div>
+                </div>
+
+                <!-- Raw Message Text Body -->
+                <div style="margin-top: 0.75rem; background: rgba(15, 23, 42, 0.6); padding: 0.75rem 0.9rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.85rem; color: var(--text-main); font-family: system-ui, -apple-system, sans-serif; line-height: 1.45; word-break: break-word;">
+                  ${log.rawMessage}
+                </div>
+
+                <!-- Extracted OTP & Actions Footer -->
+                <div style="margin-top: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 0.65rem;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    ${log.otpCode ? `
+                      <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Extracted Code:</span>
+                      <span style="background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.4); color: var(--success); padding: 0.2rem 0.6rem; border-radius: 6px; font-family: var(--font-mono); font-weight: 800; font-size: 0.95rem; letter-spacing: 0.05em;">
+                        ${log.otpCode}
+                      </span>
+                      <button class="btn btn-success btn-sm" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;" onclick="navigator.clipboard.writeText('${log.otpCode}'); showToast('OTP Code ${log.otpCode} copied!', 'success');">
+                        <i class="fa-solid fa-copy"></i> Copy OTP
+                      </button>
+                      <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;" onclick="speakOtpCode('${log.otpCode}', '${log.platform}')" title="Voice readout OTP">
+                        <i class="fa-solid fa-volume-high"></i>
+                      </button>
+                    ` : `
+                      <span style="font-size: 0.72rem; color: var(--text-muted); font-style: italic;">
+                        <i class="fa-solid fa-info-circle"></i> Line Status Logged (No OTP code extracted)
+                      </span>
+                    `}
+                  </div>
+
+                  <div style="display: flex; gap: 0.4rem;">
+                    <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;" onclick="navigator.clipboard.writeText(\`${log.rawMessage.replace(/`/g, '\\`')}\`); showToast('Full SMS text copied to clipboard!', 'info');">
+                      <i class="fa-solid fa-quote-left"></i> Copy Text
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
     function renderPurchasesHistory() {
       updateMobileNavBadges();
+      renderRecentActivityList();
       const container = document.getElementById('purchased-history-list');
       if (!container) return;
 
@@ -5964,8 +6656,8 @@
 
       const now = Date.now();
       container.innerHTML = AppState.purchases.map(p => {
-        p.createdAt = p.createdAt || (now - 5 * 60 * 1000);
-        p.expiresAt = p.expiresAt || (p.createdAt + 20 * 60 * 1000);
+        p.createdAt = p.createdAt || (now - 1 * 60 * 1000);
+        p.expiresAt = p.expiresAt || (p.createdAt + 5 * 60 * 1000);
 
         const totalDuration = Math.max(1, p.expiresAt - p.createdAt);
         const remainingMs = Math.max(0, p.expiresAt - now);
@@ -5974,14 +6666,14 @@
 
         let timerColor = 'var(--success)';
         if (isExpired) timerColor = '#ef4444';
-        else if (remainingMs < 300000) timerColor = '#f59e0b';
+        else if (remainingMs < 60000) timerColor = '#f59e0b';
 
         let badgeClass = 'badge-success';
         let badgeText = 'ACTIVE';
         if (isExpired) {
           badgeClass = 'badge-danger';
           badgeText = 'EXPIRED';
-        } else if (remainingMs < 300000) {
+        } else if (remainingMs < 60000) {
           badgeClass = 'badge-warning';
           badgeText = 'EXPIRING SOON';
         }
@@ -6036,12 +6728,6 @@
               </button>
               <button class="btn btn-outline btn-sm" onclick="speakOtpCode('${p.latestOtp}', '${p.platform}', this)" title="Voice-to-Text Readout (Speech Synthesis)">
                 <i class="fa-solid fa-volume-high" style="color: #a855f7;"></i> Speak
-              </button>
-              <button class="btn btn-outline btn-sm" onclick="regenerateOtpForPurchase('${p.id}')">
-                <i class="fa-solid fa-rotate"></i> New Code
-              </button>
-              <button class="btn btn-warning btn-sm" style="padding: 0.35rem 0.65rem; font-size: 0.75rem; font-weight: 700; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b;" onclick="extendRentalDuration('${p.id}')" title="Extend rental time by 10 minutes">
-                <i class="fa-solid fa-clock-rotate-left"></i> +10m Extend
               </button>
             </div>
           </div>
@@ -7046,7 +7732,7 @@
             latestOtp: newOtp,
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             createdAt: pNow,
-            expiresAt: pNow + 20 * 60 * 1000
+            expiresAt: pNow + 5 * 60 * 1000
           });
         });
         AppState.selectedNumberIds = [];
@@ -7068,7 +7754,7 @@
           latestOtp: newOtp,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           createdAt: pNow,
-          expiresAt: pNow + 20 * 60 * 1000
+          expiresAt: pNow + 5 * 60 * 1000
         });
       }
 
@@ -7101,6 +7787,7 @@
       if (firstPurchase) {
         const otpEl = document.getElementById(`otp-code-${firstPurchase.id}`);
         if (otpEl) triggerOtpPulseAnimation(otpEl);
+        triggerFcmPushNotification(`🎉 Line Activated for ${firstPurchase.platform}`, `Number ${firstPurchase.phone} is active and ready for OTPs.`, firstPurchase.latestOtp);
       }
       scrollToSection('dashboard');
       switchDashboardTab('purchases');
@@ -7112,6 +7799,22 @@
         p.latestOtp = Math.floor(100000 + Math.random() * 900000).toString();
         p.time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         SafeStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
+
+        // Add detailed SMS delivery attempt log
+        addSmsLog({
+          purchaseId: p.id,
+          phone: p.phone,
+          country: p.country,
+          flag: p.flag,
+          platform: p.platform,
+          sender: `${p.platform}-AUTH (Gateway #${Math.floor(100 + Math.random() * 899)})`,
+          rawMessage: `Your ${p.platform} security verification code is: ${p.latestOtp}. Do not share this code with anyone.`,
+          otpCode: p.latestOtp,
+          status: 'RECEIVED',
+          latency: `${(Math.random() * 0.7 + 0.25).toFixed(2)}s`,
+          carrierGateway: `${p.country} Direct Route`
+        });
+
         renderPurchasesHistory();
         const otpEl = document.getElementById(`otp-code-${pId}`);
         if (otpEl) {
@@ -7124,8 +7827,131 @@
           speakOtpCode(p.latestOtp, p.platform);
         }
         showToast(isAuto ? `🔔 Auto-Received New OTP (${p.latestOtp}) for ${p.platform}!` : `✨ New OTP Code Generated (${p.latestOtp})!`, 'info');
+        triggerFcmPushNotification(`📩 New OTP Code for ${p.platform}`, `Line ${p.phone} received code: ${p.latestOtp}`, p.latestOtp);
       }
     }
+
+    /* ==========================================
+       FIREBASE CLOUD MESSAGING (FCM) INTEGRATION
+       ========================================== */
+    let fcmRegistrationToken = null;
+    let fcmPermissionGranted = false;
+
+    function initFcmIntegration() {
+      if (window.AndroidFCM) {
+        try {
+          fcmRegistrationToken = window.AndroidFCM.getFcmToken();
+          console.log("FCM Token retrieved via Android bridge:", fcmRegistrationToken);
+          updateFcmUiStatus(true, fcmRegistrationToken);
+        } catch (e) {
+          console.error("Error retrieving FCM Token:", e);
+        }
+      } else if ('Notification' in window) {
+        if (Notification.permission === 'granted') {
+          fcmPermissionGranted = true;
+          fcmRegistrationToken = "fcm_token_web_" + Math.floor(100000 + Math.random() * 900000);
+          updateFcmUiStatus(true, fcmRegistrationToken);
+        } else {
+          updateFcmUiStatus(false, null);
+        }
+      } else {
+        updateFcmUiStatus(false, null);
+      }
+    }
+
+    function updateFcmUiStatus(active, token) {
+      const badgeEl = document.getElementById('fcm-status-badge');
+      const tokenEl = document.getElementById('fcm-token-display');
+      if (badgeEl) {
+        if (active) {
+          badgeEl.className = 'badge badge-success';
+          badgeEl.innerHTML = '<i class="fa-solid fa-bell"></i> FCM Push Active';
+        } else {
+          badgeEl.className = 'badge badge-warning';
+          badgeEl.innerHTML = '<i class="fa-solid fa-bell-slash"></i> FCM Pending';
+        }
+      }
+      if (tokenEl) {
+        tokenEl.innerText = token || 'No FCM Token generated yet';
+      }
+    }
+
+    function requestFcmPushPermission() {
+      if (window.AndroidFCM) {
+        window.AndroidFCM.requestPermission();
+      } else if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            fcmPermissionGranted = true;
+            fcmRegistrationToken = "fcm_token_web_" + Math.floor(100000 + Math.random() * 900000);
+            updateFcmUiStatus(true, fcmRegistrationToken);
+            showToast('🔔 FCM Push Notifications enabled!', 'success');
+            triggerFcmPushNotification("📩 FCM Registration Active", "Background SMS & OTP alerts enabled for your virtual lines.", "FCM-TEST");
+          } else {
+            showToast('⚠️ Push notification permission denied.', 'warning');
+          }
+        });
+      } else {
+        showToast('ℹ️ System notifications active via Android FCM.', 'info');
+      }
+    }
+
+    function copyFcmToken() {
+      const tokenText = fcmRegistrationToken || (window.AndroidFCM ? window.AndroidFCM.getFcmToken() : null);
+      if (!tokenText) {
+        showToast('⚠️ No FCM Token available to copy yet.', 'warning');
+        return;
+      }
+      navigator.clipboard.writeText(tokenText).then(() => {
+        showToast('📋 FCM Token copied to clipboard!', 'success');
+      }).catch(() => {
+        showToast(`Token: ${tokenText.substring(0, 20)}...`, 'info');
+      });
+    }
+
+    function testFcmPushNotification() {
+      const sampleOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      triggerFcmPushNotification("🔥 FCM Push Alert: New SMS", `WhatsApp code ${sampleOtp} received for +1 415 892 3012.`, sampleOtp);
+      showToast(`⚡ Test FCM Push Notification sent! (${sampleOtp})`, 'success');
+    }
+
+    function triggerFcmPushNotification(title, body, otpCode) {
+      if (window.AndroidFCM && typeof window.AndroidFCM.triggerLocalNotification === 'function') {
+        window.AndroidFCM.triggerLocalNotification(title, body, otpCode || '');
+      } else if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification(title, {
+            body: body,
+            icon: 'https://cdn-icons-png.flaticon.com/512/893/893257.png',
+            tag: 'fcm-sms-notification-' + Date.now()
+          });
+        } catch (e) {
+          console.log("Web Notification trigger error:", e);
+        }
+      }
+    }
+
+    window.onFcmTokenUpdated = function(token) {
+      fcmRegistrationToken = token;
+      updateFcmUiStatus(true, token);
+    };
+
+    window.onNotificationPermissionChanged = function(granted) {
+      fcmPermissionGranted = granted;
+      updateFcmUiStatus(granted, fcmRegistrationToken);
+      if (granted) {
+        showToast('🔔 Background Push Notifications Granted!', 'success');
+      }
+    };
+
+    window.onFcmNotificationTapped = function(otpCode) {
+      showToast(`🎯 Opened from FCM Notification! OTP: ${otpCode}`, 'success');
+      scrollToSection('dashboard');
+      switchDashboardTab('purchases');
+      if (typeof speakOtpCode === 'function') {
+        speakOtpCode(otpCode, 'SMS Alert');
+      }
+    };
 
     /* ==========================================
        WEB AUDIO API NOTIFICATION ENGINE
@@ -7292,24 +8118,14 @@
     function startAutoOtpRefreshEngine() {
       if (autoOtpEngineTimer) clearInterval(autoOtpEngineTimer);
       autoOtpEngineTimer = setInterval(() => {
-        if (AppState.purchases && AppState.purchases.length > 0) {
-          // Pick an active purchase in user dashboard to auto-refresh
-          const randomIdx = Math.floor(Math.random() * AppState.purchases.length);
-          const activeItem = AppState.purchases[randomIdx];
-          if (activeItem) {
-            regenerateOtpForPurchase(activeItem.id, true);
-          }
-        } else {
-          // Refresh Hero Live Receiver OTP code
-          const demoOtp = document.getElementById('hero-demo-otp');
-          if (demoOtp) {
-            const newCode = Math.floor(100000 + Math.random() * 900000);
-            demoOtp.innerText = newCode;
-            triggerOtpPulseAnimation(demoOtp);
-            showToast(`🔔 Live OTP Stream Refreshed (${newCode})`, 'info');
-          }
+        // Only refresh Hero Live Receiver OTP code if visible
+        const demoOtp = document.getElementById('hero-demo-otp');
+        if (demoOtp) {
+          const newCode = Math.floor(100000 + Math.random() * 900000);
+          demoOtp.innerText = newCode;
+          triggerOtpPulseAnimation(demoOtp);
         }
-      }, 30000);
+      }, 45000);
     }
 
     /* ==========================================
@@ -8903,6 +9719,7 @@
         // Step 4: User State, Wallet & Visual Charts
         setProgress(90, 'Restoring wallet & dashboard history...');
         try { renderPurchasesHistory(); } catch(e) { console.error('Purchases err:', e); }
+        try { updateSmsLogsCountBadge(); } catch(e) { console.error('SMS Logs badge err:', e); }
         try { updateFavoritesUI(); } catch(e) { console.error('Favorites err:', e); }
         try { renderReferralTab(); } catch(e) { console.error('Referral err:', e); }
         try { checkAndProcessIncomingReferral(); } catch(e) { console.error('Incoming referral err:', e); }
@@ -8926,6 +9743,11 @@
           updatePriceAlertsUI();
           evaluatePriceAlerts();
         } catch(e) { console.error('Alerts err:', e); }
+
+        // Firebase Cloud Messaging Push Init
+        try {
+          initFcmIntegration();
+        } catch(e) { console.error('FCM init err:', e); }
 
         // Step 5: Finalize and trigger graceful exit animation
         setProgress(100, 'Platform Ready!');
