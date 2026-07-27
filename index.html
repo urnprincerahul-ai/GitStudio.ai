@@ -3133,14 +3133,8 @@
             <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="copyText(document.getElementById('hero-demo-otp')?.innerText || '483920', 'OTP Copied!')">
               <i class="fa-solid fa-copy"></i> Copy OTP
             </button>
-            <button class="btn btn-outline btn-sm" onclick="speakOtpCode(document.getElementById('hero-demo-otp')?.innerText || '483920', 'Telegram', this)" title="Voice-to-Text Readout (Speech Synthesis)">
+            <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="speakOtpCode(document.getElementById('hero-demo-otp')?.innerText || '483920', 'Telegram', this)" title="Voice-to-Text Readout (Speech Synthesis)">
               <i class="fa-solid fa-volume-high" style="color: #a855f7;"></i> Speak
-            </button>
-            <button class="btn btn-outline btn-sm" id="hero-refresh-otp-btn" title="Generate New OTP">
-              <i class="fa-solid fa-rotate"></i> Refresh
-            </button>
-            <button class="btn btn-secondary btn-sm otp-audio-toggle-btn" onclick="toggleOtpAudioMute()" title="Toggle Web Audio Sound Notification" style="opacity: 0.6;">
-              <i class="fa-solid fa-volume-xmark"></i> Sound Muted
             </button>
           </div>
         </div>
