@@ -5138,10 +5138,10 @@
     const RawCountries = [
       { name: 'United States', code: '+1', flag: '🇺🇸', price: 99 },
       { name: 'United Kingdom', code: '+44', flag: '🇬🇧', price: 119 },
+      { name: 'India', code: '+91', flag: '🇮🇳', price: 49 },
       { name: 'Canada', code: '+1', flag: '🇨🇦', price: 99 },
       { name: 'Germany', code: '+49', flag: '🇩🇪', price: 129 },
       { name: 'France', code: '+33', flag: '🇫🇷', price: 129 },
-      { name: 'India', code: '+91', flag: '🇮🇳', price: 79 },
       { name: 'Japan', code: '+81', flag: '🇯🇵', price: 159 },
       { name: 'Brazil', code: '+55', flag: '🇧🇷', price: 89 },
       { name: 'Australia', code: '+61', flag: '🇦🇺', price: 139 },
@@ -5149,13 +5149,53 @@
       { name: 'Spain', code: '+34', flag: '🇪🇸', price: 119 },
       { name: 'Italy', code: '+39', flag: '🇮🇹', price: 119 },
       { name: 'Mexico', code: '+52', flag: '🇲🇽', price: 89 },
-      { name: 'Philippines', code: '+63', flag: '🇵🇭', price: 79 },
-      { name: 'Vietnam', code: '+84', flag: '🇻🇳', price: 79 },
-      { name: 'Thailand', code: '+66', flag: '🇹🇭', price: 89 },
+      { name: 'Philippines', code: '+63', flag: '🇵🇭', price: 69 },
+      { name: 'Vietnam', code: '+84', flag: '🇻🇳', price: 69 },
+      { name: 'Thailand', code: '+66', flag: '🇹🇭', price: 79 },
       { name: 'Singapore', code: '+65', flag: '🇸🇬', price: 149 },
       { name: 'South Korea', code: '+82', flag: '🇰🇷', price: 159 },
-      { name: 'Turkey', code: '+90', flag: '🇹🇷', price: 89 },
-      { name: 'UAE', code: '+971', flag: '🇦🇪', price: 169 }
+      { name: 'Turkey', code: '+90', flag: '🇹🇷', price: 79 },
+      { name: 'UAE', code: '+971', flag: '🇦🇪', price: 169 },
+      { name: 'Bangladesh', code: '+880', flag: '🇧🇩', price: 59 },
+      { name: 'Indonesia', code: '+62', flag: '🇮🇩', price: 69 },
+      { name: 'Malaysia', code: '+60', flag: '🇲🇾', price: 99 },
+      { name: 'Pakistan', code: '+92', flag: '🇵🇰', price: 59 },
+      { name: 'Egypt', code: '+20', flag: '🇪🇬', price: 79 },
+      { name: 'Nigeria', code: '+234', flag: '🇳🇬', price: 69 },
+      { name: 'South Africa', code: '+27', flag: '🇿🇦', price: 99 },
+      { name: 'Kenya', code: '+254', flag: '🇰🇪', price: 79 },
+      { name: 'Saudi Arabia', code: '+966', flag: '🇸🇦', price: 159 },
+      { name: 'Argentina', code: '+54', flag: '🇦🇷', price: 89 },
+      { name: 'Colombia', code: '+57', flag: '🇨🇴', price: 79 },
+      { name: 'Chile', code: '+56', flag: '🇨🇱', price: 99 },
+      { name: 'Peru', code: '+51', flag: '🇵🇪', price: 79 },
+      { name: 'Poland', code: '+48', flag: '🇵🇱', price: 109 },
+      { name: 'Ukraine', code: '+380', flag: '🇺🇦', price: 69 },
+      { name: 'Romania', code: '+40', flag: '🇷🇴', price: 99 },
+      { name: 'Sweden', code: '+46', flag: '🇸🇪', price: 139 },
+      { name: 'Norway', code: '+47', flag: '🇳🇴', price: 139 },
+      { name: 'Finland', code: '+358', flag: '🇫🇮', price: 139 },
+      { name: 'Denmark', code: '+45', flag: '🇩🇰', price: 139 },
+      { name: 'Switzerland', code: '+41', flag: '🇨🇭', price: 169 },
+      { name: 'Austria', code: '+43', flag: '🇦🇹', price: 129 },
+      { name: 'Belgium', code: '+32', flag: '🇧🇪', price: 129 },
+      { name: 'Portugal', code: '+351', flag: '🇵🇹', price: 109 },
+      { name: 'Greece', code: '+30', flag: '🇬🇷', price: 109 },
+      { name: 'Czech Republic', code: '+420', flag: '🇨🇿', price: 109 },
+      { name: 'Hungary', code: '+36', flag: '🇭🇺', price: 99 },
+      { name: 'New Zealand', code: '+64', flag: '🇳🇿', price: 139 },
+      { name: 'Israel', code: '+972', flag: '🇮🇱', price: 149 },
+      { name: 'Ireland', code: '+353', flag: '🇮🇪', price: 129 },
+      { name: 'Kazakhstan', code: '+7', flag: '🇰🇿', price: 79 },
+      { name: 'Uzbekistan', code: '+998', flag: '🇺🇿', price: 69 },
+      { name: 'Hong Kong', code: '+852', flag: '🇭🇰', price: 149 },
+      { name: 'Taiwan', code: '+886', flag: '🇹🇼', price: 149 },
+      { name: 'Morocco', code: '+212', flag: '🇲🇦', price: 89 },
+      { name: 'Nepal', code: '+977', flag: '🇳🇵', price: 59 },
+      { name: 'Sri Lanka', code: '+94', flag: '🇱🇰', price: 59 },
+      { name: 'Qatar', code: '+974', flag: '🇶🇦', price: 169 },
+      { name: 'Kuwait', code: '+965', flag: '🇰🇼', price: 169 },
+      { name: 'Oman', code: '+968', flag: '🇴🇲', price: 159 }
     ];
 
     const RawPlatforms = [
@@ -5178,7 +5218,32 @@
       { name: 'Apple', icon: 'fa-brands fa-apple', color: '#A2AAAD' },
       { name: 'Spotify', icon: 'fa-brands fa-spotify', color: '#1DB954' },
       { name: 'Tinder', icon: 'fa-solid fa-fire', color: '#FD3A73' },
-      { name: 'Snapchat', icon: 'fa-brands fa-snapchat', color: '#FFFC00' }
+      { name: 'Snapchat', icon: 'fa-brands fa-snapchat', color: '#FFFC00' },
+      { name: 'Viber', icon: 'fa-brands fa-viber', color: '#7360F2' },
+      { name: 'LINE', icon: 'fa-brands fa-line', color: '#00C300' },
+      { name: 'WeChat', icon: 'fa-brands fa-weixin', color: '#07C160' },
+      { name: 'KakaoTalk', icon: 'fa-solid fa-comment', color: '#FEE500' },
+      { name: 'eBay', icon: 'fa-brands fa-ebay', color: '#E53238' },
+      { name: 'Airbnb', icon: 'fa-brands fa-airbnb', color: '#FF5A5F' },
+      { name: 'Binance', icon: 'fa-solid fa-coins', color: '#F0B90B' },
+      { name: 'Coinbase', icon: 'fa-solid fa-wallet', color: '#0052FF' },
+      { name: 'Bybit', icon: 'fa-solid fa-chart-line', color: '#F7A600' },
+      { name: 'Reddit', icon: 'fa-brands fa-reddit', color: '#FF4500' },
+      { name: 'Twitch', icon: 'fa-brands fa-twitch', color: '#9146FF' },
+      { name: 'Roblox', icon: 'fa-solid fa-gamepad', color: '#000000' },
+      { name: 'Claude / Anthropic', icon: 'fa-solid fa-brain', color: '#D97706' },
+      { name: 'Yahoo', icon: 'fa-brands fa-yahoo', color: '#6001D2' },
+      { name: 'ProtonMail', icon: 'fa-solid fa-envelope-shield', color: '#6D4AFF' },
+      { name: 'VKontakte', icon: 'fa-brands fa-vk', color: '#4C75A3' },
+      { name: 'Zoom', icon: 'fa-solid fa-video', color: '#2D8CFF' },
+      { name: 'Foodpanda', icon: 'fa-solid fa-utensils', color: '#D70F64' },
+      { name: 'Grab', icon: 'fa-solid fa-taxi', color: '#00B14F' },
+      { name: 'Gojek', icon: 'fa-solid fa-motorcycle', color: '#00AA13' },
+      { name: 'DoorDash', icon: 'fa-solid fa-bag-shopping', color: '#FF3008' },
+      { name: 'Deliveroo', icon: 'fa-solid fa-burger', color: '#00CCBC' },
+      { name: 'Shopee', icon: 'fa-solid fa-store', color: '#EE4D2D' },
+      { name: 'Lazada', icon: 'fa-solid fa-cart-shopping', color: '#0F146D' },
+      { name: 'Signal', icon: 'fa-solid fa-comment-sms', color: '#3A76F0' }
     ];
 
     function getPlatformInfo(platformName) {
@@ -5194,55 +5259,136 @@
       return { icon: 'fa-solid fa-sim-card', color: 'var(--accent)' };
     }
 
+    function getUniqueNumberPrice(baseCountryPrice, platformName, digits, index) {
+      const digitsStr = String(digits);
+      const last4 = parseInt(digitsStr.slice(-4)) || (index * 137);
+      
+      let platformBonus = 10;
+      if (platformName.includes('WhatsApp')) platformBonus = 28;
+      else if (platformName.includes('OpenAI') || platformName.includes('ChatGPT') || platformName.includes('Claude')) platformBonus = 35;
+      else if (platformName.includes('Telegram')) platformBonus = 22;
+      else if (platformName.includes('Binance') || platformName.includes('Coinbase') || platformName.includes('Bybit')) platformBonus = 40;
+      else if (platformName.includes('Google')) platformBonus = 18;
+      else if (platformName.includes('Tinder')) platformBonus = 25;
+      else if (platformName.includes('Instagram')) platformBonus = 20;
+      else if (platformName.includes('TikTok')) platformBonus = 20;
+
+      let vanityBonus = 0;
+      if (digitsStr.endsWith('777') || digitsStr.endsWith('888') || digitsStr.endsWith('999') || digitsStr.endsWith('000')) {
+        vanityBonus = 120;
+      } else if (digitsStr.endsWith('77') || digitsStr.endsWith('88') || digitsStr.endsWith('99') || digitsStr.endsWith('00') || digitsStr.endsWith('55')) {
+        vanityBonus = 45;
+      } else if (digitsStr.includes('1234') || digitsStr.includes('5678') || digitsStr.includes('999')) {
+        vanityBonus = 60;
+      }
+
+      const numberVariation = ((last4 * 19 + index * 43) % 73) - 28;
+      let calculatedPrice = baseCountryPrice + platformBonus + vanityBonus + numberVariation;
+      if (calculatedPrice < 19) calculatedPrice = 19;
+      return calculatedPrice;
+    }
+
+    // Dynamic Inventory Store Generator for 1000+ numbers per Country x Platform
+    const CreatedNumberPairs = new Set();
+
+    function createPairNumberPool(country, platform, count = 1050) {
+      const pairKey = `${country.name}___${platform.name}`;
+      if (CreatedNumberPairs.has(pairKey)) return;
+      CreatedNumberPairs.add(pairKey);
+
+      const existingCount = AppState.numbers.filter(n => n.countryName === country.name && n.platformName === platform.name).length;
+      const needed = count - existingCount;
+      if (needed <= 0) return;
+
+      const pInfo = getPlatformInfo(platform.name);
+
+      for (let i = 0; i < needed; i++) {
+        const index = existingCount + i;
+        // Deterministic & realistic 9-digit random numbers
+        const baseDigit = (100000000 + (index * 1234567 + (country.name.length * 98765) + (platform.name.length * 54321)) % 899999999);
+        const phone = `${country.code} ${baseDigit}`;
+        const isPurchased = AppState.purchases.some(p => p.phone === phone);
+        const price = getUniqueNumberPrice(country.price, platform.name, baseDigit, index);
+
+        AppState.numbers.push({
+          id: `num_${country.code.replace('+', '')}_${platform.name.replace(/[^a-zA-Z]/g, '')}_${index+1}`,
+          countryName: country.name,
+          countryCode: country.code,
+          flag: country.flag,
+          platformName: platform.name,
+          platformIcon: pInfo.icon,
+          platformColor: pInfo.color,
+          phone: phone,
+          price: price,
+          status: isPurchased ? 'PURCHASED' : 'AVAILABLE'
+        });
+      }
+    }
+
+    function ensureNumbersExistForFilter(cName, cCode, pName) {
+      const targetCountries = (cName && cName !== 'ALL') 
+        ? AppState.countries.filter(c => c.name === cName)
+        : (cCode && cCode !== 'ALL')
+          ? AppState.countries.filter(c => c.code === cCode)
+          : AppState.countries;
+
+      const targetPlatforms = (pName && pName !== 'ALL')
+        ? AppState.platforms.filter(p => p.name === pName)
+        : AppState.platforms;
+
+      const limitC = (cName !== 'ALL' || cCode !== 'ALL') ? targetCountries.length : 15;
+      const limitP = (pName !== 'ALL') ? targetPlatforms.length : 15;
+
+      const maxC = targetCountries.slice(0, limitC);
+      const maxP = targetPlatforms.slice(0, limitP);
+
+      maxC.forEach(c => {
+        maxP.forEach(p => {
+          createPairNumberPool(c, p, 1050);
+        });
+      });
+    }
+
     // Seed 100 Countries and 100 Platforms programmatically
     function initializeCatalogData() {
       AppState.countries = [];
-      for (let i = 0; i < 100; i++) {
-        const base = RawCountries[i % RawCountries.length];
+      for (let i = 0; i < RawCountries.length; i++) {
+        const base = RawCountries[i];
         AppState.countries.push({
           id: `c_${i+1}`,
-          name: i >= RawCountries.length ? `${base.name} Zone-${Math.floor(i/RawCountries.length)}` : base.name,
+          name: base.name,
           code: base.code,
           flag: base.flag,
-          price: base.price + (i % 5) * 10,
-          stock: Math.floor(Math.random() * 800) + 200
+          price: base.price,
+          stock: 1050
         });
       }
 
       AppState.platforms = [];
-      for (let i = 0; i < 100; i++) {
-        const base = RawPlatforms[i % RawPlatforms.length];
+      for (let i = 0; i < RawPlatforms.length; i++) {
+        const base = RawPlatforms[i];
         AppState.platforms.push({
           id: `p_${i+1}`,
-          name: i >= RawPlatforms.length ? `${base.name} Pro ${Math.floor(i/RawPlatforms.length)}` : base.name,
+          name: base.name,
           icon: base.icon,
           color: base.color,
           price: 79 + (i % 4) * 20
         });
       }
 
-      // Generate 2000 Numbers programmatically
       AppState.numbers = [];
-      for (let i = 0; i < 2000; i++) {
-        const country = AppState.countries[i % AppState.countries.length];
-        const platform = AppState.platforms[i % AppState.platforms.length];
-        const randomDigits = Math.floor(100000000 + Math.random() * 900000000);
-        const isPurchased = AppState.purchases.some(p => p.phone === `${country.code} ${randomDigits}`);
+      CreatedNumberPairs.clear();
 
-        const platformInfo = getPlatformInfo(platform.name);
-        AppState.numbers.push({
-          id: `num_${i+1}`,
-          countryName: country.name,
-          countryCode: country.code,
-          flag: country.flag,
-          platformName: platform.name,
-          platformIcon: platformInfo.icon,
-          platformColor: platformInfo.color,
-          phone: `${country.code} ${randomDigits}`,
-          price: country.price,
-          status: isPurchased ? 'PURCHASED' : 'AVAILABLE'
+      // Pre-seed top popular country x platform combinations (1050 numbers each)
+      const topCountries = AppState.countries.slice(0, 5);
+      const topPlatforms = AppState.platforms.slice(0, 5);
+
+      topCountries.forEach(c => {
+        topPlatforms.forEach(p => {
+          createPairNumberPool(c, p, 1050);
         });
-      }
+      });
+
       AppState.filteredNumbers = [...AppState.numbers];
     }
 
@@ -8920,16 +9066,16 @@
       const platformSelect = document.getElementById('filter-platform-select');
 
       if (countrySelect) {
-        const uniqueCountries = [...new Set(AppState.numbers.map(n => n.countryName))].sort();
+        const uniqueCountries = AppState.countries.map(c => c.name).sort();
         countrySelect.innerHTML = '<option value="ALL">All Countries</option>' +
           uniqueCountries.map(c => `<option value="${c}">${c}</option>`).join('');
       }
 
       if (countryCodeSelect) {
         const codeMap = new Map();
-        AppState.numbers.forEach(n => {
-          if (!codeMap.has(n.countryCode)) {
-            codeMap.set(n.countryCode, `${n.countryCode} (${n.flag} ${n.countryName})`);
+        AppState.countries.forEach(c => {
+          if (!codeMap.has(c.code)) {
+            codeMap.set(c.code, `${c.code} (${c.flag} ${c.name})`);
           }
         });
 
@@ -8944,7 +9090,7 @@
       }
 
       if (platformSelect) {
-        const uniquePlatforms = [...new Set(AppState.numbers.map(n => n.platformName))].sort();
+        const uniquePlatforms = AppState.platforms.map(p => p.name).sort();
         platformSelect.innerHTML = '<option value="ALL">All Platforms</option>' +
           uniquePlatforms.map(p => `<option value="${p}">${p}</option>`).join('');
       }
@@ -8965,6 +9111,9 @@
         const platformName = document.getElementById('filter-platform-select')?.value || 'ALL';
         const status = document.getElementById('filter-status-select')?.value || 'ALL';
         const sortBy = document.getElementById('sort-select')?.value || 'PRICE_LOW';
+
+        // Ensure 1000+ numbers exist for the selected filter combination
+        ensureNumbersExistForFilter(countryName, countryCode, platformName);
 
         let results = [...AppState.numbers];
 
