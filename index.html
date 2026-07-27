@@ -1943,12 +1943,55 @@
     /* Tablet & Mobile Screens (Max 900px) */
     @media (max-width: 900px) {
       .container {
-        padding: 0 0.75rem;
+        padding: 0 1rem;
         max-width: 100%;
         box-sizing: border-box;
       }
       .nav-menu { display: none !important; }
       .hamburger-btn { display: flex !important; align-items: center; justify-content: center; }
+
+      .pricing-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem;
+        margin-top: 2rem;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .pricing-card {
+        padding: 1.5rem 1.1rem !important;
+        width: 100%;
+        box-sizing: border-box;
+        transform: none !important;
+        box-shadow: var(--shadow-sm) !important;
+      }
+      .pricing-card.popular {
+        transform: none !important;
+      }
+
+      .faq-category-block {
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .faq-category-header {
+        padding: 0.85rem 1rem !important;
+      }
+      .faq-category-body {
+        padding: 0.75rem 0.85rem !important;
+      }
+      .faq-category-filters {
+        gap: 0.35rem;
+        margin-bottom: 1.25rem;
+        padding: 0 0.2rem;
+      }
+      .faq-cat-btn {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.78rem;
+      }
+
+      .app-footer {
+        padding: 2.5rem 0 6.5rem 0 !important;
+        margin-top: 2.5rem !important;
+      }
 
       .server-time-chip,
       .user-chip,
@@ -2140,7 +2183,8 @@
     /* Mobile Phones (Max 480px) */
     @media (max-width: 480px) {
       .container {
-        padding: 0 0.5rem;
+        padding: 0 0.85rem;
+        box-sizing: border-box;
       }
 
       .logo span {
@@ -2279,6 +2323,10 @@
 
     /* Ultra-small Mobile Devices (Max 380px) */
     @media (max-width: 380px) {
+      .container {
+        padding: 0 0.75rem;
+        box-sizing: border-box;
+      }
       .search-filter-box {
         padding: 0.5rem 0.4rem;
         gap: 0.45rem;
@@ -3707,7 +3755,7 @@
   </main>
 
   <!-- FOOTER -->
-  <footer style="background: var(--bg-surface); border-top: 1px solid var(--border-color); padding: 4rem 0 2rem 0; margin-top: 4rem;">
+  <footer class="app-footer" style="background: var(--bg-surface); border-top: 1px solid var(--border-color); margin-top: 4rem;">
     <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2.5rem; margin-bottom: 3rem;">
       <div>
         <div class="logo" style="margin-bottom: 1rem;">
