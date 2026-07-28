@@ -3030,6 +3030,22 @@
     }, 2500);
   </script>
 
+  <!-- Low Battery Power Saver Sticky Notification Banner -->
+  <div id="low-battery-sticky-banner" style="display: none; position: sticky; top: 0; z-index: 1001; background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%); color: #ffffff; padding: 0.45rem 1rem; font-size: 0.8rem; font-weight: 700; border-bottom: 1px solid rgba(239, 68, 68, 0.5); align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <i class="fa-solid fa-battery-quarter" style="color: #fca5a5; font-size: 1rem;"></i>
+      <span id="low-battery-banner-text">⚡ Low Battery: Background SMS Polling & Auto-Refresh Paused</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <button class="btn btn-secondary btn-sm" onclick="scrollToSection('dashboard');" style="padding: 0.15rem 0.5rem; font-size: 0.72rem; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff;">
+        <i class="fa-solid fa-sliders"></i> Power Settings
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="testToggleLowBatterySimulation()" style="padding: 0.15rem 0.5rem; font-size: 0.72rem; background: #ffffff; color: #7f1d1d; border: none; font-weight: 800;">
+        Resume Polling
+      </button>
+    </div>
+  </div>
+
   <!-- App Header -->
   <header class="app-header">
     <div class="container header-inner">
@@ -3581,6 +3597,50 @@
                 </button>
                 <button class="btn btn-secondary btn-sm" style="flex: 1; font-size: 0.78rem;" onclick="testFcmPushNotification()">
                   <i class="fa-solid fa-paper-plane"></i> Test FCM Push
+                </button>
+              </div>
+            </div>
+
+            <!-- Low Battery Power Efficiency & SMS Polling Control Card -->
+            <div class="glass-card" style="padding: 1.5rem;" id="battery-saver-widget-card">
+              <div class="widget-title">
+                <span><i class="fa-solid fa-battery-three-quarters" id="battery-widget-icon" style="color: #22c55e;"></i> Low Battery Power Saver</span>
+                <span class="badge badge-success" id="battery-level-badge"><i class="fa-solid fa-bolt"></i> <span id="battery-level-text">100%</span></span>
+              </div>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+                Automatically pauses SMS background polling, marketplace auto-refresh, and live sync when device battery drops below threshold to maximize power efficiency.
+              </p>
+
+              <!-- Settings Box -->
+              <div style="background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); padding: 0.75rem; border-radius: var(--radius-sm); margin-bottom: 0.85rem; display: flex; flex-direction: column; gap: 0.65rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-main);">
+                    <i class="fa-solid fa-power-off" style="color: var(--accent);"></i> Pause Polling on Low Battery
+                  </span>
+                  <button class="btn btn-success btn-sm" id="battery-saver-toggle-btn" onclick="toggleBatterySaverSetting()" style="font-size: 0.75rem; padding: 0.2rem 0.6rem;">
+                    <i class="fa-solid fa-toggle-on"></i> Enabled
+                  </button>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 0.5rem;">
+                  <span style="font-size: 0.78rem; color: var(--text-muted);">Battery Pause Threshold:</span>
+                  <select id="battery-threshold-select" onchange="changeBatteryThreshold(this.value)" style="background: rgba(15,23,42,0.9); border: 1px solid var(--border-color); color: var(--text-main); font-size: 0.75rem; font-weight: 700; border-radius: 4px; padding: 0.15rem 0.4rem; outline: none;">
+                    <option value="15">Below 15%</option>
+                    <option value="20" selected>Below 20% (Recommended)</option>
+                    <option value="25">Below 25%</option>
+                    <option value="30">Below 30%</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Live Status Alert Banner -->
+              <div id="battery-saver-status-alert" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); padding: 0.6rem 0.75rem; border-radius: var(--radius-sm); margin-bottom: 0.85rem; font-size: 0.78rem; color: #fca5a5;">
+                <i class="fa-solid fa-battery-quarter" style="color: #ef4444;"></i> <strong>Low Battery Active!</strong> Background SMS polling and inventory updates are paused to conserve energy.
+              </div>
+
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary btn-sm" style="flex: 1; font-size: 0.75rem;" onclick="testToggleLowBatterySimulation()">
+                  <i class="fa-solid fa-flask"></i> <span id="sim-battery-btn-label">Test Low Battery Mode</span>
                 </button>
               </div>
             </div>
@@ -5373,6 +5433,12 @@
       selectedTimezone: SafeStorage.getItem('vnh_selected_tz') || 'Asia/Kolkata',
       autoSpeakOtp: SafeStorage.getItem('vnh_auto_speak_otp') !== 'false',
       otpSoundStyle: SafeStorage.getItem('vnh_otp_sound_style') || 'classic',
+      batterySaverEnabled: SafeStorage.getItem('vnh_battery_saver_enabled') !== 'false',
+      batteryThreshold: parseInt(SafeStorage.getItem('vnh_battery_threshold') || '20', 10),
+      batteryLevel: 100,
+      isBatteryCharging: false,
+      isBatteryLow: false,
+      isBatterySimulated: false,
       walletBalance: (() => {
         const saved = SafeStorage.getItem('vnh_wallet');
         if (saved === null || saved === '500' || saved === '500.00') {
@@ -9266,6 +9332,210 @@
     };
 
     /* ==========================================
+       BATTERY MONITOR & POWER EFFICIENCY SAVER ENGINE
+       ========================================== */
+    let batteryCheckTimer = null;
+
+    function isSmsPollingPausedByBattery() {
+      return AppState.batterySaverEnabled && AppState.isBatteryLow;
+    }
+
+    function initBatteryMonitor() {
+      if (batteryCheckTimer) clearInterval(batteryCheckTimer);
+      batteryCheckTimer = setInterval(checkDeviceBatteryStatus, 4000);
+      checkDeviceBatteryStatus();
+
+      if ('getBattery' in navigator) {
+        navigator.getBattery().then(battery => {
+          updateBatteryStateFromWebBattery(battery);
+          battery.addEventListener('levelchange', () => updateBatteryStateFromWebBattery(battery));
+          battery.addEventListener('chargingchange', () => updateBatteryStateFromWebBattery(battery));
+        }).catch(err => {
+          console.warn('Web Battery API warning:', err);
+        });
+      }
+    }
+
+    function updateBatteryStateFromWebBattery(battery) {
+      if (AppState.isBatterySimulated) return;
+      const pct = Math.round(battery.level * 100);
+      AppState.batteryLevel = pct;
+      AppState.isBatteryCharging = !!battery.charging;
+      evaluateBatteryLowState();
+    }
+
+    function checkDeviceBatteryStatus() {
+      if (AppState.isBatterySimulated) {
+        evaluateBatteryLowState();
+        return;
+      }
+
+      if (window.AndroidFCM && typeof window.AndroidFCM.getBatteryStatus === 'function') {
+        try {
+          const raw = window.AndroidFCM.getBatteryStatus();
+          const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+          if (data && typeof data.level === 'number') {
+            AppState.batteryLevel = data.level;
+            AppState.isBatteryCharging = !!data.isCharging;
+            evaluateBatteryLowState();
+            return;
+          }
+        } catch(e) {
+          console.warn('Android battery bridge err:', e);
+        }
+      }
+
+      evaluateBatteryLowState();
+    }
+
+    function evaluateBatteryLowState() {
+      const prevLow = AppState.isBatteryLow;
+      if (AppState.isBatterySimulated) {
+        AppState.isBatteryLow = true;
+      } else {
+        AppState.isBatteryLow = (AppState.batteryLevel <= AppState.batteryThreshold) && !AppState.isBatteryCharging;
+      }
+
+      if (!prevLow && AppState.isBatteryLow && AppState.batterySaverEnabled) {
+        showToast(`⚡ Battery Saver Active (${AppState.batteryLevel}%): Background SMS polling & marketplace auto-refresh paused to conserve energy.`, 'warning');
+      }
+
+      updateBatterySaverUI();
+    }
+
+    function toggleBatterySaverSetting() {
+      AppState.batterySaverEnabled = !AppState.batterySaverEnabled;
+      SafeStorage.setItem('vnh_battery_saver_enabled', AppState.batterySaverEnabled ? 'true' : 'false');
+      evaluateBatteryLowState();
+      showToast(
+        AppState.batterySaverEnabled 
+          ? '⚡ Low Battery Power Saver ENABLED (SMS polling will pause on low battery)' 
+          : '⚡ Low Battery Power Saver DISABLED (SMS polling will run regardless of battery)', 
+        AppState.batterySaverEnabled ? 'success' : 'info'
+      );
+    }
+
+    function changeBatteryThreshold(val) {
+      const num = parseInt(val, 10) || 20;
+      AppState.batteryThreshold = num;
+      SafeStorage.setItem('vnh_battery_threshold', num.toString());
+      evaluateBatteryLowState();
+      showToast(`🔋 Low battery pause threshold set to ${num}%`, 'info');
+    }
+
+    function testToggleLowBatterySimulation() {
+      AppState.isBatterySimulated = !AppState.isBatterySimulated;
+      if (AppState.isBatterySimulated) {
+        AppState.batteryLevel = 14;
+        AppState.isBatteryCharging = false;
+        showToast('🧪 Simulated Low Battery (14% - Discharging)! SMS polling paused.', 'warning');
+      } else {
+        showToast('🧪 Stopped Low Battery simulation. Restored live battery state.', 'success');
+      }
+      checkDeviceBatteryStatus();
+    }
+
+    function updateBatterySaverUI() {
+      const levelText = document.getElementById('battery-level-text');
+      const levelBadge = document.getElementById('battery-level-badge');
+      const widgetIcon = document.getElementById('battery-widget-icon');
+      const alertBox = document.getElementById('battery-saver-status-alert');
+      const toggleBtn = document.getElementById('battery-saver-toggle-btn');
+      const simBtnLabel = document.getElementById('sim-battery-btn-label');
+      const stickyBanner = document.getElementById('low-battery-sticky-banner');
+      const selectEl = document.getElementById('battery-threshold-select');
+
+      const isLow = AppState.isBatteryLow;
+      const isPaused = isSmsPollingPausedByBattery();
+      const level = AppState.batteryLevel;
+      const isCharging = AppState.isBatteryCharging;
+
+      if (selectEl) selectEl.value = AppState.batteryThreshold.toString();
+
+      if (levelText) {
+        if (AppState.isBatterySimulated) {
+          levelText.innerText = `Simulated 14% (Low)`;
+        } else if (isCharging) {
+          levelText.innerText = `Charging (${level}%)`;
+        } else {
+          levelText.innerText = `${level}% ${isLow ? '(Low)' : ''}`;
+        }
+      }
+
+      if (levelBadge) {
+        if (isLow) {
+          levelBadge.className = 'badge badge-danger';
+          levelBadge.innerHTML = `<i class="fa-solid fa-battery-quarter"></i> ${level}% Low`;
+        } else if (isCharging) {
+          levelBadge.className = 'badge badge-success';
+          levelBadge.innerHTML = `<i class="fa-solid fa-bolt"></i> ${level}% Charging`;
+        } else {
+          levelBadge.className = 'badge badge-primary';
+          levelBadge.innerHTML = `<i class="fa-solid fa-battery-three-quarters"></i> ${level}%`;
+        }
+      }
+
+      if (widgetIcon) {
+        if (isLow) {
+          widgetIcon.className = 'fa-solid fa-battery-quarter';
+          widgetIcon.style.color = '#ef4444';
+        } else if (isCharging) {
+          widgetIcon.className = 'fa-solid fa-battery-charging';
+          widgetIcon.style.color = '#10b981';
+        } else {
+          widgetIcon.className = 'fa-solid fa-battery-three-quarters';
+          widgetIcon.style.color = 'var(--accent)';
+        }
+      }
+
+      if (toggleBtn) {
+        if (AppState.batterySaverEnabled) {
+          toggleBtn.className = 'btn btn-success btn-sm';
+          toggleBtn.innerHTML = '<i class="fa-solid fa-toggle-on"></i> Enabled';
+        } else {
+          toggleBtn.className = 'btn btn-secondary btn-sm';
+          toggleBtn.innerHTML = '<i class="fa-solid fa-toggle-off" style="color: var(--text-muted);"></i> Disabled';
+        }
+      }
+
+      if (alertBox) {
+        if (isPaused) {
+          alertBox.style.display = 'block';
+          alertBox.style.background = 'rgba(239, 68, 68, 0.15)';
+          alertBox.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+          alertBox.style.color = '#fca5a5';
+          alertBox.innerHTML = `<i class="fa-solid fa-battery-quarter" style="color: #ef4444;"></i> <strong>Low Battery Active (${level}%)!</strong> Background SMS polling & marketplace auto-refresh are paused to optimize energy usage.`;
+        } else if (isLow && !AppState.batterySaverEnabled) {
+          alertBox.style.display = 'block';
+          alertBox.style.background = 'rgba(245, 158, 11, 0.15)';
+          alertBox.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+          alertBox.style.color = '#fde047';
+          alertBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i> Low battery detected (${level}%), but Power Saver setting is disabled. Polling remains active.`;
+        } else {
+          alertBox.style.display = 'none';
+        }
+      }
+
+      if (simBtnLabel) {
+        simBtnLabel.innerText = AppState.isBatterySimulated ? 'Stop Low Battery Test' : 'Test Low Battery Mode';
+      }
+
+      if (stickyBanner) {
+        if (isPaused) {
+          stickyBanner.style.display = 'flex';
+          const bannerText = document.getElementById('low-battery-banner-text');
+          if (bannerText) {
+            bannerText.innerText = `⚡ Low Battery (${level}%): SMS Polling & Auto-Refresh Paused`;
+          }
+        } else {
+          stickyBanner.style.display = 'none';
+        }
+      }
+
+      updateAutoRefreshBadge();
+    }
+
+    /* ==========================================
        WEB AUDIO API NOTIFICATION ENGINE
        ========================================== */
     let isOtpAudioMuted = true;
@@ -9537,6 +9807,9 @@
     function startAutoOtpRefreshEngine() {
       if (autoOtpEngineTimer) clearInterval(autoOtpEngineTimer);
       autoOtpEngineTimer = setInterval(() => {
+        if (typeof isSmsPollingPausedByBattery === 'function' && isSmsPollingPausedByBattery()) {
+          return; // Skip periodic demo refresh on low battery
+        }
         // Only refresh Hero Live Receiver OTP code if visible
         const demoOtp = document.getElementById('hero-demo-otp');
         if (demoOtp) {
@@ -10042,12 +10315,25 @@
 
     function updateAutoRefreshBadge() {
       const badge = document.getElementById('auto-refresh-timer-badge');
+      const icon = document.getElementById('auto-refresh-icon');
       if (badge && isAutoRefreshEnabled) {
-        badge.innerText = `${autoRefreshCountdown}s`;
+        if (typeof isSmsPollingPausedByBattery === 'function' && isSmsPollingPausedByBattery()) {
+          badge.innerText = 'PAUSED (LOW BATT)';
+          badge.style.color = '#ef4444';
+          if (icon) icon.classList.remove('fa-spin');
+        } else {
+          badge.innerText = `${autoRefreshCountdown}s`;
+          badge.style.color = '';
+          if (icon && !icon.classList.contains('fa-spin')) icon.classList.add('fa-spin');
+        }
       }
     }
 
     function refreshMarketplaceInventory(isAutoTrigger = false) {
+      if (isAutoTrigger && typeof isSmsPollingPausedByBattery === 'function' && isSmsPollingPausedByBattery()) {
+        console.log('Marketplace auto-refresh skipped due to Low Battery Power Saver.');
+        return;
+      }
       renderMarketplaceSkeletons(6);
 
       setTimeout(() => {
@@ -11670,6 +11956,11 @@
         try {
           initFcmIntegration();
         } catch(e) { console.error('FCM init err:', e); }
+
+        // Low Battery Power Efficiency Engine Init
+        try {
+          initBatteryMonitor();
+        } catch(e) { console.error('Battery monitor init err:', e); }
 
         // Step 5: Finalize and trigger graceful exit animation
         setProgress(100, 'Platform Ready!');

@@ -208,12 +208,37 @@ fun VirtualNumberWebView(
             fun triggerLocalNotification(title: String, body: String, otpCode: String?) {
               onTriggerLocalNotification(title, body, otpCode)
             }
+
+            @JavascriptInterface
+            fun getBatteryStatus(): String {
+              return try {
+                val batteryIntent = context.registerReceiver(null, android.content.IntentFilter(android.content.Intent.ACTION_BATTERY_CHANGED))
+                val level = batteryIntent?.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1) ?: -1
+                val scale = batteryIntent?.getIntExtra(android.os.BatteryManager.EXTRA_SCALE, -1) ?: -1
+                val status = batteryIntent?.getIntExtra(android.os.BatteryManager.EXTRA_STATUS, -1) ?: -1
+                val isCharging = status == android.os.BatteryManager.BATTERY_STATUS_CHARGING || status == android.os.BatteryManager.BATTERY_STATUS_FULL
+                val pct = if (level >= 0 && scale > 0) (level * 100 / scale) else 100
+                "{\"level\": $pct, \"isCharging\": $isCharging}"
+              } catch (e: Exception) {
+                "{\"level\": 100, \"isCharging\": false}"
+              }
+            }
           },
           "AndroidFCM"
         )
 
         webChromeClient = WebChromeClient()
         webViewClient = object : WebViewClient() {
+          override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+            val activity = context as? ComponentActivity
+            val otpCode = activity?.intent?.getStringExtra("EXTRA_OTP_CODE")
+            if (!otpCode.isNullOrEmpty()) {
+              view?.evaluateJavascript("if (typeof onFcmNotificationTapped === 'function') onFcmNotificationTapped('$otpCode');", null)
+              activity.intent.removeExtra("EXTRA_OTP_CODE")
+            }
+          }
+
           override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (url != null && (url.startsWith("upi://") || url.startsWith("https://t.me/"))) {
               try {
