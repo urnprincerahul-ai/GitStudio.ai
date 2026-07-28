@@ -2028,6 +2028,7 @@
     .responsive-table-wrapper {
       width: 100% !important;
       max-width: 100% !important;
+      min-width: 0 !important;
       overflow-x: auto !important;
       -webkit-overflow-scrolling: touch;
       border-radius: var(--radius-md);
@@ -2035,11 +2036,12 @@
       background: rgba(0, 0, 0, 0.25);
       box-sizing: border-box !important;
       display: block !important;
+      margin: 0 !important;
     }
 
     .responsive-table-wrapper table {
       width: 100% !important;
-      min-width: 560px !important;
+      min-width: 520px !important;
       border-collapse: collapse;
       font-size: 0.82rem;
       text-align: left;
@@ -3884,19 +3886,19 @@
                 </div>
               </div>
 
-              <div id="purchased-history-list" style="display: flex; flex-direction: column; gap: 1rem;">
+              <div id="purchased-history-list" style="display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;">
                 <!-- Dynamically Rendered Purchases -->
               </div>
 
-              <div id="favorites-tab-list" style="display: none; flex-direction: column; gap: 1rem;">
+              <div id="favorites-tab-list" style="display: none; flex-direction: column; gap: 1rem; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;">
                 <!-- Dynamically Rendered Favorites -->
               </div>
 
-              <div id="referral-tab-content" style="display: none; flex-direction: column; gap: 1.25rem;">
+              <div id="referral-tab-content" style="display: none; flex-direction: column; gap: 1.25rem; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden;">
                 <!-- Dynamically Rendered Referral Section -->
               </div>
 
-              <div id="sms-logs-tab-content" style="display: none; flex-direction: column; gap: 1.25rem;">
+              <div id="sms-logs-tab-content" style="display: none; flex-direction: column; gap: 1.25rem; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden;">
                 <!-- Dynamically Rendered SMS Logs Section -->
               </div>
             </div>
@@ -6999,20 +7001,20 @@
         </div>
 
         <!-- Rewards & Referred Users Activity Table -->
-        <div style="margin-top: 1.25rem;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
-            <h4 style="font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem;">
+        <div style="margin-top: 1.25rem; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem; width: 100%; min-width: 0; box-sizing: border-box;">
+            <h4 style="font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem; margin: 0; min-width: 0;">
               <i class="fa-solid fa-list-check" style="color: var(--accent);"></i> Invited Users & Reward Logs
             </h4>
-            <div style="display: flex; gap: 0.4rem;">
-              <button class="btn ${filter === 'ALL' ? 'btn-primary' : 'btn-secondary'} btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterReferralTable('ALL')">All (${totalCount})</button>
-              <button class="btn ${filter === 'COMPLETED' ? 'btn-primary' : 'btn-secondary'} btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterReferralTable('COMPLETED')">Completed (${completedList.length})</button>
-              <button class="btn ${filter === 'PENDING' ? 'btn-primary' : 'btn-secondary'} btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="filterReferralTable('PENDING')">Pending (${pendingList.length})</button>
+            <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center;">
+              <button class="btn ${filter === 'ALL' ? 'btn-primary' : 'btn-secondary'} btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="filterReferralTable('ALL')">All (${totalCount})</button>
+              <button class="btn ${filter === 'COMPLETED' ? 'btn-primary' : 'btn-secondary'} btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="filterReferralTable('COMPLETED')">Completed (${completedList.length})</button>
+              <button class="btn ${filter === 'PENDING' ? 'btn-primary' : 'btn-secondary'} btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="filterReferralTable('PENDING')">Pending (${pendingList.length})</button>
             </div>
           </div>
 
-          <div class="responsive-table-wrapper">
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+          <div class="responsive-table-wrapper" style="width: 100%; max-width: 100%; overflow-x: auto; min-width: 0; box-sizing: border-box;">
+            <table style="width: 100%; min-width: 520px; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
               <thead>
                 <tr style="background: rgba(255, 255, 255, 0.04); border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600;">
                   <th style="padding: 0.65rem 0.85rem;">User</th>
