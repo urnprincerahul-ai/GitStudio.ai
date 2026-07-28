@@ -234,7 +234,7 @@
       min-height: 100%;
       max-width: 100%;
       overflow-x: hidden;
-      overflow-y: auto;
+      overflow-y: scroll;
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
     }
@@ -245,13 +245,15 @@
       background-color: var(--bg);
       color: var(--text-main);
       line-height: 1.6;
-      overflow-x: hidden;
-      overflow-y: auto;
       width: 100%;
       max-width: 100%;
       min-height: 100vh;
+      margin: 0;
+      padding: 0;
       position: relative;
-      touch-action: pan-y;
+      overflow-x: hidden;
+      overflow-y: visible;
+      touch-action: auto;
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
       -webkit-overflow-scrolling: touch;
