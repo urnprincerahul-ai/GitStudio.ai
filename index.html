@@ -2086,6 +2086,17 @@
       }
     }
 
+    /* Collapsible SMS Metadata Details styling */
+    details.sms-meta-collapse summary::-webkit-details-marker {
+      display: none !important;
+    }
+    details.sms-meta-collapse summary {
+      list-style: none !important;
+    }
+    details.sms-meta-collapse[open] .sms-chevron-icon {
+      transform: rotate(180deg);
+    }
+
     /* Strict Mobile Screen & Universal Overflow Protection */
     *, *::before, *::after {
       box-sizing: border-box !important;
@@ -8088,21 +8099,40 @@
                   </div>
                 </div>
 
-                <!-- Sender Metadata & Gateway Route Bar -->
-                <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(0, 0, 0, 0.25); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem;">
-                  <div style="color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
-                    <strong style="color: var(--text-main);"><i class="fa-solid fa-server" style="color: #38bdf8;"></i> Sender:</strong>
-                    <span style="font-family: var(--font-mono); color: #cbd5e1;">${log.sender}</span>
+                <!-- Collapsible Sender Metadata & Gateway Route Bar -->
+                <details class="sms-meta-collapse" style="margin-top: 0.65rem; background: rgba(0, 0, 0, 0.25); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden;">
+                  <summary style="padding: 0.4rem 0.65rem; font-size: 0.72rem; color: var(--text-muted); cursor: pointer; user-select: none; font-weight: 600; display: flex; align-items: center; justify-content: space-between;">
+                    <span style="display: flex; align-items: center; gap: 0.4rem;">
+                      <i class="fa-solid fa-server" style="color: #38bdf8;"></i> Sender & Gateway Route
+                    </span>
+                    <span style="font-size: 0.68rem; color: var(--accent); font-weight: 700; display: inline-flex; align-items: center; gap: 0.25rem;">
+                      <span>Details</span>
+                      <i class="fa-solid fa-chevron-down sms-chevron-icon" style="font-size: 0.6rem; transition: transform 0.2s ease;"></i>
+                    </span>
+                  </summary>
+                  <div style="padding: 0.5rem 0.75rem; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem; background: rgba(0, 0, 0, 0.15);">
+                    <div style="color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                      <strong style="color: var(--text-main);"><i class="fa-solid fa-server" style="color: #38bdf8;"></i> Sender:</strong>
+                      <span style="font-family: var(--font-mono); color: #cbd5e1;">${log.sender}</span>
+                    </div>
+                    <div style="color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                      <strong style="color: var(--text-main);"><i class="fa-solid fa-tower-cell" style="color: #f59e0b;"></i> Carrier:</strong>
+                      <span style="font-family: var(--font-mono); color: #cbd5e1;">${log.carrierGateway || 'Cloud Telecom Gateway'}</span>
+                    </div>
                   </div>
-                  <div style="color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
-                    <strong style="color: var(--text-main);"><i class="fa-solid fa-tower-cell" style="color: #f59e0b;"></i> Carrier:</strong>
-                    <span style="font-family: var(--font-mono); color: #cbd5e1;">${log.carrierGateway || 'Cloud Telecom Gateway'}</span>
-                  </div>
-                </div>
+                </details>
 
                 <!-- Raw Message Text Body -->
-                <div style="margin-top: 0.75rem; background: rgba(15, 23, 42, 0.6); padding: 0.75rem 0.9rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.85rem; color: var(--text-main); font-family: system-ui, -apple-system, sans-serif; line-height: 1.45; word-break: break-word;">
-                  ${log.rawMessage}
+                <div style="margin-top: 0.65rem; background: rgba(15, 23, 42, 0.6); padding: 0.7rem 0.85rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.85rem; color: var(--text-main); font-family: system-ui, -apple-system, sans-serif; line-height: 1.45; word-break: break-word;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.45rem; padding-bottom: 0.35rem; border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
+                    <span style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">
+                      <i class="fa-regular fa-envelope" style="color: var(--accent);"></i> Message Content
+                    </span>
+                    <button class="btn btn-secondary btn-sm" style="font-size: 0.68rem; padding: 0.2rem 0.55rem; line-height: 1.2; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem;" onclick="navigator.clipboard.writeText(\`${log.rawMessage.replace(/`/g, '\\`')}\`); showToast('Full SMS content copied to clipboard!', 'info');">
+                      <i class="fa-regular fa-copy"></i> Copy Content
+                    </button>
+                  </div>
+                  <div>${log.rawMessage}</div>
                 </div>
 
                 <!-- Extracted OTP & Actions Footer -->
