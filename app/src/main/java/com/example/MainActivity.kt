@@ -33,6 +33,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.example.fcm.SMSFirebaseMessagingService
 import com.example.ui.theme.MyApplicationTheme
+import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : ComponentActivity() {
@@ -107,16 +108,29 @@ class MainActivity : ComponentActivity() {
 
   private fun fetchFcmToken() {
     try {
-      FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-        if (!task.isSuccessful) {
-          Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-          fcmToken = "fcm_token_ready_${System.currentTimeMillis()}"
-          return@addOnCompleteListener
+      if (FirebaseApp.getApps(this).isEmpty()) {
+        try {
+          FirebaseApp.initializeApp(this)
+        } catch (e: Exception) {
+          Log.w(TAG, "Failed to initialize FirebaseApp", e)
         }
-        val token = task.result
-        Log.d(TAG, "FCM Token: $token")
-        fcmToken = token ?: "fcm_token_ready_${System.currentTimeMillis()}"
-        webViewRef?.evaluateJavascript("if (typeof onFcmTokenUpdated === 'function') onFcmTokenUpdated('$fcmToken');", null)
+      }
+
+      if (FirebaseApp.getApps(this).isNotEmpty()) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+          if (!task.isSuccessful) {
+            Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+            fcmToken = "fcm_token_ready_${System.currentTimeMillis()}"
+            return@addOnCompleteListener
+          }
+          val token = task.result
+          Log.d(TAG, "FCM Token: $token")
+          fcmToken = token ?: "fcm_token_ready_${System.currentTimeMillis()}"
+          webViewRef?.evaluateJavascript("if (typeof onFcmTokenUpdated === 'function') onFcmTokenUpdated('$fcmToken');", null)
+        }
+      } else {
+        Log.w(TAG, "FirebaseApp is not initialized. Using fallback token.")
+        fcmToken = "fcm_token_ready_${System.currentTimeMillis()}"
       }
     } catch (e: Exception) {
       Log.e(TAG, "FCM initialization error", e)
