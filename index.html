@@ -3713,7 +3713,7 @@
             </ul>
           </div>
 
-          <button class="btn btn-secondary" onclick="scrollToSection('numbers')" style="width: 100%; font-weight: 700;">Rent Temporary</button>
+          <button class="btn btn-secondary" onclick="openPlanPurchaseModal('temporary')" style="width: 100%; font-weight: 700;">Rent Temporary</button>
         </div>
 
         <div class="glass-card pricing-card popular" style="border: 1px solid rgba(59, 130, 246, 0.65); box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);">
@@ -3735,7 +3735,7 @@
             </ul>
           </div>
 
-          <button class="btn btn-primary" onclick="scrollToSection('numbers')" style="width: 100%; font-weight: 800;">Get Rental Line</button>
+          <button class="btn btn-primary" onclick="openPlanPurchaseModal('rental')" style="width: 100%; font-weight: 800;">Get Rental Line</button>
         </div>
 
         <div class="glass-card pricing-card">
@@ -3757,7 +3757,7 @@
             </ul>
           </div>
 
-          <button class="btn btn-secondary" onclick="scrollToSection('numbers')" style="width: 100%; font-weight: 700;">Select Premium</button>
+          <button class="btn btn-secondary" onclick="openPlanPurchaseModal('premium')" style="width: 100%; font-weight: 700;">Select Premium</button>
         </div>
       </div>
     </section>
@@ -4410,6 +4410,158 @@
       <button class="btn btn-primary" style="width: 100%; font-size: 0.95rem; padding: 0.75rem;" onclick="submitCustomWalletFunds()">
         <i class="fa-solid fa-plus-circle"></i> Add Custom Amount
       </button>
+    </div>
+  </div>
+
+  <!-- Virtual Plan Purchase & UPI/UTR Payment Modal -->
+  <div class="modal-backdrop" id="plan-purchase-modal">
+    <div class="modal-box" style="max-width: 620px;">
+      <button class="modal-close" onclick="closeModal('plan-purchase-modal')"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.25rem;">
+        <span class="badge badge-primary" id="plan-modal-badge" style="font-size: 0.72rem; font-weight: 800;"><i class="fa-solid fa-bolt"></i> VIRTUAL PLAN</span>
+        <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;" id="plan-modal-validity">100+ Pool Access</span>
+      </div>
+      
+      <h3 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.35rem;" id="plan-modal-title">Temporary Number Plan</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;" id="plan-modal-desc">Select platform & pick 1 number from 100+ virtual lines with instant OTP delivery.</p>
+
+      <!-- Plan Price Summary Banner -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Selected Plan Price</div>
+          <strong id="plan-summary-name" style="font-size: 1.05rem; color: var(--accent);">Temporary Plan (100+ Numbers)</strong>
+        </div>
+        <div style="text-align: right;">
+          <strong id="plan-summary-price" style="font-size: 1.4rem; font-weight: 900; color: #34d399;">₹149</strong>
+        </div>
+      </div>
+
+      <!-- Payment Method Switcher -->
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; background: rgba(0,0,0,0.25); padding: 0.25rem; border-radius: var(--radius-md);">
+        <button class="qr-tab-btn active" id="plan-pay-tab-upi" style="flex: 1; padding: 0.5rem; font-size: 0.82rem; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700;" onclick="switchPlanPayTab('upi')">
+          <i class="fa-solid fa-qrcode"></i> UPI QR & UTR
+        </button>
+        <button class="qr-tab-btn" id="plan-pay-tab-wallet" style="flex: 1; padding: 0.5rem; font-size: 0.82rem; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700;" onclick="switchPlanPayTab('wallet')">
+          <i class="fa-solid fa-wallet"></i> Wallet Balance
+        </button>
+      </div>
+
+      <!-- UPI QR & UTR Section -->
+      <div id="plan-pay-section-upi" style="display: block;">
+        <div style="text-align: center; margin-bottom: 1rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;">
+          <div style="background: white; padding: 0.75rem; border-radius: var(--radius-sm); display: inline-block; box-shadow: var(--shadow-sm);">
+            <svg width="130" height="130" viewBox="0 0 100 100">
+              <rect width="100" height="100" fill="#ffffff"/>
+              <path d="M10,10 h30 v30 h-30 z M15,15 v20 h20 v-20 z M20,20 h10 v10 h-10 z" fill="#0f172a"/>
+              <path d="M60,10 h30 v30 h-30 z M65,15 v20 h20 v-20 z M20,20 h10 v10 h-10 z" fill="#0f172a"/>
+              <path d="M10,60 h30 v30 h-30 z M15,65 v20 h20 v-20 z M20,70 h10 v10 h-10 z" fill="#0f172a"/>
+              <rect x="45" y="10" width="10" height="10" fill="#0f172a"/>
+              <rect x="45" y="30" width="10" height="25" fill="#0f172a"/>
+              <rect x="60" y="60" width="25" height="10" fill="#0f172a"/>
+              <rect x="75" y="75" width="15" height="15" fill="#2563eb"/>
+            </svg>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+            UPI ID: <strong style="color: var(--text-main);">virtualnumberhub@upi</strong>
+            <button class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.4rem; font-size: 0.7rem;" onclick="copyText('virtualnumberhub@upi', 'UPI ID copied!')">
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </p>
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem;">Submit 12-Digit UTR Number:</label>
+          <input type="text" id="plan-utr-input" class="search-input" placeholder="e.g. 420192837465" maxlength="12" style="font-family: var(--font-mono); letter-spacing: 2px;">
+          <div id="plan-utr-validation-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; margin-top: 0.35rem; display: none;"></div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button class="btn btn-secondary" style="flex: 1;" onclick="launchUpiRedirect()">
+            <i class="fa-solid fa-external-link"></i> Launch UPI
+          </button>
+          <button class="btn btn-success" style="flex: 1; font-weight: 800;" id="plan-submit-utr-btn" onclick="submitPlanUtrPayment()">
+            <i class="fa-solid fa-check"></i> Submit UTR & Activate Plan
+          </button>
+        </div>
+      </div>
+
+      <!-- Wallet Pay Section -->
+      <div id="plan-pay-section-wallet" style="display: none; text-align: center; padding: 0.5rem 0;">
+        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.25rem;">
+          <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Available Wallet Balance</div>
+          <div style="font-size: 2rem; font-weight: 900; color: var(--accent);" id="plan-wallet-avail-balance">₹149.00</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;" id="plan-wallet-msg">Sufficient balance available to activate this plan immediately!</div>
+        </div>
+
+        <button class="btn btn-primary" style="width: 100%; font-weight: 800; font-size: 1rem; padding: 0.8rem;" id="plan-wallet-confirm-btn" onclick="confirmPlanWalletPayment()">
+          <i class="fa-solid fa-wallet"></i> Pay & Activate Plan
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Plan 100+ Virtual Numbers Selection Modal -->
+  <div class="modal-backdrop" id="plan-numbers-modal">
+    <div class="modal-box" style="max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;">
+      <button class="modal-close" onclick="closeModal('plan-numbers-modal')"><i class="fa-solid fa-xmark"></i></button>
+
+      <div style="margin-bottom: 0.75rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.25rem;">
+          <h3 style="font-size: 1.25rem; font-weight: 800; margin: 0;" id="plan-nums-header-title">
+            <i class="fa-solid fa-sim-card" style="color: var(--accent);"></i> 100+ Virtual Numbers Pool
+          </h3>
+          <span class="badge badge-success" style="font-size: 0.75rem; font-weight: 800;" id="plan-nums-count-badge">100+ Lines Ready</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.82rem; margin: 0;">
+          Select platform & pick <strong>1 virtual number</strong> to purchase. OTP code will be delivered instantly after purchase.
+        </p>
+      </div>
+
+      <!-- Filters Bar -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 0.5rem; margin-bottom: 0.85rem;">
+        <div>
+          <label style="display: block; font-size: 0.72rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.2rem;">Platform</label>
+          <select id="plan-num-platform-select" class="search-input" style="padding: 0.45rem 0.65rem; font-size: 0.82rem; height: 38px;" onchange="renderPlanNumbersList()">
+            <option value="all">All Platforms (WhatsApp, Telegram, OpenAI...)</option>
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="Telegram">Telegram</option>
+            <option value="OpenAI / ChatGPT">OpenAI / ChatGPT</option>
+            <option value="Google / Gmail">Google / Gmail</option>
+            <option value="Tinder">Tinder</option>
+            <option value="Instagram">Instagram</option>
+            <option value="TikTok">TikTok</option>
+            <option value="Binance">Binance</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.72rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.2rem;">Country</label>
+          <select id="plan-num-country-select" class="search-input" style="padding: 0.45rem 0.65rem; font-size: 0.82rem; height: 38px;" onchange="renderPlanNumbersList()">
+            <option value="all">All Countries</option>
+            <option value="India">🇮🇳 India (+91)</option>
+            <option value="United States">🇺🇸 United States (+1)</option>
+            <option value="United Kingdom">🇬🇧 United Kingdom (+44)</option>
+            <option value="Canada">🇨🇦 Canada (+1)</option>
+            <option value="Germany">🇩🇪 Germany (+49)</option>
+            <option value="France">🇫🇷 France (+33)</option>
+            <option value="Singapore">🇸🇬 Singapore (+65)</option>
+            <option value="UAE">🇦🇪 UAE (+971)</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.72rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.2rem;">Search Digits</label>
+          <input type="text" id="plan-num-search-input" class="search-input" placeholder="Search number..." style="padding: 0.45rem 0.65rem; font-size: 0.82rem; height: 38px;" oninput="renderPlanNumbersList()">
+        </div>
+      </div>
+
+      <!-- 100+ Numbers Grid Container -->
+      <div id="plan-numbers-grid" style="flex: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.65rem; padding-right: 0.25rem; max-height: 52vh;">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
     </div>
   </div>
 
@@ -10557,6 +10709,408 @@
     function launchUpiRedirect() {
       const amt = AppState.pendingOrder?.price || 99;
       window.location.href = `upi://pay?pa=virtualnumberhub@upi&pn=VirtualNumberHub&am=${amt}&cu=INR`;
+    }
+
+    /* ==========================================
+       VIRTUAL PLAN PAYMENT & 100+ NUMBERS ENGINE
+       ========================================== */
+    AppState.activeSelectedPlan = null;
+    AppState.plan100NumbersPool = [];
+
+    const VIRTUAL_PLANS_META = {
+      temporary: {
+        name: 'Temporary Number Plan',
+        price: 149,
+        badge: 'SINGLE USE',
+        badgeClass: 'badge-secondary',
+        validity: '5 Min Timer',
+        desc: 'Unlocks 100+ Single-use virtual numbers with instant OTP verification.'
+      },
+      rental: {
+        name: 'Rental Number Plan',
+        price: 189,
+        badge: 'BEST VALUE',
+        badgeClass: 'badge-primary',
+        validity: '24H Pass',
+        desc: 'Unlocks 100+ 24-Hour multi-code rental virtual numbers.'
+      },
+      premium: {
+        name: 'Premium Number Plan',
+        price: 299,
+        badge: 'PRO DEDICATED',
+        badgeClass: 'badge-warning',
+        validity: '7-Day Pass',
+        desc: 'Unlocks 100+ Private dedicated virtual numbers with multi-platform support.'
+      }
+    };
+
+    function openPlanPurchaseModal(planType) {
+      const plan = VIRTUAL_PLANS_META[planType] || VIRTUAL_PLANS_META.temporary;
+      AppState.activeSelectedPlan = planType;
+
+      const badgeEl = document.getElementById('plan-modal-badge');
+      if (badgeEl) {
+        badgeEl.className = `badge ${plan.badgeClass}`;
+        badgeEl.innerHTML = `<i class="fa-solid fa-bolt"></i> ${plan.badge}`;
+      }
+
+      const valEl = document.getElementById('plan-modal-validity');
+      if (valEl) valEl.innerText = plan.validity;
+
+      const titleEl = document.getElementById('plan-modal-title');
+      if (titleEl) titleEl.innerText = plan.name;
+
+      const descEl = document.getElementById('plan-modal-desc');
+      if (descEl) descEl.innerText = plan.desc;
+
+      const sumName = document.getElementById('plan-summary-name');
+      if (sumName) sumName.innerText = `${plan.name} (100+ Lines Access)`;
+
+      const sumPrice = document.getElementById('plan-summary-price');
+      if (sumPrice) sumPrice.innerText = `₹${plan.price}`;
+
+      const availBal = document.getElementById('plan-wallet-avail-balance');
+      if (availBal) availBal.innerText = `₹${AppState.walletBalance.toFixed(2)}`;
+
+      const walletMsg = document.getElementById('plan-wallet-msg');
+      const confirmBtn = document.getElementById('plan-wallet-confirm-btn');
+
+      if (AppState.walletBalance >= plan.price) {
+        if (walletMsg) walletMsg.innerText = `Sufficient balance available to activate ${plan.name}!`;
+        if (confirmBtn) {
+          confirmBtn.disabled = false;
+          confirmBtn.innerHTML = `<i class="fa-solid fa-wallet"></i> Pay ₹${plan.price} & Activate Plan`;
+        }
+      } else {
+        if (walletMsg) walletMsg.innerText = `⚠️ Insufficient balance (₹${AppState.walletBalance.toFixed(2)} available, ₹${plan.price} required). Please pay via UPI & submit UTR.`;
+        if (confirmBtn) {
+          confirmBtn.disabled = true;
+          confirmBtn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Insufficient Wallet Balance`;
+        }
+      }
+
+      // Reset UTR field
+      const utrIn = document.getElementById('plan-utr-input');
+      if (utrIn) {
+        utrIn.value = '';
+        utrIn.style.borderColor = '';
+      }
+      const valMsg = document.getElementById('plan-utr-validation-msg');
+      if (valMsg) valMsg.style.display = 'none';
+
+      switchPlanPayTab('upi');
+      openModal('plan-purchase-modal');
+    }
+
+    function switchPlanPayTab(tab) {
+      const upiSection = document.getElementById('plan-pay-section-upi');
+      const walletSection = document.getElementById('plan-pay-section-wallet');
+      const upiTab = document.getElementById('plan-pay-tab-upi');
+      const walletTab = document.getElementById('plan-pay-tab-wallet');
+
+      if (tab === 'upi') {
+        if (upiSection) upiSection.style.display = 'block';
+        if (walletSection) walletSection.style.display = 'none';
+        if (upiTab) upiTab.classList.add('active');
+        if (walletTab) walletTab.classList.remove('active');
+      } else {
+        if (upiSection) upiSection.style.display = 'none';
+        if (walletSection) walletSection.style.display = 'block';
+        if (upiTab) upiTab.classList.remove('active');
+        if (walletTab) walletTab.classList.add('active');
+      }
+    }
+
+    function submitPlanUtrPayment() {
+      const input = document.getElementById('plan-utr-input');
+      const valMsg = document.getElementById('plan-utr-validation-msg');
+      const planType = AppState.activeSelectedPlan || 'temporary';
+      const plan = VIRTUAL_PLANS_META[planType];
+
+      if (!input) return;
+      const utrVal = input.value.trim();
+
+      if (!/^\d{12}$/.test(utrVal)) {
+        if (valMsg) {
+          valMsg.style.display = 'block';
+          valMsg.innerText = '⚠️ Please enter a valid 12-digit numeric UTR number (0-9).';
+        }
+        input.style.borderColor = '#ef4444';
+        return;
+      }
+
+      if (valMsg) valMsg.style.display = 'none';
+      input.style.borderColor = '';
+
+      const btn = document.getElementById('plan-submit-utr-btn');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying UTR #${utrVal}...`;
+      }
+
+      setTimeout(() => {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-check"></i> Submit UTR & Activate Plan`;
+        }
+
+        // Add funds to wallet for payment
+        AppState.walletBalance += plan.price;
+        SafeStorage.setItem('vnh_wallet', AppState.walletBalance);
+        updateWalletUI();
+
+        showToast(`🎉 UTR Verified Successfully! ${plan.name} Activated with 100+ Virtual Numbers!`, 'success');
+        closeModal('plan-purchase-modal');
+
+        // Unlock & Open 100+ Numbers Selection Modal
+        openPlanNumbersModal(planType);
+      }, 1200);
+    }
+
+    function confirmPlanWalletPayment() {
+      const planType = AppState.activeSelectedPlan || 'temporary';
+      const plan = VIRTUAL_PLANS_META[planType];
+
+      if (AppState.walletBalance < plan.price) {
+        showToast(`Insufficient balance. Please submit UTR or add funds.`, 'warning');
+        return;
+      }
+
+      showToast(`🎉 ${plan.name} Activated! Select your preferred platform and pick 1 virtual number.`, 'success');
+      closeModal('plan-purchase-modal');
+
+      openPlanNumbersModal(planType);
+    }
+
+    /* Generate 100+ Numbers Pool */
+    function generate100PlusPlanNumbers() {
+      if (AppState.plan100NumbersPool && AppState.plan100NumbersPool.length >= 100) {
+        return AppState.plan100NumbersPool;
+      }
+
+      const countries = [
+        { name: 'India', code: '+91', flag: '🇮🇳', prefix: ['98', '97', '99', '88', '70', '91', '81'] },
+        { name: 'United States', code: '+1', flag: '🇺🇸', prefix: ['202', '310', '415', '212', '718', '650'] },
+        { name: 'United Kingdom', code: '+44', flag: '🇬🇧', prefix: ['7911', '7400', '7700', '7890'] },
+        { name: 'Canada', code: '+1', flag: '🇨🇦', prefix: ['416', '604', '514', '403'] },
+        { name: 'Germany', code: '+49', flag: '🇩🇪', prefix: ['151', '170', '160', '175'] },
+        { name: 'France', code: '+33', flag: '🇫🇷', prefix: ['612', '745', '689', '700'] },
+        { name: 'Singapore', code: '+65', flag: '🇸🇬', prefix: ['8123', '9123', '8456', '9789'] },
+        { name: 'UAE', code: '+971', flag: '🇦🇪', prefix: ['50', '52', '55', '56'] }
+      ];
+
+      const platforms = [
+        { name: 'WhatsApp', icon: 'fa-whatsapp', color: '#25D366' },
+        { name: 'Telegram', icon: 'fa-telegram', color: '#24A1DE' },
+        { name: 'OpenAI / ChatGPT', icon: 'fa-robot', color: '#10a37f' },
+        { name: 'Google / Gmail', icon: 'fa-google', color: '#ea4335' },
+        { name: 'Tinder', icon: 'fa-fire', color: '#fe3c72' },
+        { name: 'Instagram', icon: 'fa-instagram', color: '#e1306c' },
+        { name: 'TikTok', icon: 'fa-tiktok', color: '#00f2fe' },
+        { name: 'Binance', icon: 'fa-bitcoin-sign', color: '#f0b90b' }
+      ];
+
+      const pool = [];
+      let count = 0;
+
+      for (let i = 0; i < countries.length; i++) {
+        for (let j = 0; j < platforms.length; j++) {
+          for (let k = 0; k < 2; k++) { // 8 * 8 * 2 = 128 numbers
+            count++;
+            const c = countries[i];
+            const p = platforms[j];
+            const randPrefix = c.prefix[Math.floor(Math.random() * c.prefix.length)];
+            const randDigits = Math.floor(100000 + Math.random() * 900000);
+            const phone = `${c.code} ${randPrefix} ${randDigits}`;
+
+            pool.push({
+              id: `pool_num_${count}`,
+              phone: phone,
+              country: c.name,
+              code: c.code,
+              flag: c.flag,
+              platform: p.name,
+              platformIcon: p.icon,
+              platformColor: p.color,
+              price: 149,
+              status: 'AVAILABLE'
+            });
+          }
+        }
+      }
+
+      AppState.plan100NumbersPool = pool;
+      return pool;
+    }
+
+    function openPlanNumbersModal(planType) {
+      const plan = VIRTUAL_PLANS_META[planType] || VIRTUAL_PLANS_META.temporary;
+      generate100PlusPlanNumbers();
+
+      const headerTitle = document.getElementById('plan-nums-header-title');
+      if (headerTitle) {
+        headerTitle.innerHTML = `<i class="fa-solid fa-sim-card" style="color: var(--accent);"></i> ${plan.name} — 100+ Virtual Numbers`;
+      }
+
+      // Update price in pool according to plan
+      AppState.plan100NumbersPool.forEach(n => { n.price = plan.price; });
+
+      renderPlanNumbersList();
+      openModal('plan-numbers-modal');
+    }
+
+    function renderPlanNumbersList() {
+      const grid = document.getElementById('plan-numbers-grid');
+      if (!grid) return;
+
+      const pSelect = document.getElementById('plan-num-platform-select');
+      const cSelect = document.getElementById('plan-num-country-select');
+      const sInput = document.getElementById('plan-num-search-input');
+
+      const pFilter = pSelect ? pSelect.value : 'all';
+      const cFilter = cSelect ? cSelect.value : 'all';
+      const q = sInput ? sInput.value.trim().toLowerCase() : '';
+
+      const pool = generate100PlusPlanNumbers();
+
+      const filtered = pool.filter(item => {
+        const matchesP = pFilter === 'all' || item.platform.toLowerCase().includes(pFilter.toLowerCase());
+        const matchesC = cFilter === 'all' || item.country.toLowerCase().includes(cFilter.toLowerCase());
+        const matchesQ = !q || item.phone.toLowerCase().includes(q) || item.country.toLowerCase().includes(q) || item.platform.toLowerCase().includes(q);
+        return matchesP && matchesC && matchesQ;
+      });
+
+      const countBadge = document.getElementById('plan-nums-count-badge');
+      if (countBadge) countBadge.innerText = `${filtered.length} / ${pool.length} Lines Available`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);">
+            <i class="fa-solid fa-search" style="font-size: 2.2rem; margin-bottom: 0.5rem; opacity: 0.6;"></i>
+            <p style="font-weight: 600;">No virtual numbers match your selected filters.</p>
+            <button class="btn btn-secondary btn-sm" style="margin-top: 0.5rem;" onclick="resetPlanNumFilters()">Reset Filters</button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => `
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem; position: relative; transition: all 0.2s ease;" class="plan-num-card">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.35rem;">
+              <span style="font-size: 1.1rem;">${item.flag}</span> ${item.country}
+            </span>
+            <span class="badge badge-success" style="font-size: 0.65rem; font-weight: 800;">
+              <i class="fa-solid fa-circle" style="font-size: 0.45rem; vertical-align: middle;"></i> READY
+            </span>
+          </div>
+
+          <div style="font-family: var(--font-mono); font-weight: 800; font-size: 1rem; color: var(--accent); letter-spacing: 0.5px; margin: 0.15rem 0;">
+            ${item.phone}
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem;">
+            <span style="color: ${item.platformColor}; font-weight: 700; display: flex; align-items: center; gap: 0.3rem;">
+              <i class="fa-brands ${item.platformIcon} fa-solid"></i> ${item.platform}
+            </span>
+            <span style="font-weight: 800; color: var(--success); font-size: 0.85rem;">
+              ₹${item.price}
+            </span>
+          </div>
+
+          <button class="btn btn-primary btn-sm" style="width: 100%; font-weight: 800; margin-top: 0.2rem; font-size: 0.78rem;" onclick="buySinglePlanNumber('${item.id}')">
+            <i class="fa-solid fa-cart-shopping"></i> Purchase 1 Number
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function resetPlanNumFilters() {
+      const pSelect = document.getElementById('plan-num-platform-select');
+      const cSelect = document.getElementById('plan-num-country-select');
+      const sInput = document.getElementById('plan-num-search-input');
+
+      if (pSelect) pSelect.value = 'all';
+      if (cSelect) cSelect.value = 'all';
+      if (sInput) sInput.value = '';
+
+      renderPlanNumbersList();
+    }
+
+    function buySinglePlanNumber(numId) {
+      const pool = generate100PlusPlanNumbers();
+      const numObj = pool.find(n => n.id === numId);
+
+      if (!numObj) {
+        showToast('Selected virtual number not found.', 'warning');
+        return;
+      }
+
+      if (AppState.walletBalance < numObj.price) {
+        showToast(`⚠️ Insufficient balance! Wallet balance is ₹${AppState.walletBalance.toFixed(2)}, price is ₹${numObj.price}. Adding funds via UPI/UTR...`, 'warning');
+        closeModal('plan-numbers-modal');
+        openPlanPurchaseModal(AppState.activeSelectedPlan || 'temporary');
+        return;
+      }
+
+      // Deduct wallet price
+      AppState.walletBalance -= numObj.price;
+
+      // Generate instant OTP
+      const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      const pNow = Date.now();
+      const orderId = `ORD-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
+
+      const purchaseRecord = {
+        id: `p_${pNow}_${Math.floor(100 + Math.random() * 899)}`,
+        phone: numObj.phone,
+        country: numObj.country,
+        flag: numObj.flag,
+        platform: numObj.platform,
+        price: numObj.price,
+        orderId: orderId,
+        latestOtp: newOtp,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        createdAt: pNow,
+        expiresAt: pNow + 5 * 60 * 1000
+      };
+
+      AppState.purchases.unshift(purchaseRecord);
+
+      // Persist state
+      SafeStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
+      SafeStorage.setItem('vnh_wallet', AppState.walletBalance);
+
+      // Log SMS attempt
+      addSmsLog({
+        purchaseId: purchaseRecord.id,
+        phone: purchaseRecord.phone,
+        country: purchaseRecord.country,
+        flag: purchaseRecord.flag,
+        platform: purchaseRecord.platform,
+        sender: `${purchaseRecord.platform}-AUTH`,
+        rawMessage: `Your ${purchaseRecord.platform} verification code is: ${purchaseRecord.latestOtp}. Valid for 5 minutes.`,
+        receivedAt: purchaseRecord.time
+      });
+
+      // Update UI
+      updateWalletUI();
+      renderMarketplace();
+      renderPurchasesHistory();
+
+      closeModal('plan-numbers-modal');
+
+      showToast(`🎉 Purchased ${numObj.phone} for ${numObj.platform}! OTP Code Received: ${newOtp}`, 'success');
+      triggerFcmPushNotification(`🎉 Line Activated for ${purchaseRecord.platform}`, `Number ${purchaseRecord.phone} active! OTP: ${newOtp}`, newOtp);
+
+      // Navigate to Dashboard Active Numbers view
+      scrollToSection('dashboard');
+      switchDashboardTab('purchases');
+
+      setTimeout(() => {
+        const otpEl = document.getElementById(`otp-code-${purchaseRecord.id}`);
+        if (otpEl) triggerOtpPulseAnimation(otpEl);
+      }, 300);
     }
 
     /* ==========================================
