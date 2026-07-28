@@ -2064,6 +2064,28 @@
       overflow-wrap: normal !important;
     }
 
+    .referral-desktop-table {
+      display: block;
+      width: 100%;
+    }
+
+    .referral-mobile-cards {
+      display: none;
+      width: 100%;
+    }
+
+    @media (max-width: 640px) {
+      .referral-desktop-table {
+        display: none !important;
+      }
+      .referral-mobile-cards {
+        display: flex !important;
+        flex-direction: column;
+        gap: 0.65rem;
+        width: 100%;
+      }
+    }
+
     /* Strict Mobile Screen & Universal Overflow Protection */
     *, *::before, *::after {
       box-sizing: border-box !important;
@@ -7013,57 +7035,105 @@
             </div>
           </div>
 
-          <div class="responsive-table-wrapper" style="width: 100%; max-width: 100%; overflow-x: auto; min-width: 0; box-sizing: border-box;">
-            <table style="width: 100%; min-width: 520px; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
-              <thead>
-                <tr style="background: rgba(255, 255, 255, 0.04); border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600;">
-                  <th style="padding: 0.65rem 0.85rem;">User</th>
-                  <th style="padding: 0.65rem 0.85rem;">Joined Date</th>
-                  <th style="padding: 0.65rem 0.85rem;">Status</th>
-                  <th style="padding: 0.65rem 0.85rem;">User Spent</th>
-                  <th style="padding: 0.65rem 0.85rem; text-align: right;">Your Earned Credit</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${filteredList.length === 0 ? `
-                  <tr>
-                    <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">
-                      <i class="fa-solid fa-users-slash" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block; opacity: 0.5;"></i>
-                      No referral records found for this filter.
-                    </td>
+          <!-- Desktop Table View (>640px) -->
+          <div class="referral-desktop-table">
+            <div class="responsive-table-wrapper" style="width: 100%; max-width: 100%; overflow-x: auto; min-width: 0; box-sizing: border-box;">
+              <table style="width: 100%; min-width: 520px; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+                <thead>
+                  <tr style="background: rgba(255, 255, 255, 0.04); border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600;">
+                    <th style="padding: 0.65rem 0.85rem;">User</th>
+                    <th style="padding: 0.65rem 0.85rem;">Joined Date</th>
+                    <th style="padding: 0.65rem 0.85rem;">Status</th>
+                    <th style="padding: 0.65rem 0.85rem;">User Spent</th>
+                    <th style="padding: 0.65rem 0.85rem; text-align: right;">Your Earned Credit</th>
                   </tr>
-                ` : filteredList.map(ref => {
-                  const isComp = ref.status === 'COMPLETED';
-                  return `
-                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-                      <td style="padding: 0.65rem 0.85rem;">
-                        <div style="font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.4rem;">
-                          <div style="width: 24px; height: 24px; border-radius: 50%; background: rgba(59, 130, 246, 0.2); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 800;">
-                            ${ref.name.charAt(0)}
-                          </div>
-                          <span>${ref.name}</span>
-                        </div>
-                        <div style="font-size: 0.72rem; color: var(--text-muted); margin-left: 1.9rem;">${ref.email}</div>
-                      </td>
-                      <td style="padding: 0.65rem 0.85rem; color: var(--text-muted); font-size: 0.78rem;">
-                        ${ref.date}
-                      </td>
-                      <td style="padding: 0.65rem 0.85rem; vertical-align: middle;">
-                        <span class="badge ${isComp ? 'badge-success' : 'badge-warning'}" style="font-size: 0.72rem; padding: 0.28rem 0.65rem; white-space: nowrap !important; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; font-weight: 700; border-radius: 6px; line-height: 1.2;">
-                          ${isComp ? '<i class="fa-solid fa-circle-check"></i> Active' : '<i class="fa-solid fa-clock"></i> Pending Topup'}
-                        </span>
-                      </td>
-                      <td style="padding: 0.65rem 0.85rem; font-family: var(--font-mono); font-weight: 600; color: var(--text-main);">
-                        ₹${(ref.spent || 0).toFixed(2)}
-                      </td>
-                      <td style="padding: 0.65rem 0.85rem; text-align: right; font-family: var(--font-mono); font-weight: 800; color: ${isComp ? '#10b981' : '#f59e0b'};">
-                        +₹${(ref.reward || 0).toFixed(2)}
+                </thead>
+                <tbody>
+                  ${filteredList.length === 0 ? `
+                    <tr>
+                      <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                        <i class="fa-solid fa-users-slash" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block; opacity: 0.5;"></i>
+                        No referral records found for this filter.
                       </td>
                     </tr>
-                  `;
-                }).join('')}
-              </tbody>
-            </table>
+                  ` : filteredList.map(ref => {
+                    const isComp = ref.status === 'COMPLETED';
+                    return `
+                      <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <td style="padding: 0.65rem 0.85rem;">
+                          <div style="font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.4rem;">
+                            <div style="width: 24px; height: 24px; border-radius: 50%; background: rgba(59, 130, 246, 0.2); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 800;">
+                              ${ref.name.charAt(0)}
+                            </div>
+                            <span>${ref.name}</span>
+                          </div>
+                          <div style="font-size: 0.72rem; color: var(--text-muted); margin-left: 1.9rem;">${ref.email}</div>
+                        </td>
+                        <td style="padding: 0.65rem 0.85rem; color: var(--text-muted); font-size: 0.78rem;">
+                          ${ref.date}
+                        </td>
+                        <td style="padding: 0.65rem 0.85rem; vertical-align: middle;">
+                          <span class="badge ${isComp ? 'badge-success' : 'badge-warning'}" style="font-size: 0.72rem; padding: 0.28rem 0.65rem; white-space: nowrap !important; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; font-weight: 700; border-radius: 6px; line-height: 1.2;">
+                            ${isComp ? '<i class="fa-solid fa-circle-check"></i> Active' : '<i class="fa-solid fa-clock"></i> Pending Topup'}
+                          </span>
+                        </td>
+                        <td style="padding: 0.65rem 0.85rem; font-family: var(--font-mono); font-weight: 600; color: var(--text-main);">
+                          ₹${(ref.spent || 0).toFixed(2)}
+                        </td>
+                        <td style="padding: 0.65rem 0.85rem; text-align: right; font-family: var(--font-mono); font-weight: 800; color: ${isComp ? '#10b981' : '#f59e0b'};">
+                          +₹${(ref.reward || 0).toFixed(2)}
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Mobile Card-based View (<=640px) -->
+          <div class="referral-mobile-cards">
+            ${filteredList.length === 0 ? `
+              <div style="text-align: center; padding: 2rem 1rem; color: var(--text-muted); background: rgba(255, 255, 255, 0.02); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+                <i class="fa-solid fa-users-slash" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block; opacity: 0.5;"></i>
+                No referral records found for this filter.
+              </div>
+            ` : filteredList.map(ref => {
+              const isComp = ref.status === 'COMPLETED';
+              return `
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; display: flex; flex-direction: column; gap: 0.65rem; width: 100%; box-sizing: border-box;">
+                  <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.55rem; min-width: 0; flex: 1;">
+                      <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(59, 130, 246, 0.2); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; flex-shrink: 0;">
+                        ${ref.name.charAt(0)}
+                      </div>
+                      <div style="min-width: 0; flex: 1; word-break: break-word;">
+                        <div style="font-weight: 700; color: var(--text-main); font-size: 0.88rem; line-height: 1.2;">${ref.name}</div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.2; word-break: break-all; margin-top: 0.15rem;">${ref.email}</div>
+                      </div>
+                    </div>
+                    <span class="badge ${isComp ? 'badge-success' : 'badge-warning'}" style="font-size: 0.68rem; padding: 0.25rem 0.55rem; white-space: nowrap !important; display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 700; border-radius: 6px; flex-shrink: 0;">
+                      ${isComp ? '<i class="fa-solid fa-circle-check"></i> Active' : '<i class="fa-solid fa-clock"></i> Pending Topup'}
+                    </span>
+                  </div>
+
+                  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; padding-top: 0.6rem; border-top: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.75rem;">
+                    <div>
+                      <span style="color: var(--text-muted); display: block; font-size: 0.66rem; margin-bottom: 0.1rem;">Joined</span>
+                      <strong style="color: var(--text-main); font-weight: 600;">${ref.date}</strong>
+                    </div>
+                    <div>
+                      <span style="color: var(--text-muted); display: block; font-size: 0.66rem; margin-bottom: 0.1rem;">User Spent</span>
+                      <strong style="color: var(--text-main); font-family: var(--font-mono); font-weight: 600;">₹${(ref.spent || 0).toFixed(2)}</strong>
+                    </div>
+                    <div style="text-align: right;">
+                      <span style="color: var(--text-muted); display: block; font-size: 0.66rem; margin-bottom: 0.1rem;">Earned Credit</span>
+                      <strong style="color: ${isComp ? '#10b981' : '#f59e0b'}; font-family: var(--font-mono); font-weight: 800;">+₹${(ref.reward || 0).toFixed(2)}</strong>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
           </div>
         </div>
       `;
