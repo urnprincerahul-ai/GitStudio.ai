@@ -27,6 +27,11 @@
   <!-- jsQR Code Scanner Library -->
   <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
+  <!-- React & Recharts for SMS Logs 7-Day Trend Line Chart -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.min.js"></script>
+
   <style>
     /* ==========================================
        DESIGN SYSTEM & ROOT VARIABLES
@@ -234,6 +239,7 @@
       text-size-adjust: 100%;
     }
 
+    /* Super Fast Smooth Scrolling GPU & Momentum Optimizations */
     body {
       font-family: var(--font-main);
       background-color: var(--bg);
@@ -249,18 +255,28 @@
       text-size-adjust: 100%;
       user-select: none;
       -webkit-user-select: none;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: none;
     }
 
-    /* Custom Scrollbar */
+    /* Hardware Compositing Layers for Silky Smooth Scrolling */
+    .glass-card, header, .navbar, .ambient-blob, .hero-section, .footer-container {
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+
+    /* Custom Ultra-Smooth Scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
+      height: 8px;
     }
     ::-webkit-scrollbar-track {
       background: var(--bg);
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(59, 130, 246, 0.4);
+      background: rgba(59, 130, 246, 0.45);
       border-radius: var(--radius-full);
+      transition: background 0.15s ease;
     }
     ::-webkit-scrollbar-thumb:hover {
       background: var(--primary);
@@ -3657,6 +3673,19 @@
                   </button>
                 </div>
                 <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+                  <div style="display: flex; align-items: center; gap: 0.25rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.15rem 0.4rem;" title="Select incoming OTP notification sound alert style">
+                    <i class="fa-solid fa-music" style="color: #38bdf8; font-size: 0.75rem;"></i>
+                    <select id="dash-otp-sound-style-select" onchange="changeOtpSoundStyle(this.value)" style="background: transparent; border: none; color: var(--text-main); font-size: 0.75rem; font-weight: 600; cursor: pointer; padding: 0.2rem 0.1rem; outline: none;">
+                      <option value="classic" style="background: #0f172a; color: #fff;">🔔 Sound: Classic Chime</option>
+                      <option value="digital" style="background: #0f172a; color: #fff;">📟 Sound: Digital Beep</option>
+                      <option value="marimba" style="background: #0f172a; color: #fff;">🪵 Sound: Marimba Drop</option>
+                      <option value="futuristic" style="background: #0f172a; color: #fff;">🚀 Sound: Sci-Fi Pulse</option>
+                      <option value="bell" style="background: #0f172a; color: #fff;">🛎️ Sound: Bell Resonance</option>
+                    </select>
+                    <button class="btn btn-secondary btn-sm" onclick="testOtpSoundStyle()" style="padding: 0.15rem 0.4rem; font-size: 0.7rem; border: none; background: rgba(255,255,255,0.08);" title="Play preview sound">
+                      <i class="fa-solid fa-play" style="color: var(--accent);"></i>
+                    </button>
+                  </div>
                   <button class="btn btn-secondary btn-sm auto-speak-toggle-btn" onclick="toggleAutoSpeakOtp()" title="Toggle automatic Speech Synthesis readout when new OTPs arrive" style="font-size: 0.75rem; border: 1px solid var(--border-color);">
                     <i class="fa-solid fa-square" style="color: var(--text-muted);"></i> Auto Voice Readout: OFF
                   </button>
@@ -5078,6 +5107,136 @@
     }
 
     /* ==========================================
+       DEDICATED SMS LOG STORAGE ENGINE (INDEXEDDB & SEPARATE STORAGE KEY)
+       ========================================== */
+    const SmsLogStorage = {
+      DB_NAME: 'VNH_SMS_LOGS_DB',
+      DB_VERSION: 1,
+      STORE_NAME: 'sms_logs',
+      DEDICATED_KEY: 'vnh_sms_logs_dedicated_v2',
+      dbPromise: null,
+
+      initDB() {
+        if (this.dbPromise) return this.dbPromise;
+        this.dbPromise = new Promise((resolve) => {
+          try {
+            if (!window.indexedDB) {
+              resolve(null);
+              return;
+            }
+            const request = window.indexedDB.open(this.DB_NAME, this.DB_VERSION);
+            request.onerror = (e) => {
+              console.warn('IndexedDB open error:', e);
+              resolve(null);
+            };
+            request.onsuccess = () => resolve(request.result);
+            request.onupgradeneeded = (event) => {
+              const db = event.target.result;
+              if (!db.objectStoreNames.contains(this.STORE_NAME)) {
+                db.createObjectStore(this.STORE_NAME, { keyPath: 'id' });
+              }
+            };
+          } catch (e) {
+            console.warn('IndexedDB unavailable, using dedicated localStorage key:', e);
+            resolve(null);
+          }
+        });
+        return this.dbPromise;
+      },
+
+      async getAllLogs(fallbackLogs = []) {
+        try {
+          const db = await this.initDB();
+          if (db) {
+            return new Promise((resolve) => {
+              try {
+                const tx = db.transaction(this.STORE_NAME, 'readonly');
+                const store = tx.objectStore(this.STORE_NAME);
+                const req = store.getAll();
+                req.onsuccess = () => {
+                  const res = req.result;
+                  if (Array.isArray(res) && res.length > 0) {
+                    res.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+                    resolve(res);
+                  } else {
+                    const fallback = this.getFallbackLogs(fallbackLogs);
+                    if (fallback && fallback.length > 0) {
+                      this.saveAllLogs(fallback);
+                    }
+                    resolve(fallback);
+                  }
+                };
+                req.onerror = () => resolve(this.getFallbackLogs(fallbackLogs));
+              } catch (e) {
+                resolve(this.getFallbackLogs(fallbackLogs));
+              }
+            });
+          }
+        } catch (e) {
+          console.warn('getAllLogs error:', e);
+        }
+        return this.getFallbackLogs(fallbackLogs);
+      },
+
+      getFallbackLogs(fallbackLogs) {
+        const raw = SafeStorage.getItem(this.DEDICATED_KEY) || SafeStorage.getItem('vnh_sms_logs');
+        if (!raw) return fallbackLogs || [];
+        try {
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : fallbackLogs;
+        } catch (e) {
+          return fallbackLogs || [];
+        }
+      },
+
+      async saveLog(logItem) {
+        try {
+          const db = await this.initDB();
+          if (db) {
+            const tx = db.transaction(this.STORE_NAME, 'readwrite');
+            const store = tx.objectStore(this.STORE_NAME);
+            store.put(logItem);
+          }
+        } catch (e) {
+          console.warn('IndexedDB saveLog error:', e);
+        }
+        try {
+          SafeStorage.setItem(this.DEDICATED_KEY, JSON.stringify(AppState.smsLogs || []));
+        } catch (e) {}
+      },
+
+      async saveAllLogs(logs) {
+        try {
+          SafeStorage.setItem(this.DEDICATED_KEY, JSON.stringify(logs || []));
+          const db = await this.initDB();
+          if (db) {
+            const tx = db.transaction(this.STORE_NAME, 'readwrite');
+            const store = tx.objectStore(this.STORE_NAME);
+            store.clear();
+            (logs || []).forEach(item => store.put(item));
+          }
+        } catch (e) {
+          console.warn('saveAllLogs error:', e);
+        }
+      },
+
+      async clearAll() {
+        try {
+          SafeStorage.removeItem(this.DEDICATED_KEY);
+          SafeStorage.removeItem('vnh_sms_logs');
+          const db = await this.initDB();
+          if (db) {
+            const tx = db.transaction(this.STORE_NAME, 'readwrite');
+            const store = tx.objectStore(this.STORE_NAME);
+            store.clear();
+          }
+        } catch (e) {
+          console.warn('clearAll logs error:', e);
+        }
+      }
+    };
+
+    /* ==========================================
        DATA GENERATORS & APPLICATION STATE
        ========================================== */
     const seedNow = Date.now();
@@ -5222,6 +5381,7 @@
       theme: SafeStorage.getItem('vnh_theme') || 'dark',
       selectedTimezone: SafeStorage.getItem('vnh_selected_tz') || 'Asia/Kolkata',
       autoSpeakOtp: SafeStorage.getItem('vnh_auto_speak_otp') !== 'false',
+      otpSoundStyle: SafeStorage.getItem('vnh_otp_sound_style') || 'classic',
       walletBalance: (() => {
         const saved = SafeStorage.getItem('vnh_wallet');
         if (saved === null || saved === '500' || saved === '500.00') {
@@ -5232,7 +5392,7 @@
         return isNaN(val) ? 0.00 : val;
       })(),
       purchases: storedPurchases,
-      smsLogs: safeParseJSON('vnh_sms_logs', defaultSeedSmsLogs),
+      smsLogs: safeParseJSON('vnh_sms_logs_dedicated_v2', safeParseJSON('vnh_sms_logs', defaultSeedSmsLogs)),
       smsLogsFilter: 'ALL',
       smsLogsSearch: '',
       autoDeleteOldSmsLogs: SafeStorage.getItem('vnh_auto_delete_sms_7d') === 'true',
@@ -7129,7 +7289,7 @@
 
       const removedCount = originalCount - AppState.smsLogs.length;
       if (removedCount > 0) {
-        SafeStorage.setItem('vnh_sms_logs', JSON.stringify(AppState.smsLogs));
+        SmsLogStorage.saveAllLogs(AppState.smsLogs);
         updateSmsLogsCountBadge();
         if (showToastNotification) {
           showToast(`🧹 Auto-cleaned ${removedCount} log entry${removedCount > 1 ? 's' : ''} older than 7 days!`, 'info');
@@ -7179,7 +7339,7 @@
 
       if (!AppState.smsLogs) AppState.smsLogs = [];
       AppState.smsLogs.unshift(newLog);
-      SafeStorage.setItem('vnh_sms_logs', JSON.stringify(AppState.smsLogs));
+      SmsLogStorage.saveLog(newLog);
       updateSmsLogsCountBadge();
 
       // If SMS logs tab is visible, dynamically update it
@@ -7202,10 +7362,10 @@
     function clearSmsLogs() {
       if (confirm('Are you sure you want to clear all recorded SMS delivery logs?')) {
         AppState.smsLogs = [];
-        SafeStorage.setItem('vnh_sms_logs', JSON.stringify([]));
+        SmsLogStorage.clearAll();
         updateSmsLogsCountBadge();
         renderSmsLogsTab();
-        showToast('🗑️ Detailed SMS delivery logs cleared!', 'info');
+        showToast('🗑️ Detailed SMS delivery logs cleared from dedicated storage!', 'info');
       }
     }
 
@@ -7280,6 +7440,162 @@
       triggerFcmPushNotification(`📩 Incoming SMS for ${pObj.platform || pObj.name}`, `Number ${pObj.phone} received OTP: ${newCode}`, newCode);
     }
 
+    /* Recharts 7-Day Trend Line Data & Engine */
+    function getSms7DayTrendData() {
+      const logs = AppState.smsLogs || [];
+      const daysMap = {};
+      const result = [];
+      const now = new Date();
+
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(now.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        const label = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        daysMap[dateStr] = { dateStr, date: label, count: 0, otps: 0 };
+        result.push(daysMap[dateStr]);
+      }
+
+      logs.forEach(log => {
+        let logDateStr = null;
+        if (log.timestamp) {
+          try { logDateStr = new Date(log.timestamp).toISOString().split('T')[0]; } catch(e) {}
+        } else if (log.createdAt) {
+          try { logDateStr = new Date(log.createdAt).toISOString().split('T')[0]; } catch(e) {}
+        }
+
+        if (!logDateStr || !daysMap[logDateStr]) {
+          logDateStr = result[6].dateStr;
+        }
+
+        if (daysMap[logDateStr]) {
+          daysMap[logDateStr].count += 1;
+          if (log.otpCode || log.status === 'RECEIVED' || log.status === 'OTP Received') {
+            daysMap[logDateStr].otps += 1;
+          }
+        }
+      });
+
+      return result;
+    }
+
+    function renderSmsRechartsTrend() {
+      const rootContainer = document.getElementById('sms-recharts-root');
+      if (!rootContainer) return;
+
+      const chartData = getSms7DayTrendData();
+
+      if (window.React && window.ReactDOM && window.Recharts) {
+        try {
+          const React = window.React;
+          const ReactDOM = window.ReactDOM;
+          const { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } = window.Recharts;
+
+          if (ResponsiveContainer && LineChart) {
+            const CustomTooltip = ({ active, payload, label }) => {
+              if (active && payload && payload.length) {
+                return React.createElement('div', {
+                  style: {
+                    background: 'rgba(15, 23, 42, 0.95)',
+                    border: '1px solid #38bdf8',
+                    padding: '0.45rem 0.8rem',
+                    borderRadius: '8px',
+                    color: '#fff',
+                    fontSize: '0.78rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 14px rgba(0,0,0,0.5)',
+                    backdropFilter: 'blur(8px)'
+                  }
+                }, [
+                  React.createElement('div', { key: 'lbl', style: { color: '#94a3b8', marginBottom: '0.25rem', fontSize: '0.72rem' } }, label),
+                  React.createElement('div', { key: 'v1', style: { color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '0.4rem' } }, `📩 Received: ${payload[0] ? payload[0].value : 0} SMS`),
+                  payload[1] ? React.createElement('div', { key: 'v2', style: { color: '#4ade80', display: 'flex', alignItems: 'center', gap: '0.4rem' } }, `🔑 OTP Codes: ${payload[1].value}`) : null
+                ]);
+              }
+              return null;
+            };
+
+            const chartElement = React.createElement(ResponsiveContainer, { width: '100%', height: 210 },
+              React.createElement(LineChart, { data: chartData, margin: { top: 12, right: 15, left: -22, bottom: 0 } }, [
+                React.createElement(CartesianGrid, { key: 'grid', strokeDasharray: '3 3', stroke: 'rgba(255,255,255,0.07)', vertical: false }),
+                React.createElement(XAxis, { key: 'xaxis', dataKey: 'date', stroke: '#94a3b8', fontSize: 11, tickLine: false, axisLine: { stroke: 'rgba(255,255,255,0.1)' } }),
+                React.createElement(YAxis, { key: 'yaxis', stroke: '#94a3b8', fontSize: 11, tickLine: false, axisLine: false, allowDecimals: false }),
+                React.createElement(Tooltip, { key: 'tooltip', content: React.createElement(CustomTooltip) }),
+                React.createElement(Line, { key: 'lineCount', type: 'monotone', dataKey: 'count', stroke: '#38bdf8', strokeWidth: 3, dot: { r: 4, fill: '#38bdf8', strokeWidth: 2, stroke: '#0f172a' }, activeDot: { r: 6, fill: '#38bdf8' }, name: 'SMS Received' }),
+                React.createElement(Line, { key: 'lineOtps', type: 'monotone', dataKey: 'otps', stroke: '#4ade80', strokeWidth: 2, strokeDasharray: '4 4', dot: { r: 3, fill: '#4ade80', strokeWidth: 1, stroke: '#0f172a' }, activeDot: { r: 5, fill: '#4ade80' }, name: 'OTPs Extracted' })
+              ])
+            );
+
+            if (ReactDOM.createRoot) {
+              if (!window._smsRechartsRootInstance) {
+                window._smsRechartsRootInstance = ReactDOM.createRoot(rootContainer);
+              }
+              window._smsRechartsRootInstance.render(chartElement);
+            } else {
+              ReactDOM.render(chartElement, rootContainer);
+            }
+            return;
+          }
+        } catch (err) {
+          console.warn('Recharts render error, using fallback:', err);
+        }
+      }
+
+      renderSmsSvgTrendFallback(rootContainer, chartData);
+    }
+
+    function renderSmsSvgTrendFallback(container, data) {
+      if (!container) return;
+      const maxVal = Math.max(5, ...data.map(d => Math.max(d.count, d.otps)));
+      const width = container.clientWidth || 600;
+      const height = 210;
+      const paddingLeft = 30;
+      const paddingBottom = 30;
+      const paddingTop = 20;
+      const paddingRight = 20;
+
+      const chartW = Math.max(100, width - paddingLeft - paddingRight);
+      const chartH = Math.max(50, height - paddingTop - paddingBottom);
+
+      const pointsCount = data.map((d, i) => {
+        const x = paddingLeft + (i / Math.max(1, data.length - 1)) * chartW;
+        const y = paddingTop + chartH - (d.count / maxVal) * chartH;
+        return `${x},${y}`;
+      }).join(' ');
+
+      const pointsOtps = data.map((d, i) => {
+        const x = paddingLeft + (i / Math.max(1, data.length - 1)) * chartW;
+        const y = paddingTop + chartH - (d.otps / maxVal) * chartH;
+        return `${x},${y}`;
+      }).join(' ');
+
+      let svgHtml = `
+        <svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" style="overflow: visible;">
+          <line x1="${paddingLeft}" y1="${paddingTop}" x2="${width - paddingRight}" y2="${paddingTop}" stroke="rgba(255,255,255,0.07)" stroke-dasharray="3 3" />
+          <line x1="${paddingLeft}" y1="${paddingTop + chartH/2}" x2="${width - paddingRight}" y2="${paddingTop + chartH/2}" stroke="rgba(255,255,255,0.07)" stroke-dasharray="3 3" />
+          <line x1="${paddingLeft}" y1="${paddingTop + chartH}" x2="${width - paddingRight}" y2="${paddingTop + chartH}" stroke="rgba(255,255,255,0.12)" />
+
+          <polyline points="${pointsCount}" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+          <polyline points="${pointsOtps}" fill="none" stroke="#4ade80" stroke-width="2" stroke-dasharray="4 4" stroke-linecap="round" stroke-linejoin="round" />
+
+          ${data.map((d, i) => {
+            const x = paddingLeft + (i / Math.max(1, data.length - 1)) * chartW;
+            const yCount = paddingTop + chartH - (d.count / maxVal) * chartH;
+            const yOtps = paddingTop + chartH - (d.otps / maxVal) * chartH;
+            return `
+              <g class="chart-point-group" style="cursor: pointer;">
+                <circle cx="${x}" cy="${yCount}" r="4" fill="#38bdf8" stroke="#0f172a" stroke-width="2"><title>${d.date}: ${d.count} SMS</title></circle>
+                <circle cx="${x}" cy="${yOtps}" r="3" fill="#4ade80" stroke="#0f172a" stroke-width="1"><title>${d.date}: ${d.otps} OTPs</title></circle>
+                <text x="${x}" y="${height - 8}" fill="#94a3b8" font-size="11" text-anchor="middle" font-weight="600">${d.date}</text>
+              </g>
+            `;
+          }).join('')}
+        </svg>
+      `;
+
+      container.innerHTML = svgHtml;
+    }
+
     function renderSmsLogsTab() {
       updateSmsLogsCountBadge();
       const container = document.getElementById('sms-logs-tab-content');
@@ -7294,6 +7610,27 @@
       const otpReceivedCount = logs.filter(l => l.status === 'RECEIVED' || l.status === 'OTP Received' || !!l.otpCode).length;
       const systemDeliveryCount = logs.filter(l => l.status === 'DELIVERED' || l.status === 'System Delivery').length;
       const failedDeliveryCount = logs.filter(l => l.status === 'FAILED' || l.status === 'PENDING' || l.status === 'Failed Delivery').length;
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      const todayCount = logs.filter(l => {
+        if (l.timestamp) {
+          try { return new Date(l.timestamp).toISOString().split('T')[0] === todayStr; } catch(e){}
+        }
+        if (l.createdAt) {
+          try { return new Date(l.createdAt).toISOString().split('T')[0] === todayStr; } catch(e){}
+        }
+        return true;
+      }).length;
+
+      const otpRate = totalCount > 0 ? ((otpReceivedCount / totalCount) * 100).toFixed(1) : '100.0';
+
+      const latencies = logs.map(l => {
+        if (!l.latency) return 0.52;
+        const parsed = parseFloat(l.latency);
+        return isNaN(parsed) ? 0.52 : parsed;
+      });
+      const avgLatencyVal = latencies.length > 0 ? (latencies.reduce((a, b) => a + b, 0) / latencies.length) : 0.52;
+      const avgLatency = `${avgLatencyVal.toFixed(2)}s`;
 
       const filteredLogs = logs.filter(log => {
         let matchStatus = false;
@@ -7319,24 +7656,45 @@
       });
 
       container.innerHTML = `
-        <!-- Top Statistics Banner -->
+        <!-- Top Summary Statistics Banner -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem;">
           <div class="glass-card" style="padding: 0.85rem 1rem; border-radius: var(--radius-md); text-align: center;">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Total SMS Tracked</div>
-            <div style="font-size: 1.4rem; font-weight: 800; color: var(--accent); margin-top: 0.1rem;">${totalCount}</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Total Messages Today</div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: var(--accent); margin-top: 0.1rem;">${todayCount}</div>
           </div>
           <div class="glass-card" style="padding: 0.85rem 1rem; border-radius: var(--radius-md); text-align: center;">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">OTPs Extracted</div>
-            <div style="font-size: 1.4rem; font-weight: 800; color: var(--success); margin-top: 0.1rem;">${otpsExtracted}</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">OTP Received Rate (%)</div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: var(--success); margin-top: 0.1rem;">${otpRate}%</div>
           </div>
           <div class="glass-card" style="padding: 0.85rem 1rem; border-radius: var(--radius-md); text-align: center;">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Avg Route Latency</div>
-            <div style="font-size: 1.4rem; font-weight: 800; color: #a855f7; margin-top: 0.1rem;">0.82s</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Average Latency</div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: #a855f7; margin-top: 0.1rem;">${avgLatency}</div>
           </div>
           <div class="glass-card" style="padding: 0.85rem 1rem; border-radius: var(--radius-md); text-align: center;">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Success Rate</div>
-            <div style="font-size: 1.4rem; font-weight: 800; color: #38bdf8; margin-top: 0.1rem;">100%</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Total Messages</div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: #38bdf8; margin-top: 0.1rem;">${totalCount}</div>
           </div>
+        </div>
+
+        <!-- Recharts 7-Day SMS Frequency Trend Line Chart Card -->
+        <div class="glass-card" style="padding: 1rem 1.15rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fa-solid fa-chart-line" style="color: #38bdf8; font-size: 1.1rem;"></i>
+              <span style="font-weight: 800; font-size: 0.92rem; color: var(--text-main);">7-Day SMS Reception Frequency Trend</span>
+              <span class="badge badge-secondary" style="font-size: 0.65rem; font-weight: 800;"><i class="fa-solid fa-bolt"></i> RECHARTS</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.75rem; font-weight: 700;">
+              <span style="color: #38bdf8; display: inline-flex; align-items: center; gap: 0.35rem;">
+                <span style="width: 10px; height: 3px; background: #38bdf8; border-radius: 2px; display: inline-block;"></span> Total SMS
+              </span>
+              <span style="color: #4ade80; display: inline-flex; align-items: center; gap: 0.35rem;">
+                <span style="width: 10px; height: 3px; background: #4ade80; border-radius: 2px; display: inline-block; border-bottom: 1px stroke-dasharray;"></span> OTP Codes
+              </span>
+            </div>
+          </div>
+
+          <div id="sms-recharts-root" style="width: 100%; height: 210px; position: relative;"></div>
         </div>
 
         <!-- Log Controls Toolbar & Filter Chip Group -->
@@ -7417,7 +7775,7 @@
                 <i class="fa-solid fa-bolt"></i> Simulate Test Incoming SMS
               </button>
             </div>
-          ` : filteredLogs.map(log => {
+          ` : filteredLogs.map((log, idx) => {
             const isReceived = log.status === 'RECEIVED' || log.status === 'OTP Received' || !!log.otpCode;
             const isDelivered = !isReceived && (log.status === 'DELIVERED' || log.status === 'System Delivery');
             const isFailed = log.status === 'FAILED' || log.status === 'PENDING' || log.status === 'Failed Delivery';
@@ -7427,11 +7785,17 @@
             const statusIcon = isReceived ? 'fa-envelope-open-text' : (isDelivered ? 'fa-check-double' : 'fa-triangle-exclamation');
             const statusText = isReceived ? 'OTP Received' : (isDelivered ? 'System Delivery' : 'Failed Delivery');
 
+            // Subtle alternating background colors and grid line accents
+            const isEven = idx % 2 === 0;
+            const rowBg = isEven ? 'rgba(30, 41, 59, 0.45)' : 'rgba(15, 23, 42, 0.75)';
+            const gridBorderColor = isEven ? 'rgba(255, 255, 255, 0.07)' : 'rgba(56, 189, 248, 0.12)';
+
             return `
-              <div class="glass-card" style="padding: 1.1rem; border-radius: var(--radius-md); border-left: 3px solid ${statusBorderColor}; position: relative; transition: all 0.2s ease;">
+              <div class="glass-card sms-log-item-row" style="padding: 1.1rem; border-radius: var(--radius-md); background: ${rowBg}; border: 1px solid ${gridBorderColor}; border-left: 4px solid ${statusBorderColor}; position: relative; transition: all 0.2s ease;">
                 <!-- Log Header Row -->
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap;">
                   <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); font-family: var(--font-mono); background: rgba(255, 255, 255, 0.05); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.08);">#${idx + 1}</span>
                     <span style="font-size: 1.6rem; line-height: 1;">${log.flag || '🌐'}</span>
                     <div>
                       <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
@@ -7508,6 +7872,8 @@
           }).join('')}
         </div>
       `;
+
+      setTimeout(renderSmsRechartsTrend, 30);
     }
 
     function renderPurchasesHistory() {
@@ -8940,41 +9306,133 @@
         if (!ctx) return;
 
         const now = ctx.currentTime;
+        const style = AppState.otpSoundStyle || 'classic';
 
-        // Subtle lowpass filter for a warm, luxury acoustic feel
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(2200, now);
-        filter.connect(ctx.destination);
+        if (style === 'digital') {
+          // Crisp dual digital pulse bleeps
+          const osc1 = ctx.createOscillator();
+          const gain1 = ctx.createGain();
+          osc1.type = 'square';
+          osc1.frequency.setValueAtTime(880, now);
+          gain1.gain.setValueAtTime(0.04, now);
+          gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc1.connect(gain1);
+          gain1.connect(ctx.destination);
+          osc1.start(now);
+          osc1.stop(now + 0.09);
 
-        // Primary gentle chime (E5 - 659.25 Hz)
-        const osc1 = ctx.createOscillator();
-        const gain1 = ctx.createGain();
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(659.25, now);
-        gain1.gain.setValueAtTime(0.001, now);
-        gain1.gain.linearRampToValueAtTime(0.06, now + 0.012);
-        gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
-        osc1.connect(gain1);
-        gain1.connect(filter);
-        osc1.start(now);
-        osc1.stop(now + 0.23);
+          const osc2 = ctx.createOscillator();
+          const gain2 = ctx.createGain();
+          osc2.type = 'square';
+          osc2.frequency.setValueAtTime(1760, now + 0.1);
+          gain2.gain.setValueAtTime(0.05, now + 0.1);
+          gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc2.connect(gain2);
+          gain2.connect(ctx.destination);
+          osc2.start(now + 0.1);
+          osc2.stop(now + 0.23);
+        } else if (style === 'marimba') {
+          // Three fast wooden marimba triad notes (C5, E5, G5)
+          const freqs = [523.25, 659.25, 783.99];
+          freqs.forEach((freq, idx) => {
+            const t = now + idx * 0.07;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.08, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.19);
+          });
+        } else if (style === 'futuristic') {
+          // Fast sweeping pitch synth rise
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(300, now);
+          osc.frequency.exponentialRampToValueAtTime(1400, now + 0.18);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.08, now + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (style === 'bell') {
+          // Metallic bell with multiple harmonics & smooth decay
+          const baseFreq = 783.99;
+          [1, 2, 3.2].forEach((mult, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(baseFreq * mult, now);
+            const vol = 0.08 / (i + 1);
+            gain.gain.setValueAtTime(vol, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6 - i * 0.1);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.65);
+          });
+        } else {
+          // Default 'classic' dual chime
+          const filter = ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(2200, now);
+          filter.connect(ctx.destination);
 
-        // Harmonic secondary chime (B5 - 987.77 Hz)
-        const osc2 = ctx.createOscillator();
-        const gain2 = ctx.createGain();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(987.77, now + 0.06);
-        gain2.gain.setValueAtTime(0.001, now + 0.06);
-        gain2.gain.linearRampToValueAtTime(0.08, now + 0.075);
-        gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
-        osc2.connect(gain2);
-        gain2.connect(filter);
-        osc2.start(now + 0.06);
-        osc2.stop(now + 0.36);
+          const osc1 = ctx.createOscillator();
+          const gain1 = ctx.createGain();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(659.25, now);
+          gain1.gain.setValueAtTime(0.001, now);
+          gain1.gain.linearRampToValueAtTime(0.06, now + 0.012);
+          gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+          osc1.connect(gain1);
+          gain1.connect(filter);
+          osc1.start(now);
+          osc1.stop(now + 0.23);
+
+          const osc2 = ctx.createOscillator();
+          const gain2 = ctx.createGain();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(987.77, now + 0.06);
+          gain2.gain.setValueAtTime(0.001, now + 0.06);
+          gain2.gain.linearRampToValueAtTime(0.08, now + 0.075);
+          gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+          osc2.connect(gain2);
+          gain2.connect(filter);
+          osc2.start(now + 0.06);
+          osc2.stop(now + 0.36);
+        }
       } catch (e) {
         console.warn('Web Audio playback error:', e);
       }
+    }
+
+    function changeOtpSoundStyle(style) {
+      AppState.otpSoundStyle = style || 'classic';
+      SafeStorage.setItem('vnh_otp_sound_style', AppState.otpSoundStyle);
+      const selectEl = document.getElementById('dash-otp-sound-style-select');
+      if (selectEl && selectEl.value !== AppState.otpSoundStyle) {
+        selectEl.value = AppState.otpSoundStyle;
+      }
+      playOtpSoundNotification();
+      const styleNames = {
+        classic: 'Classic Chime 🔔',
+        digital: 'Digital Beep 📟',
+        marimba: 'Marimba Drop 🪵',
+        futuristic: 'Sci-Fi Pulse 🚀',
+        bell: 'Bell Resonance 🛎️'
+      };
+      showToast(`🔊 Alert Sound set to ${styleNames[AppState.otpSoundStyle] || 'Classic Chime'}`, 'info');
+    }
+
+    function testOtpSoundStyle() {
+      playOtpSoundNotification();
     }
 
     function toggleOtpAudioMute() {
@@ -10278,6 +10736,38 @@
       }
     }
 
+    function fastSmoothScrollTo(targetY, duration = 350) {
+      const startY = window.pageYOffset || document.documentElement.scrollTop;
+      const distance = targetY - startY;
+      if (Math.abs(distance) < 2) {
+        window.scrollTo(0, targetY);
+        return;
+      }
+      let startTime = null;
+
+      // Quartic easing out for rapid acceleration and silky soft stop
+      function easeOutQuart(t) {
+        return 1 - (--t) * t * t * t;
+      }
+
+      function step(currentTime) {
+        if (!startTime) startTime = currentTime;
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = easeOutQuart(progress);
+
+        window.scrollTo(0, startY + distance * ease);
+
+        if (elapsed < duration) {
+          requestAnimationFrame(step);
+        } else {
+          window.scrollTo(0, targetY);
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
     function scrollToSection(id, event) {
       if (event && event.preventDefault) {
         event.preventDefault();
@@ -10287,13 +10777,10 @@
         const headerOffset = 80;
         const elementPosition = el.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        window.scrollTo({
-          top: Math.max(0, offsetPosition),
-          behavior: 'smooth'
-        });
+        fastSmoothScrollTo(Math.max(0, offsetPosition), 320);
       }
       if (id === 'dashboard') {
-        setTimeout(() => animateDashboardStats(true), 200);
+        setTimeout(() => animateDashboardStats(true), 180);
       }
     }
 
@@ -11175,6 +11662,18 @@
         // Step 4: User State, Wallet & Visual Charts
         setProgress(90, 'Restoring wallet & dashboard history...');
         try { renderPurchasesHistory(); } catch(e) { console.error('Purchases err:', e); }
+        try {
+          SmsLogStorage.getAllLogs(defaultSeedSmsLogs).then(logs => {
+            if (Array.isArray(logs) && logs.length > 0) {
+              AppState.smsLogs = logs;
+            }
+            updateSmsLogsCountBadge();
+            const smsLogsTabContent = document.getElementById('sms-logs-tab-content');
+            if (smsLogsTabContent && smsLogsTabContent.style.display !== 'none') {
+              renderSmsLogsTab();
+            }
+          });
+        } catch(e) { console.error('SmsLogStorage init err:', e); }
         try { updateSmsLogsCountBadge(); } catch(e) { console.error('SMS Logs badge err:', e); }
         try { updateFavoritesUI(); } catch(e) { console.error('Favorites err:', e); }
         try { renderReferralTab(); } catch(e) { console.error('Referral err:', e); }
@@ -11182,6 +11681,7 @@
         try { updateWalletUI(); } catch(e) { console.error('Wallet err:', e); }
         try { updateUserAuthUI(); } catch(e) { console.error('User auth err:', e); }
         try { updateAutoSpeakToggleUI(); } catch(e) { console.error('Auto speak UI err:', e); }
+        try { const sSelect = document.getElementById('dash-otp-sound-style-select'); if (sSelect) sSelect.value = AppState.otpSoundStyle || 'classic'; } catch(e) { console.error('Sound select err:', e); }
         try { initCanvasBackground(); } catch(e) { console.error('Canvas err:', e); }
         try { renderDashboardActivationChart(); } catch(e) { console.error('Chart err:', e); }
         try { initResponsiveChartObservers(); } catch(e) { console.error('Chart observer err:', e); }
