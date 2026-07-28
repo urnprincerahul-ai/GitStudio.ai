@@ -2016,31 +2016,86 @@
     }
 
     /* Prevent text overflow and text clipping on small displays */
-    .phone-number-display, .otp-code, .price-val {
-      word-break: break-all;
+    .phone-number-display, .otp-code, .price-val, .search-input, span, p, div, label, td, th {
+      word-break: break-word;
       overflow-wrap: anywhere;
     }
 
     .responsive-table-wrapper {
-      width: 100%;
-      overflow-x: auto;
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow-x: auto !important;
       -webkit-overflow-scrolling: touch;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-color);
       background: rgba(0, 0, 0, 0.25);
+      box-sizing: border-box !important;
+      display: block !important;
     }
 
-    table {
+    .responsive-table-wrapper table {
       width: 100%;
+      min-width: 460px;
       border-collapse: collapse;
       font-size: 0.82rem;
       text-align: left;
     }
 
     th, td {
-      padding: 0.65rem 0.85rem;
-      white-space: nowrap;
+      padding: 0.55rem 0.65rem;
+      white-space: normal;
       box-sizing: border-box;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    /* Strict Mobile Screen Overflow Protection */
+    @media (max-width: 640px) {
+      .container {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+      }
+
+      .glass-card {
+        padding: 0.85rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+        width: 100% !important;
+      }
+
+      .podium-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.65rem !important;
+      }
+
+      .ref-stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+      }
+
+      #dashboard-tabs {
+        width: 100% !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 0.35rem !important;
+      }
+
+      #dashboard-tabs .btn {
+        flex: 1 1 calc(50% - 0.35rem) !important;
+        font-size: 0.7rem !important;
+        padding: 0.35rem 0.45rem !important;
+        text-align: center !important;
+        justify-content: center !important;
+      }
     }
 
     /* Laptop & Medium Displays (Max 1024px) */
@@ -6665,12 +6720,12 @@
 
       container.innerHTML = `
         <!-- Top Banner & Link Generator -->
-        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(245, 158, 11, 0.15) 100%); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius-md); padding: 1.25rem; position: relative;">
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
-            <div>
+        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(245, 158, 11, 0.15) 100%); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius-md); padding: 1.25rem; position: relative; width: 100%; min-width: 0; box-sizing: border-box;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; width: 100%; min-width: 0;">
+            <div style="min-width: 0; flex: 1;">
               <span class="badge badge-warning" style="margin-bottom: 0.4rem; font-size: 0.7rem;"><i class="fa-solid fa-crown"></i> 10% LIFETIME REWARDS PROGRAM</span>
-              <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem;">Invite Friends, Earn Cash Credits!</h3>
-              <p style="font-size: 0.82rem; color: var(--text-muted);">Share your unique link. Earn 10% instant wallet cash every time your invited friend rents numbers or tops up.</p>
+              <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem; word-break: break-word;">Invite Friends, Earn Cash Credits!</h3>
+              <p style="font-size: 0.82rem; color: var(--text-muted); word-break: break-word;">Share your unique link. Earn 10% instant wallet cash every time your invited friend rents numbers or tops up.</p>
             </div>
             <button class="btn btn-warning btn-sm" onclick="simulateNewReferral()" style="font-weight: 700; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; color: white;">
               <i class="fa-solid fa-user-plus"></i> Simulate Friend Joining
@@ -6678,74 +6733,76 @@
           </div>
 
           <!-- Unique Referral Link & Code Box -->
-          <div style="margin-top: 1rem; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+          <div style="margin-top: 1rem; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; width: 100%; min-width: 0; box-sizing: border-box;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.35rem;">
               <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Your Unique Referral Link</label>
               <span style="font-size: 0.75rem; color: #f59e0b; font-weight: 700;">Code: <strong id="referral-code-display">${AppState.referralCode}</strong></span>
             </div>
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-              <input type="text" id="referral-link-input" readonly value="${fullLink}" class="search-input" style="flex: 1; min-width: 200px; font-family: var(--font-mono); font-size: 0.82rem; padding: 0.5rem 0.8rem; background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.1); color: var(--text-main);">
-              <button class="btn btn-primary btn-sm" onclick="copyReferralLink()" style="font-weight: 700; padding: 0.5rem 1rem;">
-                <i class="fa-solid fa-copy"></i> Copy Link
-              </button>
-              <button class="btn btn-secondary btn-sm" onclick="regenerateReferralCode()" title="Generate new code" style="padding: 0.5rem 0.75rem;">
-                <i class="fa-solid fa-arrows-rotate"></i>
-              </button>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; width: 100%; min-width: 0;">
+              <input type="text" id="referral-link-input" readonly value="${fullLink}" class="search-input" style="flex: 1 1 180px; min-width: 0; max-width: 100%; font-family: var(--font-mono); font-size: 0.82rem; padding: 0.5rem 0.8rem; background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.1); color: var(--text-main); word-break: break-all; overflow-wrap: anywhere;">
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; min-width: 0;">
+                <button class="btn btn-primary btn-sm" onclick="copyReferralLink()" style="font-weight: 700; padding: 0.5rem 0.85rem;">
+                  <i class="fa-solid fa-copy"></i> Copy Link
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="regenerateReferralCode()" title="Generate new code" style="padding: 0.5rem 0.75rem;">
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                </button>
+              </div>
             </div>
 
             <!-- Target Domain Settings Display -->
-            <div style="margin-top: 0.6rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem; color: var(--text-muted); background: rgba(255,255,255,0.03); padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); border: 1px dashed rgba(255,255,255,0.08);">
-              <div>
-                <i class="fa-solid fa-globe" style="color: var(--accent);"></i> Base URL: <span style="color: var(--text-main); font-weight: 700; font-family: var(--font-mono);">${baseUrl}</span>
+            <div style="margin-top: 0.6rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem; color: var(--text-muted); background: rgba(255,255,255,0.03); padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); border: 1px dashed rgba(255,255,255,0.08); width: 100%; min-width: 0; box-sizing: border-box;">
+              <div style="min-width: 0; flex: 1; word-break: break-all; overflow-wrap: anywhere;">
+                <i class="fa-solid fa-globe" style="color: var(--accent);"></i> Base URL: <span style="color: var(--text-main); font-weight: 700; font-family: var(--font-mono); word-break: break-all; overflow-wrap: anywhere;">${baseUrl}</span>
               </div>
-              <button class="btn btn-secondary btn-sm" onclick="promptCustomBaseUrl()" style="font-size: 0.7rem; padding: 0.15rem 0.55rem;">
+              <button class="btn btn-secondary btn-sm" onclick="promptCustomBaseUrl()" style="font-size: 0.7rem; padding: 0.15rem 0.55rem; flex-shrink: 0;">
                 <i class="fa-solid fa-pen-to-square"></i> Change Domain
               </button>
             </div>
 
             <!-- Quick Share Buttons -->
-            <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; align-items: center;">
+            <div style="display: flex; gap: 0.4rem; margin-top: 0.75rem; flex-wrap: wrap; align-items: center; width: 100%; min-width: 0;">
               <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Share via:</span>
-              <button class="btn btn-secondary btn-sm" onclick="shareReferral('whatsapp')" style="font-size: 0.75rem; padding: 0.25rem 0.6rem; color: #25D366; border-color: rgba(37, 211, 102, 0.3);">
+              <button class="btn btn-secondary btn-sm" onclick="shareReferral('whatsapp')" style="font-size: 0.75rem; padding: 0.25rem 0.5rem; color: #25D366; border-color: rgba(37, 211, 102, 0.3);">
                 <i class="fa-brands fa-whatsapp"></i> WhatsApp
               </button>
-              <button class="btn btn-secondary btn-sm" onclick="shareReferral('telegram')" style="font-size: 0.75rem; padding: 0.25rem 0.6rem; color: #229ED9; border-color: rgba(34, 158, 217, 0.3);">
+              <button class="btn btn-secondary btn-sm" onclick="shareReferral('telegram')" style="font-size: 0.75rem; padding: 0.25rem 0.5rem; color: #229ED9; border-color: rgba(34, 158, 217, 0.3);">
                 <i class="fa-brands fa-telegram"></i> Telegram
               </button>
-              <button class="btn btn-secondary btn-sm" onclick="shareReferral('x')" style="font-size: 0.75rem; padding: 0.25rem 0.6rem; color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">
-                <i class="fa-brands fa-x-twitter"></i> Twitter / X
+              <button class="btn btn-secondary btn-sm" onclick="shareReferral('x')" style="font-size: 0.75rem; padding: 0.25rem 0.5rem; color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">
+                <i class="fa-brands fa-x-twitter"></i> Twitter
               </button>
-              <button class="btn btn-secondary btn-sm" onclick="shareReferral('native')" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">
-                <i class="fa-solid fa-share-nodes"></i> Share App
+              <button class="btn btn-secondary btn-sm" onclick="shareReferral('native')" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+                <i class="fa-solid fa-share-nodes"></i> Share
               </button>
             </div>
           </div>
         </div>
 
         <!-- Stat Row Cards -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.85rem;">
-          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+        <div class="ref-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 120px), 1fr)); gap: 0.85rem; width: 100%; min-width: 0;">
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center; min-width: 0;">
             <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; display: block;">Total Earned</span>
             <strong style="font-size: 1.25rem; font-weight: 800; color: #10b981; font-family: var(--font-mono);">₹${totalEarned.toFixed(2)}</strong>
           </div>
-          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center; min-width: 0;">
             <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; display: block;">Invited Users</span>
             <strong style="font-size: 1.25rem; font-weight: 800; color: var(--accent); font-family: var(--font-mono);">${totalCount}</strong>
           </div>
-          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center; min-width: 0;">
             <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; display: block;">Pending Rewards</span>
             <strong style="font-size: 1.25rem; font-weight: 800; color: #f59e0b; font-family: var(--font-mono);">₹${pendingValue.toFixed(2)}</strong>
           </div>
-          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 0;">
             <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; display: block;">Claim Rewards</span>
             <button class="btn btn-success btn-sm" onclick="claimReferralRewardsToWallet()" style="padding: 0.25rem 0.6rem; font-size: 0.72rem; margin-top: 0.25rem; font-weight: 700;">
-              <i class="fa-solid fa-wallet"></i> Claim to Wallet
+              <i class="fa-solid fa-wallet"></i> Claim
             </button>
           </div>
         </div>
 
         <!-- Top Referrers Leaderboard Section -->
-        <div style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.8) 100%); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-top: 0.5rem;">
+        <div style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.8) 100%); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-top: 0.5rem; width: 100%; min-width: 0; box-sizing: border-box;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
             <div>
               <h4 style="font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem; color: #f59e0b; margin: 0;">
@@ -6759,7 +6816,7 @@
           </div>
 
           <!-- Podium Top 3 Cards -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; margin-bottom: 1.25rem;">
+          <div class="podium-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 0.85rem; margin-bottom: 1.25rem; width: 100%; min-width: 0;">
             ${leaderboardData.slice(0, 3).map((item) => {
               let cardBorder = 'rgba(217, 119, 6, 0.4)';
               let cardBg = 'linear-gradient(135deg, rgba(217, 119, 6, 0.12) 0%, rgba(180, 83, 9, 0.05) 100%)';
