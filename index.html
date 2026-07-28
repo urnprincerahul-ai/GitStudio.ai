@@ -11629,18 +11629,56 @@
       }
     }
 
-    function updateWalletUI() {
-      const formatted = `₹${AppState.walletBalance.toFixed(2)}`;
+    let lastWalletBalance = null;
+
+    function updateWalletUI(animate = true) {
+      const targetBalance = AppState.walletBalance || 0;
+      const formatted = `₹${targetBalance.toFixed(2)}`;
+
       const w1 = document.getElementById('wallet-balance-display');
       if (w1) w1.innerText = formatted;
-      const w2 = document.getElementById('dashboard-wallet-balance');
-      if (w2) w2.innerText = formatted;
+      
       const w3 = document.getElementById('mobile-sidebar-wallet');
       if (w3) w3.innerText = formatted;
       
       const walletStat = document.getElementById('dash-stat-wallet-val');
       if (walletStat) {
-        walletStat.setAttribute('data-target', AppState.walletBalance.toFixed(2));
+        walletStat.setAttribute('data-target', targetBalance.toFixed(2));
+      }
+
+      const w2 = document.getElementById('dashboard-wallet-balance');
+      if (w2) {
+        if (window.gsap && animate && lastWalletBalance !== null && lastWalletBalance !== targetBalance) {
+          const startVal = lastWalletBalance;
+          const isTopUp = targetBalance > startVal;
+          const counterObj = { val: startVal };
+
+          gsap.killTweensOf(counterObj);
+          gsap.killTweensOf(w2);
+
+          // GSAP counter animation
+          gsap.to(counterObj, {
+            val: targetBalance,
+            duration: 1.0,
+            ease: 'power2.out',
+            onUpdate: () => {
+              w2.innerText = `₹${counterObj.val.toFixed(2)}`;
+            },
+            onComplete: () => {
+              w2.innerText = formatted;
+              lastWalletBalance = targetBalance;
+            }
+          });
+
+          // GSAP scale pop & color flash feedback
+          gsap.fromTo(w2,
+            { scale: 1.12, color: isTopUp ? '#34d399' : '#f87171' },
+            { scale: 1, color: 'var(--text-main)', duration: 0.65, ease: 'power2.out' }
+          );
+        } else {
+          w2.innerText = formatted;
+          lastWalletBalance = targetBalance;
+        }
       }
     }
 
