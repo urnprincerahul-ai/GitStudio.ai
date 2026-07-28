@@ -231,38 +231,30 @@
       scroll-behavior: smooth;
       font-size: 16px;
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       max-width: 100%;
-      overflow-x: hidden !important;
-      touch-action: manipulation;
+      overflow-x: hidden;
+      overflow-y: auto;
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
     }
 
-    /* Super Fast Smooth Scrolling GPU & Momentum Optimizations */
+    /* Super Fast Responsive Smooth Scrolling & Momentum Optimizations */
     body {
       font-family: var(--font-main);
       background-color: var(--bg);
       color: var(--text-main);
       line-height: 1.6;
-      overflow-x: hidden !important;
+      overflow-x: hidden;
+      overflow-y: auto;
       width: 100%;
       max-width: 100%;
       min-height: 100vh;
       position: relative;
-      touch-action: manipulation;
+      touch-action: pan-y;
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
-      user-select: none;
-      -webkit-user-select: none;
       -webkit-overflow-scrolling: touch;
-      overscroll-behavior-y: none;
-    }
-
-    /* Hardware Compositing Layers for Silky Smooth Scrolling */
-    .glass-card, header, .navbar, .ambient-blob, .hero-section, .footer-container {
-      transform: translateZ(0);
-      backface-visibility: hidden;
     }
 
     /* Custom Ultra-Smooth Scrollbar */
@@ -1031,9 +1023,6 @@
       grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
       gap: 1.25rem;
       width: 100%;
-      scroll-snap-type: y proximity;
-      will-change: transform;
-      -webkit-overflow-scrolling: touch;
     }
 
     /* Number Card */
@@ -10736,38 +10725,6 @@
       }
     }
 
-    function fastSmoothScrollTo(targetY, duration = 350) {
-      const startY = window.pageYOffset || document.documentElement.scrollTop;
-      const distance = targetY - startY;
-      if (Math.abs(distance) < 2) {
-        window.scrollTo(0, targetY);
-        return;
-      }
-      let startTime = null;
-
-      // Quartic easing out for rapid acceleration and silky soft stop
-      function easeOutQuart(t) {
-        return 1 - (--t) * t * t * t;
-      }
-
-      function step(currentTime) {
-        if (!startTime) startTime = currentTime;
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const ease = easeOutQuart(progress);
-
-        window.scrollTo(0, startY + distance * ease);
-
-        if (elapsed < duration) {
-          requestAnimationFrame(step);
-        } else {
-          window.scrollTo(0, targetY);
-        }
-      }
-
-      requestAnimationFrame(step);
-    }
-
     function scrollToSection(id, event) {
       if (event && event.preventDefault) {
         event.preventDefault();
@@ -10776,8 +10733,15 @@
       if (el) {
         const headerOffset = 80;
         const elementPosition = el.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        fastSmoothScrollTo(Math.max(0, offsetPosition), 320);
+        const offsetPosition = elementPosition + (window.pageYOffset || document.documentElement.scrollTop) - headerOffset;
+        try {
+          window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: 'smooth'
+          });
+        } catch (e) {
+          window.scrollTo(0, Math.max(0, offsetPosition));
+        }
       }
       if (id === 'dashboard') {
         setTimeout(() => animateDashboardStats(true), 180);
