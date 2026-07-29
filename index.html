@@ -5650,12 +5650,8 @@
         }
       ]),
       pendingOrder: safeParseJSON('vnh_pending_order', null),
-      isLoggedIn: safeParseJSON('vnh_is_logged_in', true),
-      currentUser: safeParseJSON('vnh_user', {
-        name: 'Alex Rivers',
-        email: 'alex@virtualhub.io',
-        tier: 'Pro VIP'
-      }),
+      isLoggedIn: safeParseJSON('vnh_is_logged_in', false),
+      currentUser: safeParseJSON('vnh_user', null),
       referralCode: SafeStorage.getItem('vnh_ref_code') || 'VNH-ALEX-8829',
       hasPurchasedPremiumPlan: SafeStorage.getItem('vnh_premium_purchased') === 'true',
       referralEarnings: parseFloat(SafeStorage.getItem('vnh_ref_earnings')) || 175.00,
@@ -8892,6 +8888,11 @@
       openPurchaseModal(matchingNum.id);
     }
     function openPurchaseModal(numId) {
+      if (!AppState.isLoggedIn) {
+        showToast('🔐 Please Sign In or Register to buy virtual numbers!', 'warning');
+        openModal('user-modal');
+        return;
+      }
       const item = AppState.numbers.find(n => n.id === numId);
       if (!item) return;
 
@@ -9332,21 +9333,21 @@
       const profileEmailEl = document.getElementById('user-profile-email');
       const sidebarUserProfile = document.getElementById('mobile-sidebar-user-card');
 
-      const user = AppState.currentUser || { name: 'Alex Rivers', email: 'alex@virtualhub.io' };
-      const firstName = user.name ? user.name.split(' ')[0] : 'User';
+      const user = AppState.currentUser;
+      const firstName = (user && user.name) ? user.name.split(' ')[0] : 'Guest';
 
       // Build Avatar HTML snippet
       let avatarHtml = '';
-      if (user.photo) {
+      if (user && user.photo) {
         avatarHtml = `<img src="${user.photo}" alt="${user.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`;
       } else {
-        const icon = user.avatarIcon || 'fa-solid fa-user';
+        const icon = (user && user.avatarIcon) ? user.avatarIcon : 'fa-solid fa-user';
         avatarHtml = `<i class="${icon}" style="color: #fff;"></i>`;
       }
 
       // Update Header Button
       if (userHeaderBtn) {
-        if (AppState.isLoggedIn) {
+        if (AppState.isLoggedIn && user) {
           userHeaderBtn.className = 'user-chip';
           userHeaderBtn.title = `Logged in as ${user.name}`;
           userHeaderBtn.innerHTML = `
@@ -9365,7 +9366,7 @@
       }
 
       // Update Modal Display
-      if (AppState.isLoggedIn) {
+      if (AppState.isLoggedIn && user) {
         if (loggedInBox) loggedInBox.style.display = 'block';
         if (loggedOutBox) loggedOutBox.style.display = 'none';
         if (profileNameEl) profileNameEl.innerText = user.name;
@@ -9382,15 +9383,16 @@
 
       // Update Mobile Sidebar User Display
       if (sidebarUserProfile) {
+        const isAuth = AppState.isLoggedIn && user;
         sidebarUserProfile.innerHTML = `
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; width: 100%;">
             <div style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer; min-width: 0; flex: 1;" onclick="openModal('user-modal'); closeMobileSidebar();">
               <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid var(--accent); box-shadow: 0 0 8px var(--accent-glow); flex-shrink: 0;">
-                ${user.photo ? `<img src="${user.photo}" style="width:100%; height:100%; object-fit:cover;" />` : `<i class="${user.avatarIcon || 'fa-solid fa-circle-user'}" style="color: #fff; font-size: 1.1rem;"></i>`}
+                ${isAuth && user.photo ? `<img src="${user.photo}" style="width:100%; height:100%; object-fit:cover;" />` : `<i class="${(isAuth && user.avatarIcon) ? user.avatarIcon : 'fa-solid fa-user'}" style="color: #fff; font-size: 1.1rem;"></i>`}
               </div>
               <div style="min-width: 0; flex: 1;">
-                <div style="font-weight: 800; font-size: 0.88rem; color: var(--text-main); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${user.name}</div>
-                <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 0.1rem;" title="${user.email || user.phone || ''}">${AppState.isLoggedIn ? (user.email || user.phone) : 'Tap to Sign In'}</div>
+                <div style="font-weight: 800; font-size: 0.88rem; color: var(--text-main); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${isAuth ? user.name : 'Guest User'}</div>
+                <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 0.1rem;">${isAuth ? (user.email || user.phone) : 'Tap to Sign In / Register'}</div>
               </div>
             </div>
             <button class="btn btn-primary btn-sm" onclick="openModal('topup-modal'); closeMobileSidebar();" style="font-size: 0.75rem; padding: 0.35rem 0.6rem; flex-shrink: 0; white-space: nowrap;">
@@ -11596,7 +11598,15 @@
     }
 
     function openModal(id) {
-      document.getElementById(id).classList.add('active');
+      const protectedModals = ['purchase-modal', 'payment-modal', 'plan-purchase-modal', 'plan-numbers-modal', 'topup-modal'];
+      if (protectedModals.includes(id) && !AppState.isLoggedIn) {
+        showToast('🔐 Please Sign In or Sign Up to purchase numbers, plans, or top up!', 'warning');
+        const userModal = document.getElementById('user-modal');
+        if (userModal) userModal.classList.add('active');
+        return;
+      }
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('active');
     }
     function closeModal(id) {
       document.getElementById(id).classList.remove('active');
@@ -12029,6 +12039,11 @@
     }
 
     function addDemoWalletFunds(amt) {
+      if (!AppState.isLoggedIn) {
+        showToast('🔐 Please Sign In or Register to top up your wallet!', 'warning');
+        openModal('user-modal');
+        return;
+      }
       AppState.walletBalance += amt;
       SafeStorage.setItem('vnh_wallet', AppState.walletBalance);
       updateWalletUI();
@@ -12118,6 +12133,11 @@
     };
 
     function openPlanPurchaseModal(planType) {
+      if (!AppState.isLoggedIn) {
+        showToast('🔐 Please Sign In or Register to purchase virtual plans!', 'warning');
+        openModal('user-modal');
+        return;
+      }
       const plan = VIRTUAL_PLANS_META[planType] || VIRTUAL_PLANS_META.temporary;
       AppState.activeSelectedPlan = planType;
 
@@ -12329,6 +12349,11 @@
     }
 
     function openPlanNumbersModal(planType) {
+      if (!AppState.isLoggedIn) {
+        showToast('🔐 Please Sign In or Register to access virtual plan numbers!', 'warning');
+        openModal('user-modal');
+        return;
+      }
       const plan = VIRTUAL_PLANS_META[planType] || VIRTUAL_PLANS_META.temporary;
       generate100PlusPlanNumbers();
 
@@ -12423,6 +12448,11 @@
     }
 
     function buySinglePlanNumber(numId) {
+      if (!AppState.isLoggedIn) {
+        showToast('🔐 Please Sign In or Register to purchase virtual numbers!', 'warning');
+        openModal('user-modal');
+        return;
+      }
       const pool = generate100PlusPlanNumbers();
       const numObj = pool.find(n => n.id === numId);
 
