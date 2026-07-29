@@ -4682,13 +4682,13 @@
       <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;" id="plan-modal-desc">Select platform & pick 1 number from 100+ virtual lines with instant OTP delivery.</p>
 
       <!-- Plan Price Summary Banner -->
-      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
-        <div>
-          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Selected Plan Price</div>
-          <strong id="plan-summary-name" style="font-size: 1.05rem; color: var(--accent);">Temporary Plan (100+ Numbers)</strong>
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; width: 100%; box-sizing: border-box;">
+        <div style="min-width: 0; flex: 1;">
+          <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Selected Plan Price</div>
+          <strong id="plan-summary-name" style="font-size: 0.95rem; color: var(--accent); display: block; line-height: 1.35; margin-top: 0.1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Temporary Plan (100+ Lines)</strong>
         </div>
-        <div style="text-align: right;">
-          <strong id="plan-summary-price" style="font-size: 1.4rem; font-weight: 900; color: #34d399;">₹149</strong>
+        <div style="text-align: right; flex-shrink: 0;">
+          <strong id="plan-summary-price" style="font-size: 1.5rem; font-weight: 900; color: #34d399; white-space: nowrap; display: inline-block; line-height: 1;">₹149</strong>
         </div>
       </div>
 
@@ -6993,31 +6993,43 @@
 
         <!-- Premium Plan Requirement Lock/Unlock Banner -->
         ${!AppState.hasPurchasedPremiumPlan ? `
-          <div style="margin-top: 0.85rem; background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(217, 119, 6, 0.06) 100%); border: 1px dashed rgba(245, 158, 11, 0.5); border-radius: var(--radius-md); padding: 0.85rem 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
-            <div style="display: flex; align-items: center; gap: 0.65rem; min-width: 0; flex: 1;">
-              <div style="width: 38px; height: 38px; border-radius: 50%; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 1.1rem; flex-shrink: 0;">
-                <i class="fa-solid fa-lock"></i>
+          <div style="margin-top: 1rem; background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(20, 24, 39, 0.95) 100%); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--radius-md); padding: 1rem 1.15rem; width: 100%; box-sizing: border-box;">
+            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <div style="display: flex; align-items: flex-start; gap: 0.75rem; width: 100%;">
+                <div style="width: 42px; height: 42px; border-radius: 12px; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 1.2rem; flex-shrink: 0;">
+                  <i class="fa-solid fa-lock"></i>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.25rem;">
+                    <strong style="font-size: 0.95rem; font-weight: 800; color: #ffffff; line-height: 1.3;">Referral Earnings Claiming Locked</strong>
+                    <span class="badge badge-warning" style="font-size: 0.65rem; padding: 0.15rem 0.45rem; background: rgba(245, 158, 11, 0.25); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-weight: 800;">ACTION REQUIRED</span>
+                  </div>
+                  <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0; line-height: 1.45;">
+                    To prevent system abuse, claiming referral cash rewards requires an active <strong>Premium Plan (₹999)</strong>. Upgrade your account to unlock full wallet withdrawal & claiming rights.
+                  </p>
+                </div>
               </div>
-              <div style="min-width: 0;">
-                <strong style="font-size: 0.88rem; color: var(--text-main); display: block; line-height: 1.3;">Referral Earnings Claiming Locked</strong>
-                <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0.15rem 0 0 0; line-height: 1.3;">
-                  You cannot claim referral earnings until you purchase the <strong>Premium Plan (₹999)</strong>.
-                </p>
+              <div style="display: flex; justify-content: flex-end; width: 100%; border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 0.75rem;">
+                <button class="btn btn-warning btn-sm" onclick="openPlanPurchaseModal('premium')" style="width: 100%; font-weight: 800; font-size: 0.88rem; padding: 0.6rem 1rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #000; border: none; border-radius: var(--radius-sm); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+                  <i class="fa-solid fa-crown" style="font-size: 0.95rem;"></i> Buy Premium Plan (₹999) & Unlock
+                </button>
               </div>
             </div>
-            <button class="btn btn-warning btn-sm" onclick="openPlanPurchaseModal('premium')" style="font-weight: 800; white-space: nowrap; padding: 0.45rem 0.85rem; background: #f59e0b; color: #000; border: none; flex-shrink: 0;">
-              <i class="fa-solid fa-crown"></i> Buy Premium (₹999)
-            </button>
           </div>
         ` : `
-          <div style="margin-top: 0.85rem; background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(16, 185, 129, 0.05) 100%); border: 1px solid rgba(34, 197, 94, 0.35); border-radius: var(--radius-md); padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.55rem;">
-              <i class="fa-solid fa-circle-check" style="color: #22c55e; font-size: 1.1rem;"></i>
-              <span style="font-size: 0.82rem; color: var(--text-main); font-weight: 700;">
-                👑 Premium Plan Active — Referral Earning Claims Unlocked!
-              </span>
+          <div style="margin-top: 1rem; background: linear-gradient(135deg, rgba(34, 197, 94, 0.14) 0%, rgba(16, 185, 129, 0.05) 100%); border: 1px solid rgba(34, 197, 94, 0.4); border-radius: var(--radius-md); padding: 0.9rem 1.15rem; width: 100%; box-sizing: border-box;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem;">
+              <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.4); display: flex; align-items: center; justify-content: center; color: #22c55e; font-size: 1.1rem; flex-shrink: 0;">
+                  <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 0.9rem; color: #ffffff; display: block; line-height: 1.3;">👑 Premium VIP Active</strong>
+                  <span style="font-size: 0.78rem; color: var(--text-muted);">Referral earning claims & wallet credits are fully unlocked!</span>
+                </div>
+              </div>
+              <span class="badge badge-success" style="font-size: 0.72rem; font-weight: 800; padding: 0.35rem 0.65rem;"><i class="fa-solid fa-unlock"></i> UNLOCKED</span>
             </div>
-            <span class="badge badge-success" style="font-size: 0.7rem; font-weight: 800;"><i class="fa-solid fa-unlock"></i> UNLOCKED</span>
           </div>
         `}
 
@@ -12125,7 +12137,7 @@
       if (descEl) descEl.innerText = plan.desc;
 
       const sumName = document.getElementById('plan-summary-name');
-      if (sumName) sumName.innerText = `${plan.name} (100+ Lines Access)`;
+      if (sumName) sumName.innerText = `${plan.name} (100+ Lines)`;
 
       const sumPrice = document.getElementById('plan-summary-price');
       if (sumPrice) sumPrice.innerText = `₹${plan.price}`;
