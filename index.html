@@ -1129,6 +1129,23 @@
       100% { transform: scale(1); }
     }
 
+    @keyframes premiumGlowPulse {
+      0%, 100% {
+        border-color: rgba(245, 158, 11, 0.45);
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.18), inset 0 0 10px rgba(245, 158, 11, 0.05);
+      }
+      50% {
+        border-color: rgba(245, 158, 11, 0.95);
+        box-shadow: 0 0 28px rgba(245, 158, 11, 0.42), inset 0 0 18px rgba(245, 158, 11, 0.12);
+      }
+    }
+
+    .pricing-card.premium-pulse {
+      border: 1px solid rgba(245, 158, 11, 0.65) !important;
+      animation: premiumGlowPulse 2.8s infinite ease-in-out !important;
+      position: relative;
+    }
+
     .count-pop {
       display: inline-block;
       animation: countPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -3993,7 +4010,7 @@
           <button class="btn btn-primary" onclick="openPlanPurchaseModal('rental')" style="width: 100%; font-weight: 800;">Get Rental Line</button>
         </div>
 
-        <div class="glass-card pricing-card">
+        <div class="glass-card pricing-card premium-pulse">
           <div class="pricing-card-header">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
               <span class="badge badge-warning" style="font-size: 0.7rem; font-weight: 700; background: rgba(245, 158, 11, 0.2); color: #f59e0b;"><i class="fa-solid fa-gem"></i> PRO DEDICATED</span>
@@ -4008,11 +4025,11 @@
             <ul class="pricing-feature-list" style="list-style: none; text-align: left; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
               <li style="display: flex; align-items: center; gap: 0.55rem; font-size: 0.85rem; color: var(--text-main); font-weight: 600;"><span class="pricing-check" style="width: 20px; height: 20px; border-radius: 50%; background: rgba(34, 197, 94, 0.15); color: #22c55e; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0;"><i class="fa-solid fa-check"></i></span> <span>7 Days Line Validity</span></li>
               <li style="display: flex; align-items: center; gap: 0.55rem; font-size: 0.85rem; color: var(--text-main); font-weight: 600;"><span class="pricing-check" style="width: 20px; height: 20px; border-radius: 50%; background: rgba(34, 197, 94, 0.15); color: #22c55e; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0;"><i class="fa-solid fa-check"></i></span> <span>Multiple Platform Access</span></li>
-              <li style="display: flex; align-items: center; gap: 0.55rem; font-size: 0.85rem; color: #f59e0b; font-weight: 700;"><span class="pricing-check" style="width: 20px; height: 20px; border-radius: 50%; background: rgba(245, 158, 11, 0.2); color: #f59e0b; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0;"><i class="fa-solid fa-unlock"></i></span> <span>Unlocks Referral Earning Claims</span></li>
+              <li style="display: flex; align-items: center; gap: 0.55rem; font-size: 0.85rem; color: #f59e0b; font-weight: 700; background: rgba(245, 158, 11, 0.1); padding: 0.35rem 0.5rem; border-radius: var(--radius-sm); border: 1px dashed rgba(245, 158, 11, 0.3);"><span class="pricing-check" style="width: 20px; height: 20px; border-radius: 50%; background: rgba(245, 158, 11, 0.25); color: #f59e0b; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0;"><i class="fa-solid fa-unlock"></i></span> <span>Unlocks Referral Earning Claims</span></li>
             </ul>
           </div>
 
-          <button class="btn btn-secondary" onclick="openPlanPurchaseModal('premium')" style="width: 100%; font-weight: 700;">Select Premium (₹999)</button>
+          <button class="btn btn-warning" onclick="openPlanPurchaseModal('premium')" style="width: 100%; font-weight: 800; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #000; border: none; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);">Select Premium (₹999)</button>
         </div>
       </div>
     </section>
