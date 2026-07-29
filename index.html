@@ -3287,15 +3287,15 @@
 
     <!-- Mobile User Profile & Wallet Quick Card -->
     <div id="mobile-sidebar-user-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.75rem;">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-        <div style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer;" onclick="openModal('user-modal'); closeMobileSidebar();">
-          <i class="fa-solid fa-circle-user" style="color: var(--accent); font-size: 1.2rem;"></i>
-          <div>
-            <div style="font-weight: 800; font-size: 0.9rem; color: var(--text-main);">Alex (User)</div>
-            <div style="font-size: 0.72rem; color: var(--text-muted);">Standard Plan</div>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; width: 100%;">
+        <div style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer; min-width: 0; flex: 1;" onclick="openModal('user-modal'); closeMobileSidebar();">
+          <i class="fa-solid fa-circle-user" style="color: var(--accent); font-size: 1.2rem; flex-shrink: 0;"></i>
+          <div style="min-width: 0; flex: 1;">
+            <div style="font-weight: 800; font-size: 0.88rem; color: var(--text-main); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Alex Rivers</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 0.1rem;">alex@virtualhub.io</div>
           </div>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="openModal('topup-modal'); closeMobileSidebar();" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">
+        <button class="btn btn-primary btn-sm" onclick="openModal('topup-modal'); closeMobileSidebar();" style="font-size: 0.75rem; padding: 0.35rem 0.6rem; flex-shrink: 0; white-space: nowrap;">
           <i class="fa-solid fa-plus"></i> Top Up
         </button>
       </div>
@@ -9383,17 +9383,17 @@
       // Update Mobile Sidebar User Display
       if (sidebarUserProfile) {
         sidebarUserProfile.innerHTML = `
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer;" onclick="openModal('user-modal'); closeMobileSidebar();">
-              <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid var(--accent); box-shadow: 0 0 8px var(--accent-glow);">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer; min-width: 0; flex: 1;" onclick="openModal('user-modal'); closeMobileSidebar();">
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid var(--accent); box-shadow: 0 0 8px var(--accent-glow); flex-shrink: 0;">
                 ${user.photo ? `<img src="${user.photo}" style="width:100%; height:100%; object-fit:cover;" />` : `<i class="${user.avatarIcon || 'fa-solid fa-circle-user'}" style="color: #fff; font-size: 1.1rem;"></i>`}
               </div>
-              <div>
-                <div style="font-weight: 800; font-size: 0.9rem; color: var(--text-main); line-height: 1.2;">${user.name}</div>
-                <div style="font-size: 0.72rem; color: var(--text-muted);">${AppState.isLoggedIn ? (user.email || user.phone) : 'Tap to Sign In'}</div>
+              <div style="min-width: 0; flex: 1;">
+                <div style="font-weight: 800; font-size: 0.88rem; color: var(--text-main); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${user.name}</div>
+                <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 0.1rem;" title="${user.email || user.phone || ''}">${AppState.isLoggedIn ? (user.email || user.phone) : 'Tap to Sign In'}</div>
               </div>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="openModal('topup-modal'); closeMobileSidebar();" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">
+            <button class="btn btn-primary btn-sm" onclick="openModal('topup-modal'); closeMobileSidebar();" style="font-size: 0.75rem; padding: 0.35rem 0.6rem; flex-shrink: 0; white-space: nowrap;">
               <i class="fa-solid fa-plus"></i> Top Up
             </button>
           </div>
