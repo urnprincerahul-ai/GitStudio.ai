@@ -7755,7 +7755,196 @@
       return result;
     }
 
+    function getSmsPlatformDistributionData() {
+      const logs = AppState.smsLogs || [];
+      const platformMap = {};
+      
+      logs.forEach(log => {
+        let p = log.platform || 'Service';
+        if (!p || p === 'undefined') {
+          if (log.sender) {
+            p = log.sender.split('-')[0].split(' ')[0];
+          } else {
+            p = 'Other';
+          }
+        }
+
+        p = p.trim();
+        if (p.toLowerCase().includes('whatsapp')) p = 'WhatsApp';
+        else if (p.toLowerCase().includes('telegram')) p = 'Telegram';
+        else if (p.toLowerCase().includes('openai') || p.toLowerCase().includes('chatgpt')) p = 'OpenAI';
+        else if (p.toLowerCase().includes('instagram')) p = 'Instagram';
+        else if (p.toLowerCase().includes('google')) p = 'Google';
+        else if (p.toLowerCase().includes('twitter') || p.toLowerCase().includes('x')) p = 'X / Twitter';
+        else if (p.toLowerCase().includes('netflix')) p = 'Netflix';
+        else if (p.toLowerCase().includes('amazon')) p = 'Amazon';
+        else if (p.toLowerCase().includes('system') || p.toLowerCase().includes('ping')) p = 'System Ping';
+
+        platformMap[p] = (platformMap[p] || 0) + 1;
+      });
+
+      const colorsMap = {
+        'WhatsApp': '#25D366',
+        'Telegram': '#38bdf8',
+        'OpenAI': '#10a37f',
+        'Instagram': '#e1306c',
+        'Google': '#ea4335',
+        'X / Twitter': '#1da1f2',
+        'Netflix': '#e50914',
+        'Amazon': '#ff9900',
+        'System Ping': '#a855f7'
+      };
+
+      const fallbackColors = ['#38bdf8', '#4ade80', '#a855f7', '#fb923c', '#f43f5e', '#facc15', '#818cf8', '#2dd4bf'];
+
+      const result = Object.entries(platformMap).map(([name, value], idx) => ({
+        name,
+        value,
+        color: colorsMap[name] || fallbackColors[idx % fallbackColors.length]
+      })).sort((a, b) => b.value - a.value);
+
+      if (result.length === 0) {
+        return [
+          { name: 'WhatsApp', value: 4, color: '#25D366' },
+          { name: 'Telegram', value: 3, color: '#38bdf8' },
+          { name: 'OpenAI', value: 2, color: '#10a37f' },
+          { name: 'Instagram', value: 1, color: '#e1306c' }
+        ];
+      }
+
+      return result;
+    }
+
+    function renderSmsRechartsPie() {
+      const pieContainer = document.getElementById('sms-piechart-root');
+      if (!pieContainer) return;
+
+      const pieData = getSmsPlatformDistributionData();
+
+      if (window.React && window.ReactDOM && window.Recharts) {
+        try {
+          const React = window.React;
+          const ReactDOM = window.ReactDOM;
+          const { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } = window.Recharts;
+
+          if (ResponsiveContainer && PieChart && Pie) {
+            const PieCustomTooltip = ({ active, payload }) => {
+              if (active && payload && payload.length) {
+                const item = payload[0];
+                return React.createElement('div', {
+                  style: {
+                    background: 'rgba(15, 23, 42, 0.95)',
+                    border: `1px solid ${item.payload.color || '#38bdf8'}`,
+                    padding: '0.45rem 0.8rem',
+                    borderRadius: '8px',
+                    color: '#fff',
+                    fontSize: '0.78rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 14px rgba(0,0,0,0.5)',
+                    backdropFilter: 'blur(8px)'
+                  }
+                }, [
+                  React.createElement('div', { key: 'name', style: { color: item.payload.color || '#38bdf8', display: 'flex', alignItems: 'center', gap: '0.4rem' } }, `📱 ${item.name}`),
+                  React.createElement('div', { key: 'val', style: { color: '#cbd5e1', fontSize: '0.72rem', marginTop: '0.15rem' } }, `Received OTPs: ${item.value}`)
+                ]);
+              }
+              return null;
+            };
+
+            const pieChartElement = React.createElement(ResponsiveContainer, { width: '100%', height: 210 },
+              React.createElement(PieChart, {}, [
+                React.createElement(Pie, {
+                  key: 'pie-main',
+                  data: pieData,
+                  cx: '50%',
+                  cy: '45%',
+                  innerRadius: 36,
+                  outerRadius: 65,
+                  paddingAngle: 4,
+                  dataKey: 'value',
+                  nameKey: 'name'
+                }, pieData.map((entry, index) => 
+                  React.createElement(Cell, { key: `cell-${index}`, fill: entry.color, stroke: 'rgba(15,23,42,0.8)', strokeWidth: 2 })
+                )),
+                React.createElement(Tooltip, { key: 'pie-tooltip', content: React.createElement(PieCustomTooltip) }),
+                React.createElement(Legend, {
+                  key: 'pie-legend',
+                  verticalAlign: 'bottom',
+                  height: 36,
+                  iconType: 'circle',
+                  iconSize: 8,
+                  wrapperStyle: { fontSize: '0.7rem', color: '#94a3b8' }
+                })
+              ])
+            );
+
+            if (ReactDOM.createRoot) {
+              if (!window._smsPiechartRootInstance) {
+                window._smsPiechartRootInstance = ReactDOM.createRoot(pieContainer);
+              }
+              window._smsPiechartRootInstance.render(pieChartElement);
+            } else {
+              ReactDOM.render(pieChartElement, pieContainer);
+            }
+            return;
+          }
+        } catch (err) {
+          console.warn('Recharts Pie render error, using fallback:', err);
+        }
+      }
+
+      renderSmsSvgPieFallback(pieContainer, pieData);
+    }
+
+    function renderSmsSvgPieFallback(container, data) {
+      if (!container) return;
+      const total = data.reduce((sum, d) => sum + d.value, 0) || 1;
+      let cumulativeAngle = 0;
+      const size = 150;
+      const cx = 75;
+      const cy = 75;
+      const r = 50;
+
+      const paths = data.map(d => {
+        const angle = (d.value / total) * 360;
+        const startAngle = cumulativeAngle;
+        const endAngle = cumulativeAngle + angle;
+        cumulativeAngle += angle;
+
+        const x1 = cx + r * Math.cos((Math.PI * (startAngle - 90)) / 180);
+        const y1 = cy + r * Math.sin((Math.PI * (startAngle - 90)) / 180);
+        const x2 = cx + r * Math.cos((Math.PI * (endAngle - 90)) / 180);
+        const y2 = cy + r * Math.sin((Math.PI * (endAngle - 90)) / 180);
+
+        const largeArc = angle > 180 ? 1 : 0;
+        const pathData = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+
+        return `<path d="${pathData}" fill="${d.color}" stroke="rgba(15, 23, 42, 0.8)" stroke-width="2"><title>${d.name}: ${d.value} OTPs</title></path>`;
+      }).join('');
+
+      const legendHtml = data.slice(0, 5).map(d => `
+        <span style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.68rem; color: var(--text-muted);">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: ${d.color}; display: inline-block;"></span> ${d.name} (${d.value})
+        </span>
+      `).join(' ');
+
+      container.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+          <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+            ${paths}
+            <circle cx="${cx}" cy="${cy}" r="24" fill="rgba(15, 23, 42, 0.95)"/>
+          </svg>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-top: 0.4rem;">
+            ${legendHtml}
+          </div>
+        </div>
+      `;
+    }
+
     function renderSmsRechartsTrend() {
+      // Trigger Pie Chart render alongside Line Chart
+      renderSmsRechartsPie();
+
       const rootContainer = document.getElementById('sms-recharts-root');
       if (!rootContainer) return;
 
@@ -7952,25 +8141,41 @@
           </div>
         </div>
 
-        <!-- Recharts 7-Day SMS Frequency Trend Line Chart Card -->
-        <div class="glass-card" style="padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.65rem;">
-          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; width: 100%;">
-            <div style="display: flex; align-items: center; gap: 0.4rem; min-width: 0; max-width: 100%;">
-              <i class="fa-solid fa-chart-line" style="color: #38bdf8; font-size: 0.95rem; flex-shrink: 0;"></i>
-              <span style="font-weight: 800; font-size: clamp(0.68rem, 3.2vw, 0.85rem); color: var(--text-main); white-space: nowrap; line-height: 1.2;">7-Day SMS Reception Frequency Trend</span>
-              <span class="badge badge-secondary" style="font-size: 0.62rem; font-weight: 800; flex-shrink: 0; padding: 0.15rem 0.4rem;"><i class="fa-solid fa-bolt"></i> RECHARTS</span>
+        <!-- Recharts Analytics Dashboard Grid: 7-Day Trend Line Chart & Service Platform OTP Distribution Pie Chart -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.85rem; width: 100%;">
+          <!-- Line Chart Card -->
+          <div class="glass-card" style="padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.65rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; width: 100%;">
+              <div style="display: flex; align-items: center; gap: 0.4rem; min-width: 0; max-width: 100%;">
+                <i class="fa-solid fa-chart-line" style="color: #38bdf8; font-size: 0.95rem; flex-shrink: 0;"></i>
+                <span style="font-weight: 800; font-size: clamp(0.68rem, 3.2vw, 0.85rem); color: var(--text-main); white-space: nowrap; line-height: 1.2;">7-Day SMS Reception Frequency</span>
+                <span class="badge badge-secondary" style="font-size: 0.62rem; font-weight: 800; flex-shrink: 0; padding: 0.15rem 0.4rem;"><i class="fa-solid fa-bolt"></i> RECHARTS</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.72rem; font-weight: 700; flex-shrink: 0;">
+                <span style="color: #38bdf8; display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap;">
+                  <span style="width: 8px; height: 3px; background: #38bdf8; border-radius: 2px; display: inline-block;"></span> Total SMS
+                </span>
+                <span style="color: #4ade80; display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap;">
+                  <span style="width: 8px; height: 3px; background: #4ade80; border-radius: 2px; display: inline-block;"></span> OTP Codes
+                </span>
+              </div>
             </div>
-            <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.72rem; font-weight: 700; flex-shrink: 0;">
-              <span style="color: #38bdf8; display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap;">
-                <span style="width: 8px; height: 3px; background: #38bdf8; border-radius: 2px; display: inline-block;"></span> Total SMS
-              </span>
-              <span style="color: #4ade80; display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap;">
-                <span style="width: 8px; height: 3px; background: #4ade80; border-radius: 2px; display: inline-block;"></span> OTP Codes
-              </span>
-            </div>
+
+            <div id="sms-recharts-root" style="width: 100%; height: 210px; position: relative;"></div>
           </div>
 
-          <div id="sms-recharts-root" style="width: 100%; height: 210px; position: relative;"></div>
+          <!-- Pie Chart Card -->
+          <div class="glass-card" style="padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.65rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; width: 100%;">
+              <div style="display: flex; align-items: center; gap: 0.4rem; min-width: 0; max-width: 100%;">
+                <i class="fa-solid fa-chart-pie" style="color: #4ade80; font-size: 0.95rem; flex-shrink: 0;"></i>
+                <span style="font-weight: 800; font-size: clamp(0.68rem, 3.2vw, 0.85rem); color: var(--text-main); white-space: nowrap; line-height: 1.2;">OTP Share by Service Platform</span>
+                <span class="badge badge-success" style="font-size: 0.62rem; font-weight: 800; flex-shrink: 0; padding: 0.15rem 0.4rem;"><i class="fa-solid fa-chart-pie"></i> RECHARTS</span>
+              </div>
+            </div>
+
+            <div id="sms-piechart-root" style="width: 100%; height: 210px; position: relative;"></div>
+          </div>
         </div>
 
         <!-- Log Controls Toolbar & Filter Chip Group -->
