@@ -6747,6 +6747,11 @@
         if (tabSmsLogsBtn) tabSmsLogsBtn.className = 'btn btn-primary btn-sm';
         renderSmsLogsTab();
       }
+
+      // Trigger GSAP sequential fade-in & scale-up stagger animation for Dashboard Statistics cards
+      if (typeof animateDashboardStats === 'function') {
+        animateDashboardStats(true);
+      }
     }
 
     /* ==========================================
@@ -11902,12 +11907,16 @@
         }
       });
 
-      // GSAP Entrance animation on cards
+      // GSAP Entrance stagger animation on Dashboard Statistics cards (Sequential fade in & scale up)
       if (window.gsap) {
-        gsap.fromTo('.dash-stat-card',
-          { y: 20, opacity: 0.2, scale: 0.95 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.55, stagger: 0.08, ease: 'back.out(1.4)' }
-        );
+        const cards = document.querySelectorAll('.dash-stat-card');
+        if (cards.length > 0) {
+          gsap.killTweensOf(cards);
+          gsap.fromTo(cards,
+            { y: 22, opacity: 0, scale: 0.88 },
+            { y: 0, opacity: 1, scale: 1, duration: 0.5, stagger: 0.08, ease: 'back.out(1.4)', clearProps: 'transform' }
+          );
+        }
       }
     }
 
