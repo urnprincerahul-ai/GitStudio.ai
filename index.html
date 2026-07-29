@@ -5823,7 +5823,70 @@
 
     function getPlatformInfo(platformName) {
       if (!platformName) return { icon: 'fa-solid fa-sim-card', color: 'var(--accent)' };
-      const found = RawPlatforms.find(p => platformName.toLowerCase().includes(p.name.toLowerCase()) || p.name.toLowerCase().includes(platformName.toLowerCase()));
+      const str = String(platformName).toLowerCase().trim();
+
+      // Precise alias & keyword mapping to official FontAwesome icons and brand colors
+      if (str.includes('whatsapp') || str === 'wa') return { icon: 'fa-brands fa-whatsapp', color: '#25D366' };
+      if (str.includes('telegram') || str === 'tg') return { icon: 'fa-brands fa-telegram', color: '#229ED9' };
+      if (str.includes('google') || str.includes('gmail') || str.includes('gpay')) return { icon: 'fa-brands fa-google', color: '#EA4335' };
+      if (str.includes('youtube')) return { icon: 'fa-brands fa-youtube', color: '#FF0000' };
+      if (str.includes('facebook') || str.includes('fb') || str.includes('meta')) return { icon: 'fa-brands fa-facebook', color: '#1877F2' };
+      if (str.includes('instagram') || str === 'ig') return { icon: 'fa-brands fa-instagram', color: '#E4405F' };
+      if (str.includes('tiktok') || str.includes('douyin')) return { icon: 'fa-brands fa-tiktok', color: '#ff0050' };
+      if (str.includes('discord')) return { icon: 'fa-brands fa-discord', color: '#5865F2' };
+      if (str.includes('openai') || str.includes('chatgpt') || str.includes('gpt')) return { icon: 'fa-solid fa-robot', color: '#10A37F' };
+      if (str.includes('claude') || str.includes('anthropic')) return { icon: 'fa-solid fa-brain', color: '#D97706' };
+      if (str.includes('steam')) return { icon: 'fa-brands fa-steam', color: '#66c0f4' };
+      if (str.includes('amazon') || str.includes('aws')) return { icon: 'fa-brands fa-amazon', color: '#FF9900' };
+      if (str.includes('netflix')) return { icon: 'fa-solid fa-film', color: '#E50914' };
+      if (str.includes('uber')) return { icon: 'fa-brands fa-uber', color: '#38bdf8' };
+      if (str.includes('lyft')) return { icon: 'fa-solid fa-car-side', color: '#FF00BF' };
+      if (str.includes('paypal')) return { icon: 'fa-brands fa-paypal', color: '#0079C1' };
+      if (str.includes('stripe')) return { icon: 'fa-brands fa-stripe', color: '#635BFF' };
+      if (str.includes('twitter') || str.includes('x.com') || str === 'x') return { icon: 'fa-brands fa-x-twitter', color: '#1DA1F2' };
+      if (str.includes('linkedin')) return { icon: 'fa-brands fa-linkedin', color: '#0A66C2' };
+      if (str.includes('microsoft') || str.includes('outlook') || str.includes('hotmail') || str.includes('azure')) return { icon: 'fa-brands fa-microsoft', color: '#00A4EF' };
+      if (str.includes('apple') || str.includes('icloud')) return { icon: 'fa-brands fa-apple', color: '#A2AAAD' };
+      if (str.includes('spotify')) return { icon: 'fa-brands fa-spotify', color: '#1DB954' };
+      if (str.includes('tinder')) return { icon: 'fa-solid fa-fire', color: '#FD3A73' };
+      if (str.includes('bumble')) return { icon: 'fa-solid fa-heart', color: '#FFC629' };
+      if (str.includes('snapchat')) return { icon: 'fa-brands fa-snapchat', color: '#FFFC00' };
+      if (str.includes('viber')) return { icon: 'fa-brands fa-viber', color: '#7360F2' };
+      if (str.includes('line')) return { icon: 'fa-brands fa-line', color: '#00C300' };
+      if (str.includes('wechat') || str.includes('weixin')) return { icon: 'fa-brands fa-weixin', color: '#07C160' };
+      if (str.includes('kakao')) return { icon: 'fa-solid fa-comment-dots', color: '#FEE500' };
+      if (str.includes('ebay')) return { icon: 'fa-brands fa-ebay', color: '#E53238' };
+      if (str.includes('airbnb')) return { icon: 'fa-brands fa-airbnb', color: '#FF5A5F' };
+      if (str.includes('binance')) return { icon: 'fa-solid fa-coins', color: '#F0B90B' };
+      if (str.includes('coinbase')) return { icon: 'fa-solid fa-wallet', color: '#0052FF' };
+      if (str.includes('bybit')) return { icon: 'fa-solid fa-chart-line', color: '#F7A600' };
+      if (str.includes('reddit')) return { icon: 'fa-brands fa-reddit', color: '#FF4500' };
+      if (str.includes('twitch')) return { icon: 'fa-brands fa-twitch', color: '#9146FF' };
+      if (str.includes('roblox')) return { icon: 'fa-solid fa-gamepad', color: '#38bdf8' };
+      if (str.includes('yahoo')) return { icon: 'fa-brands fa-yahoo', color: '#6001D2' };
+      if (str.includes('proton')) return { icon: 'fa-solid fa-envelope-shield', color: '#6D4AFF' };
+      if (str.includes('vkontakte') || str === 'vk') return { icon: 'fa-brands fa-vk', color: '#4C75A3' };
+      if (str.includes('zoom')) return { icon: 'fa-solid fa-video', color: '#2D8CFF' };
+      if (str.includes('foodpanda')) return { icon: 'fa-solid fa-utensils', color: '#D70F64' };
+      if (str.includes('grab')) return { icon: 'fa-solid fa-taxi', color: '#00B14F' };
+      if (str.includes('gojek')) return { icon: 'fa-solid fa-motorcycle', color: '#00AA13' };
+      if (str.includes('doordash')) return { icon: 'fa-solid fa-bag-shopping', color: '#FF3008' };
+      if (str.includes('deliveroo')) return { icon: 'fa-solid fa-burger', color: '#00CCBC' };
+      if (str.includes('shopee')) return { icon: 'fa-solid fa-store', color: '#EE4D2D' };
+      if (str.includes('lazada')) return { icon: 'fa-solid fa-cart-shopping', color: '#0F146D' };
+      if (str.includes('signal')) return { icon: 'fa-solid fa-comment-sms', color: '#3A76F0' };
+      if (str.includes('github')) return { icon: 'fa-brands fa-github', color: '#38bdf8' };
+      if (str.includes('gitlab')) return { icon: 'fa-brands fa-gitlab', color: '#FC6D26' };
+      if (str.includes('slack')) return { icon: 'fa-brands fa-slack', color: '#4A154B' };
+      if (str.includes('soundcloud')) return { icon: 'fa-brands fa-soundcloud', color: '#FF5500' };
+      if (str.includes('pinterest')) return { icon: 'fa-brands fa-pinterest', color: '#BD081C' };
+      if (str.includes('alipay') || str.includes('alibaba') || str.includes('aliexpress')) return { icon: 'fa-brands fa-alipay', color: '#1677FF' };
+
+      const found = RawPlatforms.find(p => {
+        const pName = p.name.toLowerCase();
+        return str.includes(pName) || pName.includes(str);
+      });
+
       if (found) {
         let iconColor = found.color;
         if (!iconColor || iconColor === '#000000') {
@@ -5831,6 +5894,7 @@
         }
         return { icon: found.icon, color: iconColor };
       }
+
       return { icon: 'fa-solid fa-sim-card', color: 'var(--accent)' };
     }
 
@@ -12256,7 +12320,7 @@
 
           <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem;">
             <span style="color: ${item.platformColor}; font-weight: 700; display: flex; align-items: center; gap: 0.3rem;">
-              <i class="fa-brands ${item.platformIcon} fa-solid"></i> ${item.platform}
+              <i class="${item.platformIcon}"></i> ${item.platform}
             </span>
             <span style="font-weight: 800; color: var(--success); font-size: 0.85rem;">
               ₹${item.price}
