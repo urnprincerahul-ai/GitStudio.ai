@@ -1861,6 +1861,43 @@
     .modal-backdrop.active .modal-box {
       transform: scale(1);
     }
+
+    /* Auth Modal Input Styling */
+    .auth-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .auth-input-wrapper i.auth-input-icon {
+      position: absolute;
+      left: 0.85rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .auth-input-wrapper .search-input {
+      padding-left: 2.35rem !important;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .auth-input-wrapper .toggle-pass-btn {
+      position: absolute;
+      right: 0.75rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.25rem;
+      font-size: 0.85rem;
+      z-index: 3;
+      transition: color 0.2s ease;
+    }
+    .auth-input-wrapper .toggle-pass-btn:hover {
+      color: var(--accent);
+    }
+
     .modal-close {
       position: absolute;
       top: 1.25rem;
@@ -4995,30 +5032,30 @@
       <!-- LOGGED OUT CONTENT (SIGN IN / SIGN UP) -->
       <div id="user-modal-logged-out-content" style="display: none;">
         <div style="text-align: center; margin-bottom: 1.25rem;">
-          <div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid rgba(59, 130, 246, 0.3); display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--accent); margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);">
-            <i class="fa-solid fa-user-lock"></i>
+          <div style="width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(168, 85, 247, 0.25)); border: 1.5px solid rgba(59, 130, 246, 0.4); display: inline-flex; align-items: center; justify-content: center; font-size: 1.6rem; color: var(--accent); margin-bottom: 0.6rem; box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);">
+            <i class="fa-solid fa-user-shield"></i>
           </div>
-          <h3 style="font-size: 1.35rem; font-weight: 800; margin: 0;">Account Access</h3>
-          <p style="color: var(--text-muted); font-size: 0.82rem; margin-top: 0.25rem;">Sign in or create an account to manage virtual numbers</p>
+          <h3 style="font-size: 1.4rem; font-weight: 800; margin: 0; color: var(--text-main); letter-spacing: -0.3px;">Account Access</h3>
+          <p style="color: var(--text-muted); font-size: 0.82rem; margin-top: 0.3rem; line-height: 1.3;">Sign in or create an account to manage virtual numbers</p>
         </div>
 
         <!-- Mode Tabs: Sign In vs Sign Up -->
-        <div style="display: flex; background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.25rem; margin-bottom: 1rem;">
-          <button type="button" class="btn btn-sm btn-primary auth-tab-btn active" id="auth-tab-signin-btn" onclick="switchAuthTab('signin')" style="flex: 1; font-weight: 700; border-radius: var(--radius-sm);">
+        <div style="display: flex; background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-glow); border-radius: var(--radius-md); padding: 0.3rem; margin-bottom: 1.1rem; gap: 0.3rem;">
+          <button type="button" class="btn btn-sm btn-primary auth-tab-btn active" id="auth-tab-signin-btn" onclick="switchAuthTab('signin')" style="flex: 1; font-weight: 700; border-radius: var(--radius-sm); font-size: 0.85rem; padding: 0.5rem;">
             <i class="fa-solid fa-right-to-bracket"></i> Sign In
           </button>
-          <button type="button" class="btn btn-sm btn-secondary auth-tab-btn" id="auth-tab-signup-btn" onclick="switchAuthTab('signup')" style="flex: 1; font-weight: 700; border-radius: var(--radius-sm);">
+          <button type="button" class="btn btn-sm btn-secondary auth-tab-btn" id="auth-tab-signup-btn" onclick="switchAuthTab('signup')" style="flex: 1; font-weight: 700; border-radius: var(--radius-sm); font-size: 0.85rem; padding: 0.5rem;">
             <i class="fa-solid fa-user-plus"></i> Sign Up
           </button>
         </div>
 
         <!-- Login Type Switcher: Email vs Phone -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
-          <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Method:</span>
-          <button type="button" class="btn btn-primary btn-sm auth-method-btn active" id="auth-method-email-btn" onclick="switchAuthMethod('email')" style="font-size: 0.75rem; padding: 0.25rem 0.65rem;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1.1rem; background: rgba(30, 41, 59, 0.3); padding: 0.35rem 0.6rem; border-radius: var(--radius-full); border: 1px solid rgba(255,255,255,0.05); width: fit-content; margin-left: auto; margin-right: auto;">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Method:</span>
+          <button type="button" class="btn btn-primary btn-sm auth-method-btn active" id="auth-method-email-btn" onclick="switchAuthMethod('email')" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: var(--radius-full);">
             <i class="fa-solid fa-envelope"></i> Email
           </button>
-          <button type="button" class="btn btn-secondary btn-sm auth-method-btn" id="auth-method-phone-btn" onclick="switchAuthMethod('phone')" style="font-size: 0.75rem; padding: 0.25rem 0.65rem;">
+          <button type="button" class="btn btn-secondary btn-sm auth-method-btn" id="auth-method-phone-btn" onclick="switchAuthMethod('phone')" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: var(--radius-full);">
             <i class="fa-solid fa-phone"></i> Phone Number
           </button>
         </div>
@@ -5027,98 +5064,140 @@
         <div id="auth-signin-form">
           <!-- Email Login Inputs -->
           <div id="auth-signin-email-fields">
-            <div style="margin-bottom: 0.85rem;">
-              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Email Address</label>
-              <input type="email" id="login-email-input" class="search-input" value="alex@virtualhub.io" placeholder="e.g. user@domain.com">
+            <div style="margin-bottom: 0.95rem;">
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Email Address</label>
+              <div class="auth-input-wrapper">
+                <i class="fa-solid fa-envelope auth-input-icon"></i>
+                <input type="email" id="login-email-input" class="search-input" value="alex@virtualhub.io" placeholder="e.g. user@domain.com">
+              </div>
             </div>
           </div>
 
           <!-- Phone Login Inputs -->
           <div id="auth-signin-phone-fields" style="display: none;">
-            <div style="margin-bottom: 0.85rem;">
-              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Phone Number</label>
+            <div style="margin-bottom: 0.95rem;">
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Phone Number</label>
               <div style="display: flex; gap: 0.5rem;">
-                <select class="select-input" id="login-phone-code" style="width: 100px; padding: 0.6rem;">
+                <select class="select-input" id="login-phone-code" style="width: 105px; padding: 0.6rem; flex-shrink: 0;">
                   <option value="+91">🇮🇳 +91</option>
                   <option value="+1">🇺🇸 +1</option>
                   <option value="+44">🇬🇧 +44</option>
                   <option value="+92">🇵🇰 +92</option>
                   <option value="+880">🇧🇩 +880</option>
                 </select>
-                <input type="tel" id="login-phone-input" class="search-input" value="9876543210" placeholder="Enter phone number" style="flex: 1;">
+                <div class="auth-input-wrapper" style="flex: 1;">
+                  <i class="fa-solid fa-phone auth-input-icon"></i>
+                  <input type="tel" id="login-phone-input" class="search-input" value="9876543210" placeholder="Enter phone number">
+                </div>
               </div>
             </div>
           </div>
 
           <div style="margin-bottom: 1.25rem;">
-            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Password</label>
-            <input type="password" id="login-pass-input" class="search-input" value="password123" placeholder="Enter password">
+            <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Password</label>
+            <div class="auth-input-wrapper">
+              <i class="fa-solid fa-lock auth-input-icon"></i>
+              <input type="password" id="login-pass-input" class="search-input" value="password123" placeholder="Enter password">
+              <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility('login-pass-input', this)" title="Toggle Password Visibility">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
           </div>
 
-          <button type="button" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-weight: 800; font-size: 0.95rem;" onclick="handleLoginSubmit()">
+          <button type="button" class="btn btn-primary" style="width: 100%; padding: 0.8rem; font-weight: 800; font-size: 0.95rem; border-radius: var(--radius-md); box-shadow: 0 4px 18px rgba(59, 130, 246, 0.4);" onclick="handleLoginSubmit()">
             <i class="fa-solid fa-right-to-bracket"></i> Sign In to Account
           </button>
         </div>
 
         <!-- SIGN UP FORM -->
         <div id="auth-signup-form" style="display: none;">
-          <div style="margin-bottom: 0.85rem;">
-            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Full Name</label>
-            <input type="text" id="signup-name-input" class="search-input" placeholder="e.g. Rahul Sharma">
+          <div style="margin-bottom: 0.9rem;">
+            <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Full Name</label>
+            <div class="auth-input-wrapper">
+              <i class="fa-solid fa-user auth-input-icon"></i>
+              <input type="text" id="signup-name-input" class="search-input" placeholder="e.g. Rahul Sharma">
+            </div>
           </div>
 
           <!-- Email Sign Up Inputs -->
           <div id="auth-signup-email-fields">
-            <div style="margin-bottom: 0.85rem;">
-              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Email Address</label>
-              <input type="email" id="signup-email-input" class="search-input" placeholder="e.g. name@example.com">
+            <div style="margin-bottom: 0.9rem;">
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Email Address</label>
+              <div class="auth-input-wrapper">
+                <i class="fa-solid fa-envelope auth-input-icon"></i>
+                <input type="email" id="signup-email-input" class="search-input" placeholder="e.g. name@example.com">
+              </div>
             </div>
-            <div style="margin-bottom: 0.85rem;">
-              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Mobile Phone (Optional)</label>
-              <input type="tel" id="signup-phone-optional" class="search-input" placeholder="e.g. +91 9876543210">
+            <div style="margin-bottom: 0.9rem;">
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Mobile Phone (Optional)</label>
+              <div class="auth-input-wrapper">
+                <i class="fa-solid fa-mobile-screen auth-input-icon"></i>
+                <input type="tel" id="signup-phone-optional" class="search-input" placeholder="e.g. +91 9876543210">
+              </div>
             </div>
           </div>
 
           <!-- Phone Sign Up Inputs -->
           <div id="auth-signup-phone-fields" style="display: none;">
-            <div style="margin-bottom: 0.85rem;">
-              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Phone Number</label>
+            <div style="margin-bottom: 0.9rem;">
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Phone Number</label>
               <div style="display: flex; gap: 0.5rem;">
-                <select class="select-input" id="signup-phone-code" style="width: 100px; padding: 0.6rem;">
+                <select class="select-input" id="signup-phone-code" style="width: 105px; padding: 0.6rem; flex-shrink: 0;">
                   <option value="+91">🇮🇳 +91</option>
                   <option value="+1">🇺🇸 +1</option>
                   <option value="+44">🇬🇧 +44</option>
                   <option value="+92">🇵🇰 +92</option>
                   <option value="+880">🇧🇩 +880</option>
                 </select>
-                <input type="tel" id="signup-phone-input" class="search-input" placeholder="Enter phone number" style="flex: 1;">
+                <div class="auth-input-wrapper" style="flex: 1;">
+                  <i class="fa-solid fa-phone auth-input-icon"></i>
+                  <input type="tel" id="signup-phone-input" class="search-input" placeholder="Enter phone number">
+                </div>
               </div>
             </div>
-            <div style="margin-bottom: 0.85rem;">
-              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Email Address (Optional)</label>
-              <input type="email" id="signup-email-optional" class="search-input" placeholder="e.g. name@example.com">
+            <div style="margin-bottom: 0.9rem;">
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Email Address (Optional)</label>
+              <div class="auth-input-wrapper">
+                <i class="fa-solid fa-envelope auth-input-icon"></i>
+                <input type="email" id="signup-email-optional" class="search-input" placeholder="e.g. name@example.com">
+              </div>
             </div>
           </div>
 
-          <div style="margin-bottom: 0.85rem;">
-            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Create Password</label>
-            <input type="password" id="signup-pass-input" class="search-input" placeholder="Min 4 characters">
+          <div style="margin-bottom: 0.9rem;">
+            <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Create Password</label>
+            <div class="auth-input-wrapper">
+              <i class="fa-solid fa-lock auth-input-icon"></i>
+              <input type="password" id="signup-pass-input" class="search-input" placeholder="Min 4 characters">
+              <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility('signup-pass-input', this)" title="Toggle Password Visibility">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
           </div>
 
-          <div style="margin-bottom: 0.85rem;">
-            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;">Confirm Password</label>
-            <input type="password" id="signup-pass-confirm-input" class="search-input" placeholder="Re-enter password">
+          <div style="margin-bottom: 0.9rem;">
+            <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Confirm Password</label>
+            <div class="auth-input-wrapper">
+              <i class="fa-solid fa-shield-halved auth-input-icon"></i>
+              <input type="password" id="signup-pass-confirm-input" class="search-input" placeholder="Re-enter password">
+              <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility('signup-pass-confirm-input', this)" title="Toggle Password Visibility">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
           </div>
 
           <div style="margin-bottom: 1.25rem;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
-              <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Referral Code (Optional)</label>
-              <span class="badge badge-warning" id="signup-ref-applied-badge" style="display: none; font-size: 0.68rem;">🎁 Bonus Applied</span>
+            <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Referral Code (Optional)</label>
+            <div class="auth-input-wrapper">
+              <i class="fa-solid fa-ticket auth-input-icon"></i>
+              <input type="text" id="signup-referral-code-input" class="search-input" placeholder="e.g. VNH-ALEX-8829" style="text-transform: uppercase; font-family: var(--font-mono);">
             </div>
-            <input type="text" id="signup-referral-code-input" class="search-input" placeholder="e.g. VNH-ALEX-8829" style="text-transform: uppercase; font-family: var(--font-mono);">
+            <div id="signup-ref-applied-badge" class="badge badge-warning" style="display: none; margin-top: 0.45rem; font-size: 0.75rem; padding: 0.35rem 0.65rem; border-radius: var(--radius-sm); font-weight: 700; width: 100%; text-align: center; box-sizing: border-box; background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b;">
+              🎁 Bonus Applied
+            </div>
           </div>
 
-          <button type="button" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-weight: 800; font-size: 0.95rem;" onclick="handleSignupSubmit()">
+          <button type="button" class="btn btn-primary" style="width: 100%; padding: 0.8rem; font-weight: 800; font-size: 0.95rem; border-radius: var(--radius-md); box-shadow: 0 4px 18px rgba(59, 130, 246, 0.4);" onclick="handleSignupSubmit()">
             <i class="fa-solid fa-user-plus"></i> Create Account & Register
           </button>
         </div>
@@ -8996,6 +9075,19 @@
        ========================================== */
     let currentAuthTab = 'signin';
     let currentAuthMethod = 'email';
+
+    function togglePasswordVisibility(inputId, btnEl) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const icon = btnEl ? btnEl.querySelector('i') : null;
+      if (input.type === 'password') {
+        input.type = 'text';
+        if (icon) icon.className = 'fa-solid fa-eye-slash';
+      } else {
+        input.type = 'password';
+        if (icon) icon.className = 'fa-solid fa-eye';
+      }
+    }
 
     function closeMobileSidebar() {
       document.getElementById('mobile-sidebar')?.classList.remove('open');
