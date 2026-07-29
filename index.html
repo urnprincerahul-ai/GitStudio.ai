@@ -10651,7 +10651,6 @@
           const aText = item.querySelector('.faq-answer')?.innerText.toLowerCase() || '';
 
           if (query.length === 0 || qText.includes(query) || aText.includes(query)) {
-            const wasHidden = item.style.display === 'none';
             item.style.display = 'block';
             blockMatchingCount++;
             if (query.length > 0) {
@@ -10659,33 +10658,18 @@
             } else {
               item.classList.remove('open');
             }
-
-            // Trigger subtle pop-in animation
-            if (wasHidden || query.length > 0) {
-              item.classList.remove('faq-pop-in');
-              void item.offsetWidth;
-              item.classList.add('faq-pop-in');
-            }
           } else {
             item.style.display = 'none';
             item.classList.remove('open');
-            item.classList.remove('faq-pop-in');
           }
         });
 
         if (blockMatchingCount > 0) {
-          const wasBlockHidden = block.style.display === 'none';
           block.style.display = 'block';
           block.classList.add('open');
-          if (wasBlockHidden || currentFaqCategory !== 'all') {
-            block.classList.remove('faq-pop-in');
-            void block.offsetWidth;
-            block.classList.add('faq-pop-in');
-          }
           totalMatchingQuestions += blockMatchingCount;
         } else {
           block.style.display = 'none';
-          block.classList.remove('faq-pop-in');
         }
       });
 
@@ -10702,6 +10686,35 @@
 
       if (emptyState) {
         emptyState.style.display = (totalMatchingQuestions === 0) ? 'block' : 'none';
+      }
+
+      // Smooth GSAP slide-up & fade-in animation for filtered FAQ results
+      if (window.gsap) {
+        const visibleBlocks = Array.from(categoryBlocks).filter(b => b.style.display !== 'none');
+        const visibleItems = Array.from(document.querySelectorAll('.faq-category-block:not([style*="display: none"]) .faq-item:not([style*="display: none"])'));
+
+        gsap.killTweensOf(categoryBlocks);
+        gsap.killTweensOf(document.querySelectorAll('.faq-item'));
+        if (emptyState) gsap.killTweensOf(emptyState);
+
+        if (totalMatchingQuestions > 0 && visibleBlocks.length > 0) {
+          gsap.fromTo(visibleBlocks, 
+            { y: 18, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 0.4, stagger: 0.06, ease: 'power2.out', clearProps: 'transform' }
+          );
+
+          if (visibleItems.length > 0) {
+            gsap.fromTo(visibleItems, 
+              { y: 12, opacity: 0 }, 
+              { y: 0, opacity: 1, duration: 0.35, stagger: 0.02, ease: 'power2.out', clearProps: 'transform' }
+            );
+          }
+        } else if (emptyState && emptyState.style.display !== 'none') {
+          gsap.fromTo(emptyState, 
+            { y: 16, opacity: 0, scale: 0.96 }, 
+            { y: 0, opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.2)' }
+          );
+        }
       }
     }
 
