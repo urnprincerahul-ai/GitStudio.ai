@@ -946,6 +946,102 @@
       cursor: pointer;
     }
 
+    /* Country Autocomplete Filter Component */
+    .country-autocomplete-wrapper {
+      position: relative;
+      flex: 1 1 180px;
+      min-width: 150px;
+    }
+    .country-autocomplete-input {
+      width: 100%;
+      height: 38px;
+      padding: 0.45rem 2.2rem 0.45rem 2.2rem !important;
+      font-size: 0.85rem !important;
+      background: var(--bg-surface) !important;
+      border: 1px solid var(--border-color) !important;
+      border-radius: var(--radius-sm) !important;
+      color: var(--text-main) !important;
+      box-sizing: border-box;
+      transition: var(--transition);
+    }
+    .country-autocomplete-input:focus {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 12px var(--accent-glow) !important;
+    }
+    .country-autocomplete-icon {
+      position: absolute;
+      left: 0.75rem;
+      color: var(--accent);
+      font-size: 0.85rem;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .country-autocomplete-clear-btn {
+      position: absolute;
+      right: 0.5rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: none;
+      font-size: 0.85rem;
+      padding: 0.2rem 0.4rem;
+      z-index: 3;
+      transition: color 0.2s ease;
+    }
+    .country-autocomplete-clear-btn:hover {
+      color: var(--danger);
+    }
+    .country-autocomplete-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      max-height: 240px;
+      overflow-y: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow);
+      z-index: 999;
+      padding: 0.35rem;
+      display: none;
+    }
+    .country-autocomplete-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.45rem 0.75rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.82rem;
+      color: var(--text-main);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .country-autocomplete-item:hover, .country-autocomplete-item.focused {
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--accent);
+    }
+    .country-autocomplete-item.active-selected {
+      background: rgba(59, 130, 246, 0.25);
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .country-autocomplete-item .country-flag-title {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-weight: 600;
+    }
+    .country-autocomplete-item .country-code-pill {
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+    }
+
     /* Auto-Refresh Toggle Switch Styles */
     .auto-refresh-control {
       display: inline-flex;
@@ -2590,12 +2686,12 @@
         gap: 0.4rem;
         width: 100%;
       }
-      .select-input, .auto-refresh-control {
+      .select-input, .auto-refresh-control, .country-autocomplete-wrapper {
         flex: 1 1 calc(50% - 0.4rem);
         min-width: 0;
         max-width: 100%;
         font-size: 0.82rem;
-        padding: 0.45rem 0.65rem;
+        padding: 0;
       }
 
       .grid-display {
@@ -2696,12 +2792,11 @@
         align-items: center;
         box-sizing: border-box;
       }
-      .select-input, .auto-refresh-control {
+      .select-input, .auto-refresh-control, .country-autocomplete-wrapper {
         flex: 1 1 calc(50% - 0.35rem);
         min-width: 110px;
         max-width: 100%;
         font-size: 0.8rem;
-        padding: 0.4rem 0.5rem;
         box-sizing: border-box;
       }
       .filter-row .btn {
@@ -3610,7 +3705,21 @@
             <select class="select-input" id="filter-country-code-select">
               <option value="ALL">All Country Codes</option>
             </select>
-            <select class="select-input" id="filter-country-select">
+            <!-- Country Autocomplete Search & Select -->
+            <div class="country-autocomplete-wrapper" id="country-autocomplete-container">
+              <div style="position: relative; display: flex; align-items: center; width: 100%;">
+                <i class="fa-solid fa-globe country-autocomplete-icon"></i>
+                <input type="text" id="country-autocomplete-input" class="search-input country-autocomplete-input" placeholder="Search / type country..." autocomplete="off">
+                <button type="button" id="country-autocomplete-clear-btn" class="country-autocomplete-clear-btn" title="Clear Country Filter">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+              <div id="country-autocomplete-dropdown" class="country-autocomplete-dropdown">
+                <!-- Dynamically populated autocomplete suggestions -->
+              </div>
+            </div>
+            <!-- Hidden original select for JS compatibility -->
+            <select class="select-input" id="filter-country-select" style="display: none;">
               <option value="ALL">All Countries</option>
             </select>
             <select class="select-input" id="filter-platform-select">
@@ -10700,10 +10809,139 @@
       }).join('');
     }
 
+    /* ==========================================
+       COUNTRY AUTOCOMPLETE ENGINE
+       ========================================== */
+    function syncCountryAutocompleteDisplay(selectedCountryName) {
+      const input = document.getElementById('country-autocomplete-input');
+      const clearBtn = document.getElementById('country-autocomplete-clear-btn');
+      const hiddenSelect = document.getElementById('filter-country-select');
+
+      if (hiddenSelect) {
+        hiddenSelect.value = selectedCountryName || 'ALL';
+      }
+
+      if (!input) return;
+
+      if (!selectedCountryName || selectedCountryName === 'ALL') {
+        input.value = '';
+        if (clearBtn) clearBtn.style.display = 'none';
+      } else {
+        const found = AppState.countries ? AppState.countries.find(c => c.name === selectedCountryName) : null;
+        if (found) {
+          input.value = `${found.flag} ${found.name}`;
+        } else {
+          input.value = selectedCountryName;
+        }
+        if (clearBtn) clearBtn.style.display = 'block';
+      }
+    }
+
+    function selectAutocompleteCountry(countryName) {
+      syncCountryAutocompleteDisplay(countryName);
+      closeCountryAutocompleteDropdown();
+      applyMarketplaceFilters();
+    }
+
+    function clearCountryAutocomplete() {
+      syncCountryAutocompleteDisplay('ALL');
+      closeCountryAutocompleteDropdown();
+      applyMarketplaceFilters();
+    }
+
+    function closeCountryAutocompleteDropdown() {
+      const dropdown = document.getElementById('country-autocomplete-dropdown');
+      if (dropdown) dropdown.style.display = 'none';
+    }
+
+    function renderCountryAutocompleteSuggestions(query = '') {
+      const dropdown = document.getElementById('country-autocomplete-dropdown');
+      if (!dropdown) return;
+
+      const q = query.toLowerCase().trim();
+      let matches = AppState.countries || [];
+
+      // Strip flag emoji characters when matching query
+      const cleanQ = q.replace(/[\u1F600-\u1F64F\u1F300-\u1F5FF\u1F680-\u1F6FF\u1F1E0-\u1F1FF]/g, '').trim();
+
+      if (cleanQ) {
+        matches = matches.filter(c =>
+          c.name.toLowerCase().includes(cleanQ) ||
+          c.code.toLowerCase().includes(cleanQ)
+        );
+      }
+
+      const currentSelected = document.getElementById('filter-country-select')?.value || 'ALL';
+
+      let html = `
+        <div class="country-autocomplete-item ${currentSelected === 'ALL' ? 'active-selected' : ''}" onclick="selectAutocompleteCountry('ALL')">
+          <span class="country-flag-title">🌐 All Countries</span>
+          <span class="country-code-pill">ALL</span>
+        </div>
+      `;
+
+      if (matches.length === 0) {
+        html += `<div style="padding: 0.65rem; font-size: 0.8rem; color: var(--text-muted); text-align: center;">No matching countries found</div>`;
+      } else {
+        html += matches.slice(0, 60).map(c => {
+          const isSelected = currentSelected === c.name;
+          const escapedName = c.name.replace(/'/g, "\\'");
+          return `
+            <div class="country-autocomplete-item ${isSelected ? 'active-selected' : ''}" onclick="selectAutocompleteCountry('${escapedName}')">
+              <span class="country-flag-title"><span>${c.flag}</span> ${c.name}</span>
+              <span class="country-code-pill">${c.code}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      dropdown.innerHTML = html;
+      dropdown.style.display = 'block';
+    }
+
+    function initCountryAutocompleteListeners() {
+      const input = document.getElementById('country-autocomplete-input');
+      const clearBtn = document.getElementById('country-autocomplete-clear-btn');
+      const container = document.getElementById('country-autocomplete-container');
+
+      if (input) {
+        input.addEventListener('focus', () => {
+          renderCountryAutocompleteSuggestions(input.value);
+        });
+
+        input.addEventListener('input', () => {
+          renderCountryAutocompleteSuggestions(input.value);
+          if (clearBtn) {
+            clearBtn.style.display = input.value.trim() ? 'block' : 'none';
+          }
+        });
+
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            closeCountryAutocompleteDropdown();
+          }
+        });
+      }
+
+      if (clearBtn) {
+        clearBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          clearCountryAutocomplete();
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (container && !container.contains(e.target)) {
+          closeCountryAutocompleteDropdown();
+        }
+      });
+    }
+
     function filterByCountry(name) {
       scrollToSection('numbers');
       const select = document.getElementById('filter-country-select');
       if (select) select.value = name;
+      syncCountryAutocompleteDisplay(name);
       applyMarketplaceFilters();
     }
 
@@ -10721,6 +10959,7 @@
       if (targetType === 'country') {
         const select = document.getElementById('filter-country-select');
         if (select) select.value = targetName;
+        syncCountryAutocompleteDisplay(targetName);
       } else {
         const select = document.getElementById('filter-platform-select');
         if (select) select.value = targetName;
@@ -10840,6 +11079,7 @@
       if (statusSelect) statusSelect.value = 'ALL';
       if (sortSelect) sortSelect.value = 'PRICE_LOW';
 
+      syncCountryAutocompleteDisplay('ALL');
       applyMarketplaceFilters();
     }
 
@@ -12808,6 +13048,7 @@
       document.getElementById('utr-input')?.addEventListener('input', validateUtrInput);
 
       // Search & Filters Listeners
+      initCountryAutocompleteListeners();
       document.getElementById('marketplace-search-input')?.addEventListener('input', applyMarketplaceFilters);
       document.getElementById('filter-country-code-select')?.addEventListener('change', applyMarketplaceFilters);
       document.getElementById('filter-country-select')?.addEventListener('change', applyMarketplaceFilters);
