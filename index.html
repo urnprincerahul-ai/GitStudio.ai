@@ -7277,6 +7277,55 @@
       `;
     }
 
+    /* ==========================================
+       REFERRAL EARNINGS ESTIMATOR CALCULATOR
+       ========================================== */
+    function updateReferralEarningsEstimate() {
+      const sliderFriends = document.getElementById('ref-calc-friends-slider');
+      const sliderSpend = document.getElementById('ref-calc-spend-slider');
+      
+      const friendsCountEl = document.getElementById('ref-calc-friends-val');
+      const spendValEl = document.getElementById('ref-calc-spend-val');
+      const monthlyEarningsEl = document.getElementById('ref-calc-monthly-total');
+      const yearlyEarningsEl = document.getElementById('ref-calc-yearly-total');
+      const bonusTierEl = document.getElementById('ref-calc-bonus-badge');
+
+      if (!sliderFriends || !sliderSpend) return;
+
+      const friends = parseInt(sliderFriends.value, 10) || 15;
+      const avgSpend = parseInt(sliderSpend.value, 10) || 500;
+
+      const baseMonthlyCommission = friends * avgSpend * 0.10;
+      const bonusPct = friends >= 50 ? 0.05 : (friends >= 20 ? 0.02 : 0);
+      const bonusMonthly = friends * avgSpend * bonusPct;
+      const totalMonthly = baseMonthlyCommission + bonusMonthly;
+      const yearlyTotal = totalMonthly * 12;
+
+      if (friendsCountEl) friendsCountEl.innerText = `${friends} ${friends === 1 ? 'Friend' : 'Friends'}`;
+      if (spendValEl) spendValEl.innerText = `₹${avgSpend.toLocaleString('en-IN')}`;
+      if (monthlyEarningsEl) monthlyEarningsEl.innerText = `₹${Math.round(totalMonthly).toLocaleString('en-IN')}`;
+      if (yearlyEarningsEl) yearlyEarningsEl.innerText = `₹${Math.round(yearlyTotal).toLocaleString('en-IN')}`;
+
+      if (bonusTierEl) {
+        if (friends >= 50) {
+          bonusTierEl.innerHTML = `<i class="fa-solid fa-crown" style="color: #f59e0b;"></i> Elite VIP (+5% Bonus Pool)`;
+          bonusTierEl.className = 'badge badge-warning';
+          bonusTierEl.style.background = 'rgba(245, 158, 11, 0.25)';
+          bonusTierEl.style.color = '#f59e0b';
+        } else if (friends >= 20) {
+          bonusTierEl.innerHTML = `<i class="fa-solid fa-star" style="color: #38bdf8;"></i> Pro Tier (+2% Bonus Pool)`;
+          bonusTierEl.className = 'badge badge-primary';
+          bonusTierEl.style.background = 'rgba(56, 189, 248, 0.25)';
+          bonusTierEl.style.color = '#38bdf8';
+        } else {
+          bonusTierEl.innerHTML = `<i class="fa-solid fa-shield" style="color: #4ade80;"></i> Standard 10% Tier`;
+          bonusTierEl.className = 'badge badge-success';
+          bonusTierEl.style.background = 'rgba(34, 197, 94, 0.2)';
+          bonusTierEl.style.color = '#4ade80';
+        }
+      }
+    }
+
     function renderReferralTab(filter = AppState.referralFilter || 'ALL') {
       AppState.referralFilter = filter;
       updatePremiumVIPBadgeUI();
@@ -7477,6 +7526,79 @@
             </div>
           </div>
         `}
+
+        <!-- Interactive Referral Monthly Earnings Estimator Slider Tool -->
+        <div class="glass-card" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(16, 185, 129, 0.1) 50%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: var(--radius-md); padding: 1.25rem; margin-top: 1rem; width: 100%; box-sizing: border-box; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 0.75rem;">
+            <div>
+              <h4 style="font-size: 1.05rem; font-weight: 800; color: #ffffff; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-calculator" style="color: #f59e0b; font-size: 1.1rem;"></i> Estimated Monthly Earnings Calculator
+              </h4>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; margin-bottom: 0;">
+                Drag the sliders to estimate your potential passive cash income from successful referrals
+              </p>
+            </div>
+            <span id="ref-calc-bonus-badge" class="badge badge-success" style="font-size: 0.72rem; padding: 0.3rem 0.65rem; font-weight: 800; background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.35);">
+              <i class="fa-solid fa-shield" style="color: #4ade80;"></i> Standard 10% Tier
+            </span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 1.25rem; align-items: center;">
+            <!-- Sliders Column -->
+            <div style="display: flex; flex-direction: column; gap: 1.15rem;">
+              <!-- Slider 1: Number of Invited Friends -->
+              <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                  <label style="font-size: 0.82rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 0.35rem;">
+                    <i class="fa-solid fa-users" style="color: #38bdf8;"></i> Active Invited Friends / Month
+                  </label>
+                  <span id="ref-calc-friends-val" style="font-size: 0.88rem; font-weight: 800; color: #38bdf8; font-family: var(--font-mono); background: rgba(56, 189, 248, 0.15); padding: 0.15rem 0.55rem; border-radius: var(--radius-sm); border: 1px solid rgba(56, 189, 248, 0.3);">15 Friends</span>
+                </div>
+                <input type="range" id="ref-calc-friends-slider" min="1" max="100" value="15" step="1" oninput="updateReferralEarningsEstimate()" style="width: 100%; accent-color: #38bdf8; cursor: pointer; height: 6px; background: rgba(255, 255, 255, 0.15); border-radius: 4px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted); margin-top: 0.25rem;">
+                  <span>1 Friend</span>
+                  <span>50 Friends</span>
+                  <span>100 Friends</span>
+                </div>
+              </div>
+
+              <!-- Slider 2: Average Monthly Spend per Friend -->
+              <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                  <label style="font-size: 0.82rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 0.35rem;">
+                    <i class="fa-solid fa-wallet" style="color: #4ade80;"></i> Avg. Spend per Friend / Month
+                  </label>
+                  <span id="ref-calc-spend-val" style="font-size: 0.88rem; font-weight: 800; color: #4ade80; font-family: var(--font-mono); background: rgba(74, 222, 128, 0.15); padding: 0.15rem 0.55rem; border-radius: var(--radius-sm); border: 1px solid rgba(74, 222, 128, 0.3);">₹500</span>
+                </div>
+                <input type="range" id="ref-calc-spend-slider" min="100" max="3000" value="500" step="50" oninput="updateReferralEarningsEstimate()" style="width: 100%; accent-color: #4ade80; cursor: pointer; height: 6px; background: rgba(255, 255, 255, 0.15); border-radius: 4px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted); margin-top: 0.25rem;">
+                  <span>₹100</span>
+                  <span>₹1,500</span>
+                  <span>₹3,000</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Projected Earnings Result Display Box -->
+            <div style="background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius-md); padding: 1.15rem 1rem; text-align: center; display: flex; flex-direction: column; gap: 0.75rem; justify-content: center; box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.4);">
+              <div>
+                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.25rem;">Estimated Monthly Cash Reward</span>
+                <strong id="ref-calc-monthly-total" style="font-size: 1.85rem; font-weight: 900; color: #f59e0b; font-family: var(--font-mono); line-height: 1.1; text-shadow: 0 0 12px rgba(245, 158, 11, 0.4);">₹750</strong>
+              </div>
+              <div style="border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 0.6rem; display: flex; justify-content: space-around; align-items: center;">
+                <div>
+                  <span style="font-size: 0.68rem; color: var(--text-muted); display: block;">Annualized Income</span>
+                  <strong id="ref-calc-yearly-total" style="font-size: 1.1rem; font-weight: 800; color: #22c55e; font-family: var(--font-mono);">₹9,000</strong>
+                </div>
+                <div style="width: 1px; height: 24px; background: rgba(255, 255, 255, 0.1);"></div>
+                <div>
+                  <span style="font-size: 0.68rem; color: var(--text-muted); display: block;">Base Rate</span>
+                  <strong style="font-size: 0.95rem; font-weight: 800; color: #38bdf8;">10% Instant</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- 30-Day Referral Credit Earnings Recharts Bar Chart Card -->
         <div class="glass-card" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.85) 100%); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.15rem; margin-top: 1rem; width: 100%; box-sizing: border-box; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);">
@@ -7734,7 +7856,10 @@
         </div>
       `;
 
-      setTimeout(renderReferralRecharts30DayChart, 40);
+      setTimeout(() => {
+        renderReferralRecharts30DayChart();
+        updateReferralEarningsEstimate();
+      }, 40);
     }
 
     function copyReferralLink() {
