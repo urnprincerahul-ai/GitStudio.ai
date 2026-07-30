@@ -1834,15 +1834,43 @@
 
     .scanner-corner {
       position: absolute;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-color: var(--accent);
       border-style: solid;
+      transition: border-color 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+      transform-origin: center;
     }
-    .scanner-corner.tl { top: -2px; left: -2px; border-width: 3px 0 0 3px; border-top-left-radius: 8px; }
-    .scanner-corner.tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; border-top-right-radius: 8px; }
-    .scanner-corner.bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; border-bottom-left-radius: 8px; }
-    .scanner-corner.br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; border-bottom-right-radius: 8px; }
+    .scanner-corner.tl { top: -3px; left: -3px; border-width: 3.5px 0 0 3.5px; border-top-left-radius: 8px; }
+    .scanner-corner.tr { top: -3px; right: -3px; border-width: 3.5px 3.5px 0 0; border-top-right-radius: 8px; }
+    .scanner-corner.bl { bottom: -3px; left: -3px; border-width: 0 0 3.5px 3.5px; border-bottom-left-radius: 8px; }
+    .scanner-corner.br { bottom: -3px; right: -3px; border-width: 0 3.5px 3.5px 0; border-bottom-right-radius: 8px; }
+
+    /* Pulse animation for .scanner-corner when QR candidate is detected */
+    @keyframes cornerPulse {
+      0% {
+        transform: scale(1);
+        border-color: var(--accent);
+        filter: drop-shadow(0 0 2px var(--accent));
+      }
+      50% {
+        transform: scale(1.4);
+        border-color: #22c55e;
+        filter: drop-shadow(0 0 10px #22c55e);
+      }
+      100% {
+        transform: scale(1);
+        border-color: var(--accent);
+        filter: drop-shadow(0 0 2px var(--accent));
+      }
+    }
+
+    .scanner-viewfinder.candidate-detected .scanner-corner,
+    .scanner-viewfinder.qr-detected .scanner-corner,
+    .scanner-corner.pulse {
+      animation: cornerPulse 0.7s infinite ease-in-out;
+      border-color: #22c55e;
+    }
 
     .qr-dropzone {
       border: 2px dashed var(--border-color);
@@ -5043,8 +5071,12 @@
       <div id="qr-view-camera" style="display: none; text-align: center; margin-bottom: 1.25rem;">
         <div class="camera-scanner-wrapper">
           <video id="qr-camera-stream" class="camera-scanner-video" autoplay playsinline muted></video>
-          <div class="scanner-viewfinder">
+          <div class="scanner-viewfinder" id="scanner-viewfinder">
             <div class="scanner-laser"></div>
+            <div class="scanner-corner tl"></div>
+            <div class="scanner-corner tr"></div>
+            <div class="scanner-corner bl"></div>
+            <div class="scanner-corner br"></div>
           </div>
         </div>
         <div style="margin-top: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
@@ -13274,6 +13306,7 @@
 
       const video = document.getElementById('qr-camera-stream');
       const canvas = document.getElementById('qr-canvas-hidden');
+      const viewfinder = document.getElementById('scanner-viewfinder');
       if (!video || !canvas) return;
 
       if (video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -13289,7 +13322,15 @@
             inversionAttempts: 'dontInvert'
           });
 
+          if (code && code.location) {
+            // Potential QR candidate detected! Animate viewfinder corners pulse
+            if (viewfinder) viewfinder.classList.add('candidate-detected');
+          } else {
+            if (viewfinder) viewfinder.classList.remove('candidate-detected');
+          }
+
           if (code && code.data) {
+            if (viewfinder) viewfinder.classList.add('qr-detected');
             handleSuccessfulQrScan(code.data, 'Camera Scanner');
             return;
           }
@@ -13326,11 +13367,21 @@
       }
       const video = document.getElementById('qr-camera-stream');
       if (video) video.srcObject = null;
+      const viewfinder = document.getElementById('scanner-viewfinder');
+      if (viewfinder) {
+        viewfinder.classList.remove('candidate-detected', 'qr-detected');
+      }
     }
 
     function simulateQrScanSuccess() {
-      const dummyPayload = `upi://pay?pa=virtualnumberhub@upi&pn=VirtualHub&tr=TR${Math.floor(100000 + Math.random()*900000)}`;
-      handleSuccessfulQrScan(dummyPayload, 'Auto-Scan Test');
+      const viewfinder = document.getElementById('scanner-viewfinder');
+      if (viewfinder) {
+        viewfinder.classList.add('candidate-detected');
+      }
+      setTimeout(() => {
+        const dummyPayload = `upi://pay?pa=virtualnumberhub@upi&pn=VirtualHub&tr=TR${Math.floor(100000 + Math.random()*900000)}`;
+        handleSuccessfulQrScan(dummyPayload, 'Auto-Scan Test');
+      }, 400);
     }
 
     function handleSuccessfulQrScan(qrPayload, source = 'Camera') {
