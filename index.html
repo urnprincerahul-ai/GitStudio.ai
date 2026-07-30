@@ -4046,6 +4046,7 @@
               <option value="PURCHASED">Purchased</option>
             </select>
             <select class="select-input" id="sort-select">
+              <option value="RECOMMENDED" selected>Recommended / All Platforms</option>
               <option value="PRICE_LOW">Lowest Price</option>
               <option value="PRICE_HIGH">Highest Price</option>
               <option value="NEWEST">Newest First</option>
@@ -12159,7 +12160,7 @@
         const countryName = document.getElementById('filter-country-select')?.value || 'ALL';
         const platformName = document.getElementById('filter-platform-select')?.value || 'ALL';
         const status = document.getElementById('filter-status-select')?.value || 'ALL';
-        const sortBy = document.getElementById('sort-select')?.value || 'PRICE_LOW';
+        const sortBy = document.getElementById('sort-select')?.value || 'RECOMMENDED';
 
         // Ensure numbers exist for the selected filter combination
         ensureNumbersExistForFilter(countryName, countryCode, platformName, 30);
@@ -12191,12 +12192,33 @@
           results = results.filter(n => n.status === status);
         }
 
-        if (sortBy === 'PRICE_LOW') {
+        if (sortBy === 'RECOMMENDED') {
+          // Interleave/round-robin platforms so every card shows a different platform when platform filter is ALL
+          if (platformName === 'ALL') {
+            const platformGroups = new Map();
+            results.forEach(n => {
+              const pName = n.platformName;
+              if (!platformGroups.has(pName)) platformGroups.set(pName, []);
+              platformGroups.get(pName).push(n);
+            });
+            const interleaved = [];
+            let maxLen = 0;
+            platformGroups.forEach(arr => { if (arr.length > maxLen) maxLen = arr.length; });
+            const groupKeys = Array.from(platformGroups.keys());
+            for (let i = 0; i < maxLen; i++) {
+              groupKeys.forEach(key => {
+                const arr = platformGroups.get(key);
+                if (i < arr.length) interleaved.push(arr[i]);
+              });
+            }
+            results = interleaved;
+          }
+        } else if (sortBy === 'PRICE_LOW') {
           results.sort((a, b) => a.price - b.price);
         } else if (sortBy === 'PRICE_HIGH') {
           results.sort((a, b) => b.price - a.price);
         } else if (sortBy === 'NEWEST') {
-          results.sort((a, b) => parseInt(b.id.replace('num_', '')) - parseInt(a.id.replace('num_', '')));
+          results.sort((a, b) => parseInt(b.id.replace(/[^0-9]/g, '')) - parseInt(a.id.replace(/[^0-9]/g, '')));
         }
 
         AppState.filteredNumbers = results;
