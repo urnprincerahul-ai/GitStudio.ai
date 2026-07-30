@@ -6794,7 +6794,7 @@
           </div>
 
           <div class="number-card-footer">
-            <div class="price-container" onclick="togglePriceTooltip(event, this)">
+            <div class="price-container" tabindex="0" role="button" aria-label="Pricing breakdown for ₹${num.price}" onclick="togglePriceTooltip(event, this)">
               <div class="price-tag" title="Hover or click for service fee breakdown">
                 ₹${num.price}
                 <i class="fa-solid fa-circle-info price-info-icon"></i>
@@ -12699,12 +12699,24 @@
       document.querySelectorAll('.price-container.show-tooltip').forEach(other => {
         if (other !== el) other.classList.remove('show-tooltip');
       });
-      el.classList.toggle('show-tooltip');
+      if (el) el.classList.toggle('show-tooltip');
     }
 
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.price-container')) {
+      const priceContainer = e.target.closest('.price-container');
+      if (priceContainer) {
+        togglePriceTooltip(e, priceContainer);
+      } else {
         document.querySelectorAll('.price-container.show-tooltip').forEach(el => el.classList.remove('show-tooltip'));
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.price-container.show-tooltip').forEach(el => el.classList.remove('show-tooltip'));
+      } else if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.price-container')) {
+        e.preventDefault();
+        togglePriceTooltip(e, e.target.closest('.price-container'));
       }
     });
 
