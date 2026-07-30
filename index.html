@@ -1321,8 +1321,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-top: 0.75rem;
+      gap: 0.4rem;
+      padding-top: 0.65rem;
       border-top: 1px solid var(--border-color);
+      flex-wrap: nowrap;
     }
     .number-card:hover {
       z-index: 15;
@@ -1333,19 +1335,24 @@
       align-items: center;
       cursor: pointer;
       user-select: none;
+      flex-shrink: 0;
+      white-space: nowrap;
     }
     .price-tag {
-      font-size: 1.15rem;
+      font-size: 0.95rem;
       font-weight: 800;
       color: var(--success);
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      padding: 0.15rem 0.45rem;
+      gap: 0.25rem;
+      padding: 0.25rem 0.5rem;
       border-radius: var(--radius-sm);
       transition: all 0.2s ease;
-      background: rgba(34, 197, 94, 0.08);
-      border: 1px solid rgba(34, 197, 94, 0.22);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1.2;
     }
     .price-info-icon {
       font-size: 0.72rem;
@@ -12149,85 +12156,80 @@
     let filterDebounceTimer = null;
 
     function applyMarketplaceFilters(resetVisibleCount = true) {
-      // Immediately display CSS loading skeleton placeholders
-      renderMarketplaceSkeletons(6);
-
       if (filterDebounceTimer) clearTimeout(filterDebounceTimer);
 
-      filterDebounceTimer = setTimeout(() => {
-        const searchQuery = document.getElementById('marketplace-search-input')?.value.toLowerCase().trim() || '';
-        const countryCode = document.getElementById('filter-country-code-select')?.value || 'ALL';
-        const countryName = document.getElementById('filter-country-select')?.value || 'ALL';
-        const platformName = document.getElementById('filter-platform-select')?.value || 'ALL';
-        const status = document.getElementById('filter-status-select')?.value || 'ALL';
-        const sortBy = document.getElementById('sort-select')?.value || 'RECOMMENDED';
+      const searchQuery = document.getElementById('marketplace-search-input')?.value.toLowerCase().trim() || '';
+      const countryCode = document.getElementById('filter-country-code-select')?.value || 'ALL';
+      const countryName = document.getElementById('filter-country-select')?.value || 'ALL';
+      const platformName = document.getElementById('filter-platform-select')?.value || 'ALL';
+      const status = document.getElementById('filter-status-select')?.value || 'ALL';
+      const sortBy = document.getElementById('sort-select')?.value || 'RECOMMENDED';
 
-        // Ensure numbers exist for the selected filter combination
-        ensureNumbersExistForFilter(countryName, countryCode, platformName, 30);
+      // Ensure numbers exist for the selected filter combination
+      ensureNumbersExistForFilter(countryName, countryCode, platformName, 30);
 
-        let results = [...AppState.numbers];
+      let results = [...AppState.numbers];
 
-        if (searchQuery) {
-          results = results.filter(n =>
-            n.phone.toLowerCase().includes(searchQuery) ||
-            n.countryName.toLowerCase().includes(searchQuery) ||
-            n.countryCode.toLowerCase().includes(searchQuery) ||
-            n.platformName.toLowerCase().includes(searchQuery)
-          );
-        }
+      if (searchQuery) {
+        results = results.filter(n =>
+          n.phone.toLowerCase().includes(searchQuery) ||
+          n.countryName.toLowerCase().includes(searchQuery) ||
+          n.countryCode.toLowerCase().includes(searchQuery) ||
+          n.platformName.toLowerCase().includes(searchQuery)
+        );
+      }
 
-        if (countryCode !== 'ALL') {
-          results = results.filter(n => n.countryCode === countryCode);
-        }
+      if (countryCode !== 'ALL') {
+        results = results.filter(n => n.countryCode === countryCode);
+      }
 
-        if (countryName !== 'ALL') {
-          results = results.filter(n => n.countryName === countryName);
-        }
+      if (countryName !== 'ALL') {
+        results = results.filter(n => n.countryName === countryName);
+      }
 
-        if (platformName !== 'ALL') {
-          results = results.filter(n => n.platformName === platformName);
-        }
+      if (platformName !== 'ALL') {
+        results = results.filter(n => n.platformName === platformName);
+      }
 
-        if (status !== 'ALL') {
-          results = results.filter(n => n.status === status);
-        }
+      if (status !== 'ALL') {
+        results = results.filter(n => n.status === status);
+      }
 
-        if (sortBy === 'RECOMMENDED') {
-          // Interleave/round-robin platforms so every card shows a different platform when platform filter is ALL
-          if (platformName === 'ALL') {
-            const platformGroups = new Map();
-            results.forEach(n => {
-              const pName = n.platformName;
-              if (!platformGroups.has(pName)) platformGroups.set(pName, []);
-              platformGroups.get(pName).push(n);
+      if (sortBy === 'RECOMMENDED') {
+        // Interleave/round-robin platforms so every card shows a different platform when platform filter is ALL
+        if (platformName === 'ALL') {
+          const platformGroups = new Map();
+          results.forEach(n => {
+            const pName = n.platformName;
+            if (!platformGroups.has(pName)) platformGroups.set(pName, []);
+            platformGroups.get(pName).push(n);
+          });
+          const interleaved = [];
+          let maxLen = 0;
+          platformGroups.forEach(arr => { if (arr.length > maxLen) maxLen = arr.length; });
+          const groupKeys = Array.from(platformGroups.keys());
+          for (let i = 0; i < maxLen; i++) {
+            groupKeys.forEach(key => {
+              const arr = platformGroups.get(key);
+              if (i < arr.length) interleaved.push(arr[i]);
             });
-            const interleaved = [];
-            let maxLen = 0;
-            platformGroups.forEach(arr => { if (arr.length > maxLen) maxLen = arr.length; });
-            const groupKeys = Array.from(platformGroups.keys());
-            for (let i = 0; i < maxLen; i++) {
-              groupKeys.forEach(key => {
-                const arr = platformGroups.get(key);
-                if (i < arr.length) interleaved.push(arr[i]);
-              });
-            }
-            results = interleaved;
           }
-        } else if (sortBy === 'PRICE_LOW') {
-          results.sort((a, b) => a.price - b.price);
-        } else if (sortBy === 'PRICE_HIGH') {
-          results.sort((a, b) => b.price - a.price);
-        } else if (sortBy === 'NEWEST') {
-          results.sort((a, b) => parseInt(b.id.replace(/[^0-9]/g, '')) - parseInt(a.id.replace(/[^0-9]/g, '')));
+          results = interleaved;
         }
+      } else if (sortBy === 'PRICE_LOW') {
+        results.sort((a, b) => a.price - b.price);
+      } else if (sortBy === 'PRICE_HIGH') {
+        results.sort((a, b) => b.price - a.price);
+      } else if (sortBy === 'NEWEST') {
+        results.sort((a, b) => parseInt(b.id.replace(/[^0-9]/g, '')) - parseInt(a.id.replace(/[^0-9]/g, '')));
+      }
 
-        AppState.filteredNumbers = results;
-        if (resetVisibleCount) {
-          AppState.visibleCount = 12;
-        }
-        renderMarketplace();
-        try { syncPlatformBadgeActiveState(); } catch(e) {}
-      }, 150);
+      AppState.filteredNumbers = results;
+      if (resetVisibleCount) {
+        AppState.visibleCount = 12;
+      }
+      renderMarketplace();
+      try { syncPlatformBadgeActiveState(); } catch(e) {}
     }
 
     function resetMarketplaceFilters() {
@@ -14429,7 +14431,11 @@
       });
 
       // Load More Button & Infinite Scroll Observer
+      let isScrollLoading = false;
       function handleLoadMoreAction() {
+        if (isScrollLoading) return;
+        isScrollLoading = true;
+
         AppState.visibleCount += 24;
         const cName = document.getElementById('filter-country-select')?.value || 'ALL';
         const cCode = document.getElementById('filter-country-code-select')?.value || 'ALL';
@@ -14441,6 +14447,10 @@
         } else {
           renderMarketplace();
         }
+
+        setTimeout(() => {
+          isScrollLoading = false;
+        }, 200);
       }
 
       const loadMoreBtn = document.getElementById('load-more-btn');
