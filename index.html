@@ -4063,31 +4063,7 @@
           </div>
         </div>
 
-        <!-- Bulk Selection Action Bar -->
-        <div id="marketplace-bulk-toolbar" class="marketplace-bulk-toolbar">
-          <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
-            <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 700; cursor: pointer; user-select: none;">
-              <input type="checkbox" id="bulk-select-all-checkbox" class="card-bulk-checkbox" onchange="toggleSelectAllVisible(this.checked)">
-              <span>Select All Visible</span>
-            </label>
-            <span class="badge badge-primary" id="bulk-selected-count-badge" style="font-size: 0.75rem; font-weight: 700;">0 Selected</span>
-            <span id="bulk-total-price-display" style="font-family: var(--font-mono); font-weight: 800; font-size: 0.95rem; color: var(--success); display: none;">
-              Total: ₹0
-            </span>
-            <span class="badge badge-warning" id="bulk-discount-badge" style="display: none; font-size: 0.7rem; font-weight: 700;">
-              🎁 10% Bulk Discount Applied!
-            </span>
-          </div>
 
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <button class="btn btn-secondary btn-sm" id="bulk-clear-btn" onclick="clearBulkSelection()" style="display: none;">
-              <i class="fa-solid fa-xmark"></i> Clear Selection
-            </button>
-            <button class="btn btn-primary btn-sm" id="bulk-buy-btn" onclick="openBulkPurchaseModal()" disabled style="opacity: 0.5; font-weight: 700; padding: 0.45rem 1rem;">
-              <i class="fa-solid fa-layer-group"></i> Bulk Buy Selected <span id="bulk-buy-btn-count">(0)</span>
-            </button>
-          </div>
-        </div>
 
         <!-- Number Cards Grid -->
         <div class="grid-display" id="numbers-grid-container">
@@ -4840,24 +4816,7 @@
     </button>
   </nav>
 
-  <!-- Floating Sticky Bulk Buy Bar -->
-  <div id="floating-bulk-bar" class="floating-bulk-bar">
-    <div>
-      <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Bulk Cart</div>
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <span style="font-weight: 800; font-size: 1.1rem; color: var(--text-main);" id="floating-bulk-count">0 Numbers</span>
-        <span style="font-family: var(--font-mono); font-weight: 800; font-size: 1.1rem; color: var(--success);" id="floating-bulk-price">₹0</span>
-      </div>
-    </div>
-    <div style="display: flex; gap: 0.5rem;">
-      <button class="btn btn-secondary btn-sm" onclick="clearBulkSelection()" title="Clear Selection">
-        <i class="fa-solid fa-trash-can"></i>
-      </button>
-      <button class="btn btn-primary btn-sm" onclick="openBulkPurchaseModal()" style="font-weight: 800; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 0.5rem 1.1rem;">
-        <i class="fa-solid fa-cart-shopping"></i> Checkout Now
-      </button>
-    </div>
-  </div>
+
 
   <!-- Floating Help Action Button -->
   <div class="floating-fab" id="help-fab" title="Need Help? Chat Support">
@@ -6560,17 +6519,14 @@
     }
 
     // Dynamic Inventory Store Generator for 1000+ numbers per Country x Platform
-    const CreatedNumberPairs = new Set();
+    const PairCreatedCounts = new Map();
 
-    function createPairNumberPool(country, platform, count = 1050) {
+    function createPairNumberPool(country, platform, count = 100) {
       const pairKey = `${country.name}___${platform.name}`;
-      if (CreatedNumberPairs.has(pairKey)) return;
-      CreatedNumberPairs.add(pairKey);
+      const existingCount = PairCreatedCounts.get(pairKey) || 0;
+      if (existingCount >= count) return;
 
-      const existingCount = AppState.numbers.filter(n => n.countryName === country.name && n.platformName === platform.name).length;
       const needed = count - existingCount;
-      if (needed <= 0) return;
-
       const pInfo = getPlatformInfo(platform.name);
 
       for (let i = 0; i < needed; i++) {
@@ -6594,9 +6550,11 @@
           status: isPurchased ? 'PURCHASED' : 'AVAILABLE'
         });
       }
+
+      PairCreatedCounts.set(pairKey, count);
     }
 
-    function ensureNumbersExistForFilter(cName, cCode, pName) {
+    function ensureNumbersExistForFilter(cName, cCode, pName, minCount = 100) {
       const targetCountries = (cName && cName !== 'ALL') 
         ? AppState.countries.filter(c => c.name === cName)
         : (cCode && cCode !== 'ALL')
@@ -6607,15 +6565,15 @@
         ? AppState.platforms.filter(p => p.name === pName)
         : AppState.platforms;
 
-      const limitC = (cName !== 'ALL' || cCode !== 'ALL') ? targetCountries.length : 15;
-      const limitP = (pName !== 'ALL') ? targetPlatforms.length : 15;
+      const limitC = (cName !== 'ALL' || cCode !== 'ALL') ? targetCountries.length : 12;
+      const limitP = (pName !== 'ALL') ? targetPlatforms.length : AppState.platforms.length;
 
       const maxC = targetCountries.slice(0, limitC);
       const maxP = targetPlatforms.slice(0, limitP);
 
       maxC.forEach(c => {
         maxP.forEach(p => {
-          createPairNumberPool(c, p, 1050);
+          createPairNumberPool(c, p, minCount);
         });
       });
     }
@@ -6648,17 +6606,19 @@
       }
 
       AppState.numbers = [];
-      CreatedNumberPairs.clear();
+      PairCreatedCounts.clear();
 
-      // Pre-seed top popular country x platform combinations (1050 numbers each)
-      const topCountries = AppState.countries.slice(0, 5);
-      const topPlatforms = AppState.platforms.slice(0, 5);
+      // Round-robin generation across ALL platforms and top countries so every platform is seeded evenly
+      const topCountries = AppState.countries.slice(0, 10);
+      const topPlatforms = AppState.platforms; // ALL platforms
 
-      topCountries.forEach(c => {
+      for (let numIdx = 0; numIdx < 15; numIdx++) {
         topPlatforms.forEach(p => {
-          createPairNumberPool(c, p, 1050);
+          topCountries.forEach(c => {
+            createPairNumberPool(c, p, numIdx + 1);
+          });
         });
-      });
+      }
 
       AppState.filteredNumbers = [...AppState.numbers];
     }
@@ -6817,9 +6777,7 @@
           <div>
             <div class="number-card-header" style="display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem;">
               <div class="country-info" style="display: flex; align-items: flex-start; gap: 0.55rem; min-width: 0; flex: 1;">
-                ${!isPurchased ? `
-                  <input type="checkbox" class="card-bulk-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleNumberSelection('${num.id}', this.checked, event)" title="Select for Bulk Purchase" style="margin-top: 0.35rem; flex-shrink: 0;">
-                ` : ''}
+
                 <div style="display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; flex: 1;">
                   <!-- Country Line: Flag & Name -->
                   <div style="display: flex; align-items: center; gap: 0.5rem; min-width: 0;">
@@ -7073,123 +7031,7 @@
     }
 
     function updateBulkToolbarUI() {
-      const selectedIds = AppState.selectedNumberIds || [];
-      const count = selectedIds.length;
-      const selectedItems = AppState.numbers.filter(n => selectedIds.includes(n.id));
-
-      const rawTotal = selectedItems.reduce((sum, n) => sum + (n.price || 0), 0);
-      
-      let discountPercent = 0;
-      if (count >= 5) discountPercent = 10;
-      else if (count >= 3) discountPercent = 5;
-
-      const discountAmt = Math.round((rawTotal * discountPercent) / 100);
-      const finalTotal = rawTotal - discountAmt;
-
-      const countBadge = document.getElementById('bulk-selected-count-badge');
-      if (countBadge) {
-        const newBadgeText = `${count} Selected`;
-        if (countBadge.innerText !== newBadgeText) {
-          countBadge.innerText = newBadgeText;
-          countBadge.classList.remove('count-pop');
-          void countBadge.offsetWidth;
-          countBadge.classList.add('count-pop');
-        }
-      }
-
-      // Marketplace Bulk Toolbar highlight animation
-      const marketToolbar = document.getElementById('marketplace-bulk-toolbar');
-      if (marketToolbar) {
-        if (count > 0) {
-          marketToolbar.classList.add('has-selection');
-        } else {
-          marketToolbar.classList.remove('has-selection');
-        }
-      }
-
-      const priceDisplay = document.getElementById('bulk-total-price-display');
-      if (priceDisplay) {
-        if (count > 0) {
-          priceDisplay.style.display = 'inline-block';
-          priceDisplay.innerHTML = `Total: ₹${finalTotal}${discountAmt > 0 ? ` <span style="font-size: 0.75rem; text-decoration: line-through; color: var(--text-muted);">₹${rawTotal}</span>` : ''}`;
-        } else {
-          priceDisplay.style.display = 'none';
-        }
-      }
-
-      const discountBadge = document.getElementById('bulk-discount-badge');
-      if (discountBadge) {
-        if (discountPercent > 0) {
-          discountBadge.style.display = 'inline-block';
-          discountBadge.innerText = `🎁 ${discountPercent}% Bulk Discount Applied! (-₹${discountAmt})`;
-        } else {
-          discountBadge.style.display = 'none';
-        }
-      }
-
-      const clearBtn = document.getElementById('bulk-clear-btn');
-      if (clearBtn) clearBtn.style.display = count > 0 ? 'inline-flex' : 'none';
-
-      const bulkBuyBtn = document.getElementById('bulk-buy-btn');
-      const bulkBuyCount = document.getElementById('bulk-buy-btn-count');
-      if (bulkBuyBtn) {
-        bulkBuyBtn.disabled = count === 0;
-        bulkBuyBtn.style.opacity = count === 0 ? '0.5' : '1';
-      }
-      if (bulkBuyCount) bulkBuyCount.innerText = `(${count})`;
-
-      // Floating Action Bar UI Entry / Exit Spring Animation
-      const floatingBar = document.getElementById('floating-bulk-bar');
-      const floatCount = document.getElementById('floating-bulk-count');
-      const floatPrice = document.getElementById('floating-bulk-price');
-
-      if (floatingBar) {
-        if (count > 0) {
-          if (floatCount) {
-            const countText = `${count} ${count === 1 ? 'Number' : 'Numbers'}`;
-            if (floatCount.innerText !== countText) {
-              floatCount.innerText = countText;
-              floatCount.classList.remove('count-pop');
-              void floatCount.offsetWidth;
-              floatCount.classList.add('count-pop');
-            }
-          }
-          if (floatPrice) floatPrice.innerText = `₹${finalTotal}`;
-
-          if (!floatingBar.classList.contains('visible')) {
-            floatingBar.classList.remove('exiting');
-            floatingBar.style.display = 'flex';
-            requestAnimationFrame(() => {
-              floatingBar.classList.add('visible');
-            });
-          }
-        } else {
-          if (floatingBar.classList.contains('visible')) {
-            floatingBar.classList.remove('visible');
-            floatingBar.classList.add('exiting');
-            setTimeout(() => {
-              if (!floatingBar.classList.contains('visible') && (AppState.selectedNumberIds || []).length === 0) {
-                floatingBar.style.display = 'none';
-                floatingBar.classList.remove('exiting');
-              }
-            }, 300);
-          }
-        }
-      }
-
-      // Sync Select All checkbox state
-      const selectAllChk = document.getElementById('bulk-select-all-checkbox');
-      if (selectAllChk) {
-        const availableVisible = AppState.filteredNumbers
-          .slice(0, AppState.visibleCount)
-          .filter(n => n.status !== 'PURCHASED');
-        if (availableVisible.length > 0) {
-          const allVisSelected = availableVisible.every(n => selectedIds.includes(n.id));
-          selectAllChk.checked = allVisSelected;
-        } else {
-          selectAllChk.checked = false;
-        }
-      }
+      // Bulk buy options removed as requested
     }
 
     function openBulkPurchaseModal() {
@@ -12305,7 +12147,7 @@
 
     let filterDebounceTimer = null;
 
-    function applyMarketplaceFilters() {
+    function applyMarketplaceFilters(resetVisibleCount = true) {
       // Immediately display CSS loading skeleton placeholders
       renderMarketplaceSkeletons(6);
 
@@ -12319,8 +12161,8 @@
         const status = document.getElementById('filter-status-select')?.value || 'ALL';
         const sortBy = document.getElementById('sort-select')?.value || 'PRICE_LOW';
 
-        // Ensure 1000+ numbers exist for the selected filter combination
-        ensureNumbersExistForFilter(countryName, countryCode, platformName);
+        // Ensure numbers exist for the selected filter combination
+        ensureNumbersExistForFilter(countryName, countryCode, platformName, 30);
 
         let results = [...AppState.numbers];
 
@@ -12358,10 +12200,12 @@
         }
 
         AppState.filteredNumbers = results;
-        AppState.visibleCount = 12;
+        if (resetVisibleCount) {
+          AppState.visibleCount = 12;
+        }
         renderMarketplace();
         try { syncPlatformBadgeActiveState(); } catch(e) {}
-      }, 200);
+      }, 150);
     }
 
     function resetMarketplaceFilters() {
@@ -14563,19 +14407,29 @@
       });
 
       // Load More Button & Infinite Scroll Observer
+      function handleLoadMoreAction() {
+        AppState.visibleCount += 24;
+        const cName = document.getElementById('filter-country-select')?.value || 'ALL';
+        const cCode = document.getElementById('filter-country-code-select')?.value || 'ALL';
+        const pName = document.getElementById('filter-platform-select')?.value || 'ALL';
+
+        if (AppState.visibleCount + 12 >= AppState.filteredNumbers.length) {
+          ensureNumbersExistForFilter(cName, cCode, pName, 50);
+          applyMarketplaceFilters(false);
+        } else {
+          renderMarketplace();
+        }
+      }
+
       const loadMoreBtn = document.getElementById('load-more-btn');
       if (loadMoreBtn) {
-        loadMoreBtn.addEventListener('click', () => {
-          AppState.visibleCount += 24;
-          renderMarketplace();
-        });
+        loadMoreBtn.addEventListener('click', handleLoadMoreAction);
 
         if ('IntersectionObserver' in window) {
           const loadMoreObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
               if (entry.isIntersecting && !loadMoreBtn.disabled && loadMoreBtn.style.display !== 'none') {
-                AppState.visibleCount += 24;
-                renderMarketplace();
+                handleLoadMoreAction();
               }
             });
           }, { rootMargin: '250px' });
