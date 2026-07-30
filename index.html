@@ -6613,8 +6613,8 @@
       const topPlatforms = AppState.platforms; // ALL platforms
 
       for (let numIdx = 0; numIdx < 15; numIdx++) {
-        topPlatforms.forEach(p => {
-          topCountries.forEach(c => {
+        topCountries.forEach(c => {
+          topPlatforms.forEach(p => {
             createPairNumberPool(c, p, numIdx + 1);
           });
         });
