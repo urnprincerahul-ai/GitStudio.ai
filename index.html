@@ -12965,7 +12965,11 @@
     });
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        const activeModals = document.querySelectorAll('.modal-backdrop.active');
+        if (activeModals.length > 0) {
+          activeModals.forEach(m => closeModal(m.id));
+        }
         document.querySelectorAll('.price-container.show-tooltip').forEach(el => {
           el.classList.remove('show-tooltip');
           const card = el.closest('.number-card');
@@ -12974,6 +12978,30 @@
             card.style.zIndex = '';
           }
         });
+      } else if (e.key === 'Tab') {
+        const activeModal = document.querySelector('.modal-backdrop.active');
+        if (activeModal) {
+          const focusables = Array.from(
+            activeModal.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])')
+          ).filter(el => el.offsetWidth > 0 || el.offsetHeight > 0 || el === document.activeElement);
+
+          if (focusables.length > 0) {
+            const firstFocusable = focusables[0];
+            const lastFocusable = focusables[focusables.length - 1];
+
+            if (e.shiftKey) {
+              if (document.activeElement === firstFocusable || !activeModal.contains(document.activeElement)) {
+                e.preventDefault();
+                lastFocusable.focus();
+              }
+            } else {
+              if (document.activeElement === lastFocusable || !activeModal.contains(document.activeElement)) {
+                e.preventDefault();
+                firstFocusable.focus();
+              }
+            }
+          }
+        }
       } else if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.price-container')) {
         e.preventDefault();
         togglePriceTooltip(e, e.target.closest('.price-container'));
@@ -13797,6 +13825,10 @@
             { scale: 1, y: 0, opacity: 1, duration: 0.4, ease: "back.out(1.4)" }
           );
         }
+        setTimeout(() => {
+          const utrIn = document.getElementById('utr-input');
+          if (utrIn) utrIn.focus();
+        }, 100);
       }
 
       if (id === 'payment-modal' || id === 'plan-purchase-modal') {
