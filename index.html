@@ -2321,12 +2321,15 @@
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease;
-      padding: clamp(0.35rem, 2vw, 1rem);
+      padding: clamp(0.25rem, 2.5vw, 1rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     #payment-modal .modal-box, #plan-purchase-modal .modal-box, #topup-modal .modal-box {
       width: 100%;
-      max-width: min(450px, 94vw);
-      padding: clamp(0.85rem, 3vw, 1.25rem);
+      max-width: clamp(300px, 94vw, 480px);
+      padding: clamp(0.75rem, 3.5vw, 1.25rem);
       border: 1px solid var(--border-glow);
       box-shadow: var(--shadow-lg), 0 0 25px var(--accent-glow);
       transform: scale(0.92) translateY(8px);
@@ -2335,6 +2338,7 @@
       max-height: min(calc(100dvh - 1rem), 90vh);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      box-sizing: border-box;
     }
     #payment-modal.active .modal-box {
       animation: paymentModalSpringPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -2397,30 +2401,48 @@
     }
 
     @media (max-width: 576px) {
-      #payment-modal, #plan-purchase-modal {
-        padding: 0.35rem;
+      #payment-modal, #plan-purchase-modal, #topup-modal {
+        padding: clamp(0.2rem, 1.5vw, 0.5rem);
       }
-      #payment-modal .modal-box, #plan-purchase-modal .modal-box {
+      #payment-modal .modal-box, #plan-purchase-modal .modal-box, #topup-modal .modal-box {
         max-width: 100%;
-        padding: 1.15rem 0.85rem;
+        padding: clamp(0.75rem, 3vw, 1rem);
         border-radius: var(--radius-md);
       }
     }
 
+    #payment-modal-order-summary {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: clamp(0.6rem, 2.5vw, 0.85rem) clamp(0.75rem, 3vw, 1rem);
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
     #payment-modal-order-summary > div {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 0.5rem;
+      width: 100%;
     }
-    @media (max-width: 320px) {
+    @media (max-width: 400px) {
       #payment-modal-order-summary > div {
         flex-direction: column;
         align-items: flex-start !important;
+        gap: 0.5rem;
       }
       #payment-modal-order-summary > div > div:last-child {
         text-align: left !important;
+        width: 100%;
+        border-top: 1px dashed var(--border-color);
+        padding-top: 0.35rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
     }
 
