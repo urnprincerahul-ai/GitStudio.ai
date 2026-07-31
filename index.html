@@ -11009,7 +11009,16 @@
       const isValidLength = val.length === 12;
 
       if (isNumeric && isValidLength) {
-        input.classList.add('utr-valid-success');
+        if (!input.classList.contains('utr-valid-success')) {
+          input.classList.add('utr-valid-success');
+          if (window.gsap) {
+            gsap.killTweensOf(input);
+            gsap.fromTo(input,
+              { scale: 0.95 },
+              { scale: 1, duration: 0.35, ease: 'back.out(2)' }
+            );
+          }
+        }
         input.style.borderColor = '';
         input.style.boxShadow = '';
         if (msg) msg.style.display = 'none';
@@ -11033,9 +11042,22 @@
     function validatePlanUtrInput() {
       const input = document.getElementById('plan-utr-input');
       const msg = document.getElementById('plan-utr-validation-msg');
+      const counterEl = document.getElementById('plan-utr-char-counter');
       if (!input) return false;
 
       const val = input.value.trim();
+
+      if (counterEl) {
+        counterEl.innerText = `${val.length} / 12 digits`;
+        if (val.length === 12 && /^\d+$/.test(val)) {
+          counterEl.style.color = 'var(--success)';
+        } else if (val.length > 0 && (!/^\d+$/.test(val) || val.length < 12)) {
+          counterEl.style.color = '#ef4444';
+        } else {
+          counterEl.style.color = 'var(--text-muted)';
+        }
+      }
+
       if (val === '') {
         input.classList.remove('utr-valid-success');
         input.style.borderColor = '';
@@ -11048,7 +11070,16 @@
       const isValidLength = val.length === 12;
 
       if (isNumeric && isValidLength) {
-        input.classList.add('utr-valid-success');
+        if (!input.classList.contains('utr-valid-success')) {
+          input.classList.add('utr-valid-success');
+          if (window.gsap) {
+            gsap.killTweensOf(input);
+            gsap.fromTo(input,
+              { scale: 0.95 },
+              { scale: 1, duration: 0.35, ease: 'back.out(2)' }
+            );
+          }
+        }
         input.style.borderColor = '';
         input.style.boxShadow = '';
         if (msg) msg.style.display = 'none';
@@ -14260,7 +14291,16 @@
       if (!input) return false;
 
       const val = input.value.trim();
-      if (counter) counter.innerText = `${val.length} / 12 digits`;
+      if (counter) {
+        counter.innerText = `${val.length} / 12 digits`;
+        if (val.length === 12 && /^\d+$/.test(val)) {
+          counter.style.color = 'var(--success)';
+        } else if (val.length > 0 && (!/^\d+$/.test(val) || val.length < 12)) {
+          counter.style.color = '#ef4444';
+        } else {
+          counter.style.color = 'var(--text-muted)';
+        }
+      }
 
       if (val === '') {
         input.classList.remove('utr-valid-success');
@@ -14274,7 +14314,16 @@
       const isValidLength = val.length === 12;
 
       if (isNumeric && isValidLength) {
-        input.classList.add('utr-valid-success');
+        if (!input.classList.contains('utr-valid-success')) {
+          input.classList.add('utr-valid-success');
+          if (window.gsap) {
+            gsap.killTweensOf(input);
+            gsap.fromTo(input,
+              { scale: 0.95 },
+              { scale: 1, duration: 0.35, ease: 'back.out(2)' }
+            );
+          }
+        }
         input.style.borderColor = '';
         input.style.boxShadow = '';
         if (msg) msg.style.display = 'none';
