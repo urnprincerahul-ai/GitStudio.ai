@@ -2297,15 +2297,15 @@
       transform: scale(1);
     }
 
-    /* Dedicated Payment & Plan Purchase Modals Entry Transition, Responsive Max-Width & Adaptive Padding */
-    #payment-modal, #plan-purchase-modal {
+    /* Dedicated Payment, Plan Purchase & Wallet Topup Modals Entry Transition, Responsive Max-Width & Adaptive Padding */
+    #payment-modal, #plan-purchase-modal, #topup-modal {
       background: var(--glass-bg);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       padding: clamp(0.35rem, 2vw, 1rem);
     }
-    #payment-modal .modal-box, #plan-purchase-modal .modal-box {
+    #payment-modal .modal-box, #plan-purchase-modal .modal-box, #topup-modal .modal-box {
       width: 100%;
       max-width: min(450px, 94vw);
       padding: clamp(0.85rem, 3vw, 1.25rem);
@@ -2317,12 +2317,12 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
-    #payment-modal.active .modal-box, #plan-purchase-modal.active .modal-box {
+    #payment-modal.active .modal-box, #plan-purchase-modal.active .modal-box, #topup-modal.active .modal-box {
       transform: scale(1) translateY(0);
     }
 
     /* UTR Input Field Styling - Monospaced Font, Crisp Letter Spacing & Sleek Layout */
-    #utr-input, #plan-utr-input {
+    #utr-input, #plan-utr-input, #topup-utr-input {
       width: 100% !important;
       box-sizing: border-box !important;
       padding: 0.55rem 0.75rem !important;
@@ -2337,13 +2337,13 @@
       color: var(--text-main);
       transition: all 0.2s ease;
     }
-    #utr-input:focus, #plan-utr-input:focus {
+    #utr-input:focus, #plan-utr-input:focus, #topup-utr-input:focus {
       border-color: var(--accent) !important;
       box-shadow: 0 0 15px var(--accent-glow) !important;
       background: rgba(15, 23, 42, 0.9) !important;
       outline: none;
     }
-    #utr-input::placeholder, #plan-utr-input::placeholder {
+    #utr-input::placeholder, #plan-utr-input::placeholder, #topup-utr-input::placeholder {
       font-size: 0.9rem !important;
       letter-spacing: 1px !important;
       opacity: 0.55;
@@ -5152,34 +5152,64 @@
   <div class="modal-backdrop" id="topup-modal">
     <div class="modal-box">
       <button class="modal-close" onclick="closeModal('topup-modal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.5rem;"><i class="fa-solid fa-wallet" style="color: var(--accent); margin-right: 0.4rem;"></i>Add Funds to Wallet</h3>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem;">Select a quick top-up amount or enter custom value</p>
+      <h3 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.35rem;"><i class="fa-solid fa-wallet" style="color: var(--accent); margin-right: 0.4rem;"></i>Add Funds to Wallet</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Select a quick top-up amount or enter custom value, pay via UPI & submit UTR.</p>
 
-      <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Quick Amounts:</div>
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.25rem;">
-        <button class="btn btn-secondary" onclick="addDemoWalletFunds(100)">+ ₹100</button>
-        <button class="btn btn-secondary" onclick="addDemoWalletFunds(500)">+ ₹500</button>
-        <button class="btn btn-secondary" onclick="addDemoWalletFunds(1000)">+ ₹1000</button>
+      <!-- Quick Amounts -->
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem;">Quick Top-Up Amounts:</div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1rem;">
+        <button class="btn btn-secondary btn-sm" style="font-weight: 700;" onclick="setQuickTopUpAmount(100)">+ ₹100</button>
+        <button class="btn btn-secondary btn-sm" style="font-weight: 700;" onclick="setQuickTopUpAmount(500)">+ ₹500</button>
+        <button class="btn btn-secondary btn-sm" style="font-weight: 700;" onclick="setQuickTopUpAmount(1000)">+ ₹1000</button>
       </div>
 
-      <div style="display: flex; align-items: center; margin: 1.25rem 0; color: var(--text-muted); font-size: 0.78rem;">
+      <div style="display: flex; align-items: center; margin: 0.85rem 0; color: var(--text-muted); font-size: 0.75rem;">
         <div style="flex: 1; border-bottom: 1px solid var(--border-color);"></div>
-        <span style="padding: 0 0.6rem; font-weight: 600;">OR ENTER CUSTOM AMOUNT</span>
+        <span style="padding: 0 0.5rem; font-weight: 700; letter-spacing: 0.5px;">CUSTOM AMOUNT & UPI PAYMENT</span>
         <div style="flex: 1; border-bottom: 1px solid var(--border-color);"></div>
       </div>
 
-      <div style="margin-bottom: 1.25rem;">
-        <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem;">Custom Amount (₹):</label>
+      <!-- Custom Amount Input -->
+      <div style="margin-bottom: 0.85rem;">
+        <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Enter Custom Amount (₹):</label>
         <div style="position: relative; display: flex; align-items: center;">
-          <span style="position: absolute; left: 0.9rem; color: var(--accent); font-weight: 800; font-size: 1.1rem; pointer-events: none;">₹</span>
-          <input type="number" id="custom-wallet-amount-input" class="search-input" placeholder="e.g. 250" min="10" max="100000" style="padding-left: 2.2rem; font-weight: 700; font-size: 1rem;" onkeydown="if(event.key==='Enter') submitCustomWalletFunds()">
+          <span style="position: absolute; left: 0.85rem; color: var(--accent); font-weight: 800; font-size: 1.1rem; pointer-events: none;">₹</span>
+          <input type="number" id="custom-wallet-amount-input" class="search-input" placeholder="e.g. 250" min="10" max="100000" style="padding-left: 2.1rem; font-weight: 700; font-size: 1rem;" oninput="validateCustomWalletAmount()">
         </div>
         <div id="custom-amount-val-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; margin-top: 0.35rem; display: none;"></div>
       </div>
 
-      <button class="btn btn-primary" style="width: 100%; font-size: 0.95rem; padding: 0.75rem;" onclick="submitCustomWalletFunds()">
-        <i class="fa-solid fa-plus-circle"></i> Add Custom Amount
-      </button>
+      <!-- UPI QR & UPI ID Display Section -->
+      <div style="text-align: center; margin-bottom: 0.85rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem;">
+        <div style="background: #ffffff; padding: 0.4rem; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); max-width: 165px; overflow: hidden;">
+          <img src="https://i.ibb.co/bMfHHTQ2/1785462317532.png" alt="UPI Payment QR Code" style="width: 145px; height: 145px; object-fit: contain; display: block; border-radius: 6px;">
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.35rem; margin-top: 0.45rem; flex-wrap: wrap;">
+          <span style="font-size: 0.8rem; color: var(--text-muted);">UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong></span>
+          <button class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.45rem; font-size: 0.7rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.2rem;" onclick="copyText('urn.princerahul-1@oksbi', 'UPI ID copied!')" title="Copy UPI ID">
+            <i class="fa-solid fa-copy"></i> Copy
+          </button>
+        </div>
+      </div>
+
+      <!-- Submit 12-Digit UTR Section -->
+      <div style="margin-bottom: 0.85rem;">
+        <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Submit 12-Digit UTR Number:</label>
+        <input type="text" id="topup-utr-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validateTopUpUtrInput()">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 0.35rem; gap: 0.5rem;">
+          <div id="topup-utr-validation-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; display: none; flex: 1;"></div>
+          <div id="topup-utr-char-counter" style="font-size: 0.78rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted); white-space: nowrap; margin-left: auto;">0 / 12 digits</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.65rem;">
+        <button class="btn btn-secondary" style="flex: 1;" onclick="launchUpiRedirect()">
+          <i class="fa-solid fa-external-link"></i> Launch UPI
+        </button>
+        <button class="btn btn-success" style="flex: 1.4; font-weight: 800;" id="submit-topup-utr-btn" onclick="submitWalletTopUpUtr()">
+          <i class="fa-solid fa-check-circle"></i> Verify & Add Funds
+        </button>
+      </div>
     </div>
   </div>
 
@@ -14014,65 +14044,194 @@
       }
     }
 
-    function addDemoWalletFunds(amt) {
+    function setQuickTopUpAmount(amt) {
+      const input = document.getElementById('custom-wallet-amount-input');
+      if (input) {
+        input.value = amt;
+        validateCustomWalletAmount();
+      }
+    }
+
+    function validateCustomWalletAmount() {
+      const input = document.getElementById('custom-wallet-amount-input');
+      const valMsg = document.getElementById('custom-amount-val-msg');
+      if (!input) return false;
+
+      const val = input.value.trim();
+      if (val === '') {
+        input.style.borderColor = '';
+        input.style.boxShadow = '';
+        if (valMsg) valMsg.style.display = 'none';
+        return false;
+      }
+
+      const amt = parseFloat(val);
+      if (isNaN(amt) || amt < 10) {
+        input.style.borderColor = '#ef4444';
+        input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+        if (valMsg) {
+          valMsg.style.display = 'block';
+          valMsg.innerText = '⚠️ Minimum top-up amount is ₹10.';
+        }
+        return false;
+      }
+
+      if (amt > 100000) {
+        input.style.borderColor = '#ef4444';
+        input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+        if (valMsg) {
+          valMsg.style.display = 'block';
+          valMsg.innerText = '⚠️ Maximum allowed top-up is ₹1,00,000.';
+        }
+        return false;
+      }
+
+      input.style.borderColor = '#10b981';
+      input.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.4)';
+      if (valMsg) valMsg.style.display = 'none';
+      return true;
+    }
+
+    function validateTopUpUtrInput() {
+      const input = document.getElementById('topup-utr-input');
+      const msg = document.getElementById('topup-utr-validation-msg');
+      const counter = document.getElementById('topup-utr-char-counter');
+      if (!input) return false;
+
+      const val = input.value.trim();
+      if (counter) counter.innerText = `${val.length} / 12 digits`;
+
+      if (val === '') {
+        input.style.borderColor = '';
+        input.style.boxShadow = '';
+        if (msg) msg.style.display = 'none';
+        return false;
+      }
+
+      const isNumeric = /^\d+$/.test(val);
+      const isValidLength = val.length === 12;
+
+      if (isNumeric && isValidLength) {
+        input.style.borderColor = '#10b981';
+        input.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.4)';
+        if (msg) msg.style.display = 'none';
+        return true;
+      } else {
+        input.style.borderColor = '#ef4444';
+        input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+        if (msg) {
+          msg.style.display = 'block';
+          if (!isNumeric) {
+            msg.innerText = '⚠️ Invalid UTR: Non-numeric character detected!';
+          } else {
+            msg.innerText = `⚠️ UTR must be exactly 12 digits (${val.length}/12 entered).`;
+          }
+        }
+        return false;
+      }
+    }
+
+    function submitWalletTopUpUtr() {
       if (!AppState.isLoggedIn) {
         showToast('🔐 Please Sign In or Register to top up your wallet!', 'warning');
         openModal('user-modal');
         return;
       }
-      AppState.walletBalance += amt;
-      SafeStorage.setItem('vnh_wallet', AppState.walletBalance);
-      updateWalletUI();
-      closeModal('topup-modal');
 
-      const customInput = document.getElementById('custom-wallet-amount-input');
-      if (customInput) {
-        customInput.value = '';
-        customInput.style.borderColor = '';
-        customInput.style.boxShadow = '';
-      }
+      const amountInput = document.getElementById('custom-wallet-amount-input');
       const valMsg = document.getElementById('custom-amount-val-msg');
-      if (valMsg) valMsg.style.display = 'none';
+      const utrInput = document.getElementById('topup-utr-input');
+      const utrValMsg = document.getElementById('topup-utr-validation-msg');
 
-      showToast(`Added ₹${amt.toFixed(2)} to your Wallet!`, 'success');
-    }
+      if (!amountInput || !utrInput) return;
 
-    function submitCustomWalletFunds() {
-      const input = document.getElementById('custom-wallet-amount-input');
-      const valMsg = document.getElementById('custom-amount-val-msg');
-      if (!input) return;
+      const amtVal = amountInput.value.trim();
+      const amt = parseFloat(amtVal);
 
-      const amt = parseFloat(input.value);
-      if (isNaN(amt) || amt < 10) {
+      if (amtVal === '' || isNaN(amt) || amt < 10) {
         if (valMsg) {
           valMsg.style.display = 'block';
-          valMsg.innerText = '⚠️ Please enter a minimum amount of ₹10.';
+          valMsg.innerText = '⚠️ Please enter a minimum top-up amount of ₹10.';
         }
-        input.style.borderColor = '#ef4444';
-        input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+        amountInput.style.borderColor = '#ef4444';
+        amountInput.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+        showToast('Please enter a valid custom amount (Min ₹10)', 'warning');
         return;
       }
 
       if (amt > 100000) {
         if (valMsg) {
           valMsg.style.display = 'block';
-          valMsg.innerText = '⚠️ Maximum allowed single top-up is ₹1,00,000.';
+          valMsg.innerText = '⚠️ Maximum allowed top-up is ₹1,00,000.';
         }
-        input.style.borderColor = '#ef4444';
-        input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+        amountInput.style.borderColor = '#ef4444';
+        amountInput.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+        showToast('Maximum top-up amount exceeded (Max ₹1,00,000)', 'warning');
         return;
       }
 
       if (valMsg) valMsg.style.display = 'none';
-      input.style.borderColor = '';
-      input.style.boxShadow = '';
 
-      addDemoWalletFunds(amt);
+      const isUtrValid = validateTopUpUtrInput();
+      if (!isUtrValid) {
+        const utrVal = utrInput.value.trim();
+        if (utrVal === '') {
+          utrInput.style.borderColor = '#ef4444';
+          utrInput.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+          if (utrValMsg) {
+            utrValMsg.style.display = 'block';
+            utrValMsg.innerText = '⚠️ Please enter your 12-digit UPI UTR number.';
+          }
+        }
+        showToast('Please enter a valid 12-digit numeric UTR number', 'warning');
+        return;
+      }
+
+      const utrVal = utrInput.value.trim();
+      const btn = document.getElementById('submit-topup-utr-btn');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying UTR #${utrVal}...`;
+      }
+
+      setTimeout(() => {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-check-circle"></i> Verify & Add Funds`;
+        }
+
+        AppState.walletBalance += amt;
+        SafeStorage.setItem('vnh_wallet', AppState.walletBalance);
+        updateWalletUI();
+
+        amountInput.value = '';
+        amountInput.style.borderColor = '';
+        amountInput.style.boxShadow = '';
+        utrInput.value = '';
+        utrInput.style.borderColor = '';
+        utrInput.style.boxShadow = '';
+        const counter = document.getElementById('topup-utr-char-counter');
+        if (counter) counter.innerText = '0 / 12 digits';
+
+        closeModal('topup-modal');
+        showToast(`🎉 UTR #${utrVal} verified! ₹${amt.toFixed(2)} added to your wallet successfully!`, 'success');
+      }, 1200);
+    }
+
+    function addDemoWalletFunds(amt) {
+      setQuickTopUpAmount(amt);
+    }
+
+    function submitCustomWalletFunds() {
+      submitWalletTopUpUtr();
     }
 
     function launchUpiRedirect() {
       let amt = 99;
-      if (AppState.pendingOrder && AppState.pendingOrder.price) {
+      const customWalletInput = document.getElementById('custom-wallet-amount-input');
+      if (customWalletInput && customWalletInput.value && !isNaN(parseFloat(customWalletInput.value)) && parseFloat(customWalletInput.value) >= 10) {
+        amt = parseFloat(customWalletInput.value);
+      } else if (AppState.pendingOrder && AppState.pendingOrder.price) {
         amt = AppState.pendingOrder.price;
       } else if (AppState.activeSelectedPlan && VIRTUAL_PLANS_META[AppState.activeSelectedPlan]) {
         amt = VIRTUAL_PLANS_META[AppState.activeSelectedPlan].price;
@@ -14655,6 +14814,8 @@
       // UTR Real-Time Input Validation Listeners
       document.getElementById('utr-input')?.addEventListener('input', validateUtrInput);
       document.getElementById('plan-utr-input')?.addEventListener('input', validatePlanUtrInput);
+      document.getElementById('topup-utr-input')?.addEventListener('input', validateTopUpUtrInput);
+      document.getElementById('custom-wallet-amount-input')?.addEventListener('input', validateCustomWalletAmount);
 
       // Search & Filters Listeners
       initCountryAutocompleteListeners();
