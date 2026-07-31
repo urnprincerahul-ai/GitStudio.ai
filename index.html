@@ -239,6 +239,11 @@
       text-size-adjust: 100%;
     }
 
+    /* Enhanced Ultra-Smooth Transition Utilities */
+    body, button, input, select, textarea, .card, .modal-box, .btn, .badge {
+      transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
     /* Super Fast Responsive Smooth Scrolling & Momentum Optimizations */
     body {
       font-family: var(--font-main);
@@ -1869,30 +1874,38 @@
     .scanner-corner.bl { bottom: -3px; left: -3px; border-width: 0 0 3.5px 3.5px; border-bottom-left-radius: 8px; }
     .scanner-corner.br { bottom: -3px; right: -3px; border-width: 0 3.5px 3.5px 0; border-bottom-right-radius: 8px; }
 
-    /* Pulse animation for .scanner-corner when QR candidate is detected */
+    /* Pulse glow animation for .scanner-corner when QR code is detected */
     @keyframes cornerPulse {
       0% {
         transform: scale(1);
-        border-color: var(--accent);
-        filter: drop-shadow(0 0 2px var(--accent));
+        border-color: #22c55e;
+        filter: drop-shadow(0 0 4px #22c55e) drop-shadow(0 0 8px rgba(34, 197, 94, 0.8));
       }
       50% {
-        transform: scale(1.4);
-        border-color: #22c55e;
-        filter: drop-shadow(0 0 10px #22c55e);
+        transform: scale(1.38);
+        border-color: #4ade80;
+        filter: drop-shadow(0 0 14px #22c55e) drop-shadow(0 0 24px rgba(74, 222, 128, 0.95));
       }
       100% {
         transform: scale(1);
-        border-color: var(--accent);
-        filter: drop-shadow(0 0 2px var(--accent));
+        border-color: #22c55e;
+        filter: drop-shadow(0 0 6px #22c55e) drop-shadow(0 0 12px rgba(34, 197, 94, 0.8));
       }
     }
 
     .scanner-viewfinder.candidate-detected .scanner-corner,
     .scanner-viewfinder.qr-detected .scanner-corner,
+    .scanner-viewfinder.scan-success .scanner-corner,
     .scanner-corner.pulse {
-      animation: cornerPulse 0.7s infinite ease-in-out;
-      border-color: #22c55e;
+      animation: cornerPulse 0.55s infinite ease-in-out !important;
+      border-color: #22c55e !important;
+    }
+
+    .scanner-viewfinder.qr-detected,
+    .scanner-viewfinder.scan-success {
+      border-color: #22c55e !important;
+      box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.45), 0 0 24px rgba(34, 197, 94, 0.75) !important;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .qr-dropzone {
@@ -2302,29 +2315,18 @@
     }
 
     /* Dedicated Payment, Plan Purchase & Wallet Topup Modals Entry Transition, Responsive Max-Width & Adaptive Padding */
-    @keyframes paymentModalSpringPop {
-      0% {
-        opacity: 0;
-        transform: scale(0.88) translateY(16px);
-      }
-      65% {
-        transform: scale(1.02) translateY(-2px);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-
     #payment-modal, #plan-purchase-modal, #topup-modal {
       background: var(--glass-bg);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
       padding: clamp(0.25rem, 2.5vw, 1rem);
       display: flex;
       align-items: center;
       justify-content: center;
+      will-change: opacity;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
     #payment-modal .modal-box, #plan-purchase-modal .modal-box, #topup-modal .modal-box {
       width: 100%;
@@ -2332,18 +2334,19 @@
       padding: clamp(0.75rem, 3.5vw, 1.25rem);
       border: 1px solid var(--border-glow);
       box-shadow: var(--shadow-lg), 0 0 25px var(--accent-glow);
-      transform: scale(0.92) translateY(8px);
-      opacity: 0.9;
-      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease;
+      transform: scale(0.95) translateY(8px);
+      opacity: 0;
+      transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1);
       max-height: min(calc(100dvh - 1rem), 90vh);
       overflow-y: auto;
+      scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
       box-sizing: border-box;
+      will-change: transform, opacity;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
-    #payment-modal.active .modal-box {
-      animation: paymentModalSpringPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
-    #plan-purchase-modal.active .modal-box, #topup-modal.active .modal-box {
+    #payment-modal.active .modal-box, #plan-purchase-modal.active .modal-box, #topup-modal.active .modal-box {
       transform: scale(1) translateY(0);
       opacity: 1;
     }
@@ -2490,6 +2493,27 @@
       }
     }
     @media (max-width: 350px) {
+      #payment-modal {
+        padding: 0.25rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      #payment-modal .modal-box {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0.65rem 0.5rem !important;
+        box-sizing: border-box !important;
+      }
+      #utr-input,
+      #plan-utr-input,
+      #topup-utr-input {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        font-size: 0.88rem !important;
+        padding: 0.5rem 0.35rem !important;
+        letter-spacing: 1px !important;
+      }
       #payment-modal-order-summary {
         padding: 0.45rem 0.6rem !important;
       }
@@ -13626,7 +13650,7 @@
       }
     }
 
-    function stopQrCameraStream() {
+    function stopQrCameraStream(keepSuccessState = false) {
       isCameraScanningActive = false;
       if (qrScanAnimFrame) {
         cancelAnimationFrame(qrScanAnimFrame);
@@ -13640,14 +13664,21 @@
       if (video) video.srcObject = null;
       const viewfinder = document.getElementById('scanner-viewfinder');
       if (viewfinder) {
-        viewfinder.classList.remove('candidate-detected', 'qr-detected');
+        viewfinder.classList.remove('candidate-detected');
+        if (!keepSuccessState) {
+          viewfinder.classList.remove('qr-detected', 'scan-success');
+        } else {
+          setTimeout(() => {
+            if (viewfinder) viewfinder.classList.remove('qr-detected', 'scan-success');
+          }, 1800);
+        }
       }
     }
 
     function simulateQrScanSuccess() {
       const viewfinder = document.getElementById('scanner-viewfinder');
       if (viewfinder) {
-        viewfinder.classList.add('candidate-detected');
+        viewfinder.classList.add('candidate-detected', 'qr-detected', 'scan-success');
       }
       setTimeout(() => {
         const dummyPayload = `upi://pay?pa=urn.princerahul-1@oksbi&pn=VirtualHub&tr=TR${Math.floor(100000 + Math.random()*900000)}`;
@@ -13657,7 +13688,13 @@
 
     function handleSuccessfulQrScan(qrPayload, source = 'Camera') {
       playScanBeepSound();
-      stopQrCameraStream();
+
+      const viewfinder = document.getElementById('scanner-viewfinder');
+      if (viewfinder) {
+        viewfinder.classList.add('qr-detected', 'scan-success');
+      }
+
+      stopQrCameraStream(true);
 
       // Generate a valid 12-digit UTR
       const generatedUtr = `4201${Math.floor(10000000 + Math.random() * 90000000)}`;
@@ -13894,14 +13931,14 @@
         if (window.gsap && modalBox) {
           gsap.killTweensOf(modalBox);
           gsap.fromTo(modalBox,
-            { scale: 0.88, y: 16, opacity: 0 },
-            { scale: 1, y: 0, opacity: 1, duration: 0.4, ease: "back.out(1.4)" }
+            { scale: 0.95, y: 8, opacity: 0 },
+            { scale: 1, y: 0, opacity: 1, duration: 0.32, ease: "power2.out", clearProps: "transform,opacity" }
           );
         }
         setTimeout(() => {
           const utrIn = document.getElementById('utr-input');
           if (utrIn) utrIn.focus();
-        }, 100);
+        }, 120);
       }
 
       if (id === 'payment-modal' || id === 'plan-purchase-modal') {
