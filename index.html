@@ -2378,6 +2378,28 @@
     }
 
     /* Successful 12-Digit UTR Validation Border Glow Keyframe Animation */
+    @keyframes utrBorderSuccessPulse {
+      0% {
+        border-color: #10b981;
+        box-shadow: 0 0 0px rgba(16, 185, 129, 0);
+        transform: scale(0.97);
+      }
+      40% {
+        border-color: #34d399;
+        box-shadow: 0 0 24px 6px rgba(16, 185, 129, 0.95);
+        transform: scale(1.02);
+      }
+      70% {
+        border-color: #10b981;
+        box-shadow: 0 0 14px 4px rgba(16, 185, 129, 0.7);
+        transform: scale(1);
+      }
+      100% {
+        border-color: #10b981;
+        box-shadow: 0 0 8px 2px rgba(16, 185, 129, 0.5);
+      }
+    }
+
     @keyframes utrValidGlow {
       0% {
         border-color: #10b981;
@@ -2392,10 +2414,11 @@
         box-shadow: 0 0 10px 2px rgba(16, 185, 129, 0.6);
       }
     }
+
     #utr-input.utr-valid-success,
     #plan-utr-input.utr-valid-success,
     #topup-utr-input.utr-valid-success {
-      animation: utrValidGlow 1.2s ease-in-out infinite alternate !important;
+      animation: utrBorderSuccessPulse 0.45s ease-out 1, utrValidGlow 1.4s ease-in-out 0.45s infinite alternate !important;
       border-color: #10b981 !important;
       background: rgba(16, 185, 129, 0.08) !important;
     }
