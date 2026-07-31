@@ -2354,6 +2354,29 @@
       font-weight: 500 !important;
     }
 
+    /* Successful 12-Digit UTR Validation Border Glow Keyframe Animation */
+    @keyframes utrValidGlow {
+      0% {
+        border-color: #10b981;
+        box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+      }
+      50% {
+        border-color: #34d399;
+        box-shadow: 0 0 20px 4px rgba(16, 185, 129, 0.85);
+      }
+      100% {
+        border-color: #10b981;
+        box-shadow: 0 0 10px 2px rgba(16, 185, 129, 0.6);
+      }
+    }
+    #utr-input.utr-valid-success,
+    #plan-utr-input.utr-valid-success,
+    #topup-utr-input.utr-valid-success {
+      animation: utrValidGlow 1.2s ease-in-out infinite alternate !important;
+      border-color: #10b981 !important;
+      background: rgba(16, 185, 129, 0.08) !important;
+    }
+
     @media (max-width: 576px) {
       #payment-modal, #plan-purchase-modal {
         padding: 0.35rem;
@@ -10894,6 +10917,7 @@
       }
 
       if (val === '') {
+        input.classList.remove('utr-valid-success');
         input.style.borderColor = '';
         input.style.boxShadow = '';
         if (msg) msg.style.display = 'none';
@@ -10904,11 +10928,13 @@
       const isValidLength = val.length === 12;
 
       if (isNumeric && isValidLength) {
-        input.style.borderColor = 'var(--success)';
-        input.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.4)';
+        input.classList.add('utr-valid-success');
+        input.style.borderColor = '';
+        input.style.boxShadow = '';
         if (msg) msg.style.display = 'none';
         return true;
       } else {
+        input.classList.remove('utr-valid-success');
         input.style.borderColor = '#ef4444';
         input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
         if (msg) {
@@ -10930,6 +10956,7 @@
 
       const val = input.value.trim();
       if (val === '') {
+        input.classList.remove('utr-valid-success');
         input.style.borderColor = '';
         input.style.boxShadow = '';
         if (msg) msg.style.display = 'none';
@@ -10940,11 +10967,13 @@
       const isValidLength = val.length === 12;
 
       if (isNumeric && isValidLength) {
-        input.style.borderColor = 'var(--success)';
-        input.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.4)';
+        input.classList.add('utr-valid-success');
+        input.style.borderColor = '';
+        input.style.boxShadow = '';
         if (msg) msg.style.display = 'none';
         return true;
       } else {
+        input.classList.remove('utr-valid-success');
         input.style.borderColor = '#ef4444';
         input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
         if (msg) {
@@ -14142,6 +14171,7 @@
       if (counter) counter.innerText = `${val.length} / 12 digits`;
 
       if (val === '') {
+        input.classList.remove('utr-valid-success');
         input.style.borderColor = '';
         input.style.boxShadow = '';
         if (msg) msg.style.display = 'none';
@@ -14152,11 +14182,13 @@
       const isValidLength = val.length === 12;
 
       if (isNumeric && isValidLength) {
-        input.style.borderColor = '#10b981';
-        input.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.4)';
+        input.classList.add('utr-valid-success');
+        input.style.borderColor = '';
+        input.style.boxShadow = '';
         if (msg) msg.style.display = 'none';
         return true;
       } else {
+        input.classList.remove('utr-valid-success');
         input.style.borderColor = '#ef4444';
         input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
         if (msg) {
