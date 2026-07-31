@@ -2316,6 +2316,33 @@
       transform: scale(1) translateY(0);
     }
 
+    /* UTR Input Field Styling - Large Size, Monospaced Font & Letter Spacing */
+    #utr-input, #plan-utr-input {
+      padding: 0.85rem 1rem !important;
+      font-size: 1.25rem !important;
+      font-weight: 700 !important;
+      font-family: 'SF Mono', 'Roboto Mono', 'Fira Code', 'JetBrains Mono', 'Courier New', var(--font-mono), monospace !important;
+      letter-spacing: 3.5px !important;
+      text-align: center;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      transition: all 0.25s ease;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    #utr-input:focus, #plan-utr-input:focus {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 18px var(--accent-glow), inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+      background: rgba(15, 23, 42, 0.8) !important;
+    }
+    #utr-input::placeholder, #plan-utr-input::placeholder {
+      font-size: 1rem !important;
+      letter-spacing: 1.5px !important;
+      opacity: 0.5;
+      font-weight: 500 !important;
+    }
+
     @media (max-width: 576px) {
       #payment-modal {
         padding: 0.5rem;
@@ -5093,7 +5120,7 @@
 
       <div style="margin-bottom: 1.25rem;">
         <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem;">Submit 12-Digit UTR Number:</label>
-        <input type="text" id="utr-input" class="search-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validateUtrInput()" style="font-family: var(--font-mono); letter-spacing: 2px;">
+        <input type="text" id="utr-input" class="search-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validateUtrInput()" style="font-family: 'SF Mono', 'Roboto Mono', 'Fira Code', var(--font-mono), monospace; font-size: 1.25rem; font-weight: 700; letter-spacing: 3.5px; padding: 0.85rem 1rem; text-align: center;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 0.35rem; gap: 0.5rem;">
           <div id="utr-validation-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; display: none; flex: 1;"></div>
           <div id="utr-char-counter" style="font-size: 0.78rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted); white-space: nowrap; margin-left: auto;">0 / 12 digits</div>
@@ -5246,7 +5273,7 @@
 
         <div style="margin-bottom: 1.25rem;">
           <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem;">Submit 12-Digit UTR Number:</label>
-          <input type="text" id="plan-utr-input" class="search-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validatePlanUtrInput()" style="font-family: var(--font-mono); letter-spacing: 2px;">
+          <input type="text" id="plan-utr-input" class="search-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validatePlanUtrInput()" style="font-family: 'SF Mono', 'Roboto Mono', 'Fira Code', var(--font-mono), monospace; font-size: 1.25rem; font-weight: 700; letter-spacing: 3.5px; padding: 0.85rem 1rem; text-align: center;">
           <div id="plan-utr-validation-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; margin-top: 0.35rem; display: none;"></div>
         </div>
 
