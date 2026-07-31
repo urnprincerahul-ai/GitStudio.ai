@@ -2509,22 +2509,26 @@
       }
     }
 
-    /* Extremely narrow screens (< 320px wide) - Single column layout & vertical scrolling for payment modal */
+    /* Extremely narrow screens (< 320px wide) - Single column layout, adjusted padding & width for UTR input */
     @media (max-width: 320px) {
       #payment-modal {
-        padding: 0.25rem !important;
+        padding: 0.2rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
         align-items: flex-start !important;
         overflow-y: auto !important;
+        overflow-x: hidden !important;
       }
       #payment-modal .modal-box {
         width: 100% !important;
         max-width: 100% !important;
-        padding: 0.6rem 0.5rem !important;
-        margin: 0.25rem auto !important;
+        padding: 0.5rem 0.4rem !important;
+        margin: 0.2rem auto !important;
         display: flex !important;
         flex-direction: column !important;
-        max-height: 95vh !important;
+        max-height: 96vh !important;
         overflow-y: auto !important;
+        overflow-x: hidden !important;
         box-sizing: border-box !important;
       }
       #payment-modal-order-summary,
@@ -2532,22 +2536,28 @@
       #qr-view-display,
       #payment-progress-box {
         width: 100% !important;
+        max-width: 100% !important;
         box-sizing: border-box !important;
       }
       #payment-modal .modal-box div[style*="display: flex"] {
         flex-direction: column !important;
         align-items: stretch !important;
         width: 100% !important;
-        gap: 0.5rem !important;
+        gap: 0.4rem !important;
       }
       #payment-modal .modal-box .btn {
         width: 100% !important;
         flex: 1 1 100% !important;
       }
-      #utr-input {
-        font-size: 0.95rem !important;
-        letter-spacing: 1.5px !important;
-        padding: 0.5rem 0.4rem !important;
+      #utr-input,
+      #plan-utr-input,
+      #topup-utr-input {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        font-size: 0.85rem !important;
+        letter-spacing: 1px !important;
+        padding: 0.45rem 0.25rem !important;
       }
     }
 
