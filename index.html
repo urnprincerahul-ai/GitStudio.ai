@@ -2302,11 +2302,25 @@
     }
 
     /* Dedicated Payment, Plan Purchase & Wallet Topup Modals Entry Transition, Responsive Max-Width & Adaptive Padding */
+    @keyframes paymentModalSpringPop {
+      0% {
+        opacity: 0;
+        transform: scale(0.88) translateY(16px);
+      }
+      65% {
+        transform: scale(1.02) translateY(-2px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
     #payment-modal, #plan-purchase-modal, #topup-modal {
       background: var(--glass-bg);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease;
       padding: clamp(0.35rem, 2vw, 1rem);
     }
     #payment-modal .modal-box, #plan-purchase-modal .modal-box, #topup-modal .modal-box {
@@ -2315,25 +2329,30 @@
       padding: clamp(0.85rem, 3vw, 1.25rem);
       border: 1px solid var(--border-glow);
       box-shadow: var(--shadow-lg), 0 0 25px var(--accent-glow);
-      transform: scale(0.96) translateY(4px);
-      transition: transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.28s ease;
+      transform: scale(0.92) translateY(8px);
+      opacity: 0.9;
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease;
       max-height: min(calc(100dvh - 1rem), 90vh);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
-    #payment-modal.active .modal-box, #plan-purchase-modal.active .modal-box, #topup-modal.active .modal-box {
+    #payment-modal.active .modal-box {
+      animation: paymentModalSpringPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    #plan-purchase-modal.active .modal-box, #topup-modal.active .modal-box {
       transform: scale(1) translateY(0);
+      opacity: 1;
     }
 
     /* UTR Input Field Styling - Monospaced Font, Crisp Letter Spacing & Sleek Layout */
     #utr-input, #plan-utr-input, #topup-utr-input {
       width: 100% !important;
       box-sizing: border-box !important;
-      padding: 0.55rem 0.75rem !important;
-      font-size: 1.05rem !important;
+      padding: 0.65rem 0.85rem !important;
+      font-size: 1.2rem !important;
       font-weight: 700 !important;
-      font-family: 'SF Mono', 'Roboto Mono', 'Fira Code', 'JetBrains Mono', var(--font-mono), monospace !important;
-      letter-spacing: 2.5px !important;
+      font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Roboto Mono', var(--font-mono), monospace !important;
+      letter-spacing: 3.5px !important;
       text-align: center;
       border: 1.5px solid var(--border-color);
       background: var(--bg-card);
@@ -13675,6 +13694,17 @@
       }
       const modal = document.getElementById(id);
       if (modal) modal.classList.add('active');
+
+      if (id === 'payment-modal') {
+        const modalBox = modal ? modal.querySelector('.modal-box') : null;
+        if (window.gsap && modalBox) {
+          gsap.killTweensOf(modalBox);
+          gsap.fromTo(modalBox,
+            { scale: 0.88, y: 16, opacity: 0 },
+            { scale: 1, y: 0, opacity: 1, duration: 0.4, ease: "back.out(1.4)" }
+          );
+        }
+      }
 
       if (id === 'payment-modal' || id === 'plan-purchase-modal') {
         startPaymentSessionTimer(id);
