@@ -2303,15 +2303,19 @@
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: clamp(0.35rem, 2vw, 1rem);
     }
     #payment-modal .modal-box, #plan-purchase-modal .modal-box {
       width: 100%;
-      max-width: min(480px, 94vw);
-      padding: clamp(1rem, 3.5vw, 1.5rem);
+      max-width: min(450px, 94vw);
+      padding: clamp(0.85rem, 3vw, 1.25rem);
       border: 1px solid var(--border-glow);
-      box-shadow: var(--shadow-lg), 0 0 30px var(--accent-glow);
-      transform: scale(0.95) translateY(6px);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+      box-shadow: var(--shadow-lg), 0 0 25px var(--accent-glow);
+      transform: scale(0.96) translateY(4px);
+      transition: transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.28s ease;
+      max-height: min(calc(100dvh - 1rem), 90vh);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
     #payment-modal.active .modal-box, #plan-purchase-modal.active .modal-box {
       transform: scale(1) translateY(0);
@@ -2321,11 +2325,11 @@
     #utr-input, #plan-utr-input {
       width: 100% !important;
       box-sizing: border-box !important;
-      padding: 0.65rem 0.85rem !important;
+      padding: 0.55rem 0.75rem !important;
       font-size: 1.05rem !important;
       font-weight: 700 !important;
       font-family: 'SF Mono', 'Roboto Mono', 'Fira Code', 'JetBrains Mono', var(--font-mono), monospace !important;
-      letter-spacing: 2px !important;
+      letter-spacing: 2.5px !important;
       text-align: center;
       border: 1.5px solid var(--border-color);
       background: var(--bg-card);
@@ -5077,15 +5081,15 @@
       </div>
 
       <!-- 10-Minute Payment Session Timer Banner -->
-      <div id="payment-timer-banner" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.28); border-radius: var(--radius-md); padding: 0.5rem 0.8rem; margin-bottom: 0.85rem; transition: all 0.3s ease;">
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.3rem;">
+      <div id="payment-timer-banner" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.28); border-radius: var(--radius-md); padding: 0.45rem 0.75rem; margin-bottom: 0.65rem; transition: all 0.3s ease;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.25rem;">
           <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; font-weight: 700; color: #f59e0b;" id="payment-timer-header">
             <i class="fa-solid fa-clock" id="payment-timer-icon" style="font-size: 0.85rem; color: #f59e0b;"></i>
             <span>UTR Timer:</span>
           </div>
           <div style="display: flex; align-items: center; gap: 0.35rem;">
-            <span class="badge" id="payment-timer-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.65rem; font-weight: 800; padding: 0.12rem 0.35rem;">LIVE</span>
-            <span id="payment-countdown-display" style="font-family: var(--font-mono); font-size: 1rem; font-weight: 800; color: #f59e0b; letter-spacing: 0.5px;">10:00</span>
+            <span class="badge" id="payment-timer-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.65rem; font-weight: 800; padding: 0.1rem 0.35rem;">LIVE</span>
+            <span id="payment-countdown-display" style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: #f59e0b; letter-spacing: 0.5px;">10:00</span>
           </div>
         </div>
         <div style="width: 100%; height: 4px; background: rgba(0, 0, 0, 0.3); border-radius: 2px; overflow: hidden;">
@@ -5094,13 +5098,13 @@
       </div>
 
       <!-- Static Display QR -->
-      <div id="qr-view-display" style="text-align: center; margin-bottom: 1rem;">
-        <div style="background: #ffffff; padding: 0.5rem; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); max-width: 190px; overflow: hidden;">
-          <img src="https://i.ibb.co/bMfHHTQ2/1785462317532.png" alt="UPI Payment QR Code" style="width: 170px; height: 170px; object-fit: contain; display: block; border-radius: 6px;">
+      <div id="qr-view-display" style="text-align: center; margin-bottom: 0.75rem;">
+        <div style="background: #ffffff; padding: 0.4rem; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); max-width: 165px; overflow: hidden;">
+          <img src="https://i.ibb.co/bMfHHTQ2/1785462317532.png" alt="UPI Payment QR Code" style="width: 145px; height: 145px; object-fit: contain; display: block; border-radius: 6px;">
         </div>
-        <div style="display: flex; align-items: center; justify-content: center; gap: 0.4rem; margin-top: 0.6rem; flex-wrap: wrap;">
-          <span style="font-size: 0.82rem; color: var(--text-muted);">UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong></span>
-          <button class="btn btn-secondary btn-sm" style="padding: 0.18rem 0.5rem; font-size: 0.72rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.25rem;" onclick="copyText('urn.princerahul-1@oksbi', 'UPI ID copied!')" title="Copy UPI ID">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.35rem; margin-top: 0.45rem; flex-wrap: wrap;">
+          <span style="font-size: 0.8rem; color: var(--text-muted);">UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong></span>
+          <button class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.45rem; font-size: 0.7rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.2rem;" onclick="copyText('urn.princerahul-1@oksbi', 'UPI ID copied!')" title="Copy UPI ID">
             <i class="fa-solid fa-copy"></i> Copy
           </button>
         </div>
@@ -5232,13 +5236,13 @@
 
       <!-- UPI QR & UTR Section -->
       <div id="plan-pay-section-upi" style="display: block;">
-        <div style="text-align: center; margin-bottom: 1rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem;">
-          <div style="background: #ffffff; padding: 0.5rem; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); max-width: 190px; overflow: hidden;">
-            <img src="https://i.ibb.co/bMfHHTQ2/1785462317532.png" alt="UPI Payment QR Code" style="width: 170px; height: 170px; object-fit: contain; display: block; border-radius: 6px;">
+        <div style="text-align: center; margin-bottom: 0.75rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem;">
+          <div style="background: #ffffff; padding: 0.4rem; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); max-width: 165px; overflow: hidden;">
+            <img src="https://i.ibb.co/bMfHHTQ2/1785462317532.png" alt="UPI Payment QR Code" style="width: 145px; height: 145px; object-fit: contain; display: block; border-radius: 6px;">
           </div>
-          <div style="display: flex; align-items: center; justify-content: center; gap: 0.4rem; margin-top: 0.6rem; flex-wrap: wrap;">
-            <span style="font-size: 0.82rem; color: var(--text-muted);">UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong></span>
-            <button class="btn btn-secondary btn-sm" style="padding: 0.18rem 0.5rem; font-size: 0.72rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.25rem;" onclick="copyText('urn.princerahul-1@oksbi', 'UPI ID copied!')" title="Copy UPI ID">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 0.35rem; margin-top: 0.45rem; flex-wrap: wrap;">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong></span>
+            <button class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.45rem; font-size: 0.7rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.2rem;" onclick="copyText('urn.princerahul-1@oksbi', 'UPI ID copied!')" title="Copy UPI ID">
               <i class="fa-solid fa-copy"></i> Copy
             </button>
           </div>
@@ -13480,7 +13484,7 @@
         if (headerEl) headerEl.style.color = '#ef4444';
         if (displayEl) displayEl.style.color = '#ef4444';
         if (badgeEl) {
-          badgeEl.innerText = 'EXPIRING SOON ⚠️';
+          badgeEl.innerText = 'EXPIRING';
           badgeEl.style.background = 'rgba(239, 68, 68, 0.25)';
           badgeEl.style.color = '#ef4444';
           badgeEl.style.borderColor = 'rgba(239, 68, 68, 0.5)';
@@ -13512,7 +13516,7 @@
         if (headerEl) headerEl.style.color = '#f59e0b';
         if (displayEl) displayEl.style.color = '#f59e0b';
         if (badgeEl) {
-          badgeEl.innerText = 'LIVE SESSION';
+          badgeEl.innerText = 'LIVE';
           badgeEl.style.background = 'rgba(245, 158, 11, 0.2)';
           badgeEl.style.color = '#f59e0b';
           badgeEl.style.borderColor = 'rgba(245, 158, 11, 0.4)';
