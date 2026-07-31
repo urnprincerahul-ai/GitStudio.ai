@@ -2509,6 +2509,48 @@
       }
     }
 
+    /* Extremely narrow screens (< 320px wide) - Single column layout & vertical scrolling for payment modal */
+    @media (max-width: 320px) {
+      #payment-modal {
+        padding: 0.25rem !important;
+        align-items: flex-start !important;
+        overflow-y: auto !important;
+      }
+      #payment-modal .modal-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0.6rem 0.5rem !important;
+        margin: 0.25rem auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        max-height: 95vh !important;
+        overflow-y: auto !important;
+        box-sizing: border-box !important;
+      }
+      #payment-modal-order-summary,
+      #payment-timer-banner,
+      #qr-view-display,
+      #payment-progress-box {
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      #payment-modal .modal-box div[style*="display: flex"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        gap: 0.5rem !important;
+      }
+      #payment-modal .modal-box .btn {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+      }
+      #utr-input {
+        font-size: 0.95rem !important;
+        letter-spacing: 1.5px !important;
+        padding: 0.5rem 0.4rem !important;
+      }
+    }
+
     /* Auth Modal Input Styling */
     .auth-input-wrapper {
       position: relative;
