@@ -11008,12 +11008,14 @@
       if (!input) return false;
 
       const val = input.value.trim();
+      const isExactly12Digits = /^\d{12}$/.test(val);
+      const isDigitsOnly = /^\d+$/.test(val);
 
       if (counterEl) {
         counterEl.innerText = `${val.length} / 12 digits`;
-        if (val.length === 12 && /^\d+$/.test(val)) {
+        if (isExactly12Digits) {
           counterEl.style.color = 'var(--success)';
-        } else if (val.length > 0 && (!/^\d+$/.test(val) || val.length < 12)) {
+        } else if (val.length > 0) {
           counterEl.style.color = '#ef4444';
         } else {
           counterEl.style.color = 'var(--text-muted)';
@@ -11028,10 +11030,7 @@
         return false;
       }
 
-      const isNumeric = /^\d+$/.test(val);
-      const isValidLength = val.length === 12;
-
-      if (isNumeric && isValidLength) {
+      if (isExactly12Digits) {
         if (!input.classList.contains('utr-valid-success')) {
           input.classList.add('utr-valid-success');
           if (window.gsap) {
@@ -11052,10 +11051,10 @@
         input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
         if (msg) {
           msg.style.display = 'block';
-          if (!isNumeric) {
-            msg.innerText = '⚠️ Invalid UTR: Non-numeric character detected! UTR must contain digits only (0-9).';
+          if (!isDigitsOnly) {
+            msg.innerText = '⚠️ Invalid UTR: Non-numeric characters detected! UTR must contain digits only (0-9).';
           } else {
-            msg.innerText = `⚠️ UTR must be exactly 12 digits (${val.length}/12 entered).`;
+            msg.innerText = `⚠️ UTR number is too short! Must be exactly 12 digits (${val.length}/12 entered).`;
           }
         }
         return false;
@@ -11069,12 +11068,14 @@
       if (!input) return false;
 
       const val = input.value.trim();
+      const isExactly12Digits = /^\d{12}$/.test(val);
+      const isDigitsOnly = /^\d+$/.test(val);
 
       if (counterEl) {
         counterEl.innerText = `${val.length} / 12 digits`;
-        if (val.length === 12 && /^\d+$/.test(val)) {
+        if (isExactly12Digits) {
           counterEl.style.color = 'var(--success)';
-        } else if (val.length > 0 && (!/^\d+$/.test(val) || val.length < 12)) {
+        } else if (val.length > 0) {
           counterEl.style.color = '#ef4444';
         } else {
           counterEl.style.color = 'var(--text-muted)';
@@ -11089,10 +11090,7 @@
         return false;
       }
 
-      const isNumeric = /^\d+$/.test(val);
-      const isValidLength = val.length === 12;
-
-      if (isNumeric && isValidLength) {
+      if (isExactly12Digits) {
         if (!input.classList.contains('utr-valid-success')) {
           input.classList.add('utr-valid-success');
           if (window.gsap) {
@@ -11113,10 +11111,10 @@
         input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
         if (msg) {
           msg.style.display = 'block';
-          if (!isNumeric) {
-            msg.innerText = '⚠️ Invalid UTR: Non-numeric character detected! UTR must contain digits only (0-9).';
+          if (!isDigitsOnly) {
+            msg.innerText = '⚠️ Invalid UTR: Non-numeric characters detected! UTR must contain digits only (0-9).';
           } else {
-            msg.innerText = `⚠️ UTR must be exactly 12 digits (${val.length}/12 entered).`;
+            msg.innerText = `⚠️ UTR number is too short! Must be exactly 12 digits (${val.length}/12 entered).`;
           }
         }
         return false;
