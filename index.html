@@ -5331,7 +5331,7 @@
 
       <div style="margin-bottom: 1rem;">
         <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Submit 12-Digit UTR Number:</label>
-        <input type="text" id="utr-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validateUtrInput()">
+        <input type="text" id="utr-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validateUtrInput()" onfocus="if(!this.value) this.placeholder='Enter 12-digit UTR'" onblur="if(!this.value) this.placeholder='e.g. 420192837465'">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 0.35rem; gap: 0.5rem;">
           <div id="utr-validation-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; display: none; flex: 1;"></div>
           <div id="utr-char-counter" style="font-size: 0.78rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted); white-space: nowrap; margin-left: auto;">0 / 12 digits</div>
@@ -15130,7 +15130,16 @@
       });
 
       // UTR Real-Time Input Validation Listeners
-      document.getElementById('utr-input')?.addEventListener('input', validateUtrInput);
+      const mainUtrInput = document.getElementById('utr-input');
+      if (mainUtrInput) {
+        mainUtrInput.addEventListener('input', validateUtrInput);
+        mainUtrInput.addEventListener('focus', () => {
+          if (!mainUtrInput.value) mainUtrInput.placeholder = 'Enter 12-digit UTR';
+        });
+        mainUtrInput.addEventListener('blur', () => {
+          if (!mainUtrInput.value) mainUtrInput.placeholder = 'e.g. 420192837465';
+        });
+      }
       document.getElementById('plan-utr-input')?.addEventListener('input', validatePlanUtrInput);
       document.getElementById('topup-utr-input')?.addEventListener('input', validateTopUpUtrInput);
       document.getElementById('custom-wallet-amount-input')?.addEventListener('input', validateCustomWalletAmount);
