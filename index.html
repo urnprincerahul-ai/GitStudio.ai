@@ -5011,6 +5011,23 @@
         </div>
       </div>
 
+      <!-- 10-Minute Payment Session Timer Banner -->
+      <div id="payment-timer-banner" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.28); border-radius: var(--radius-md); padding: 0.65rem 0.9rem; margin-bottom: 1rem; transition: all 0.3s ease;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.35rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 700; color: #f59e0b;" id="payment-timer-header">
+            <i class="fa-solid fa-hourglass-half fa-spin" id="payment-timer-icon" style="font-size: 0.9rem; color: #f59e0b;"></i>
+            <span>Session Timer (UTR Expiry):</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <span class="badge" id="payment-timer-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.68rem; font-weight: 800; padding: 0.15rem 0.4rem;">LIVE SESSION</span>
+            <span id="payment-countdown-display" style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 800; color: #f59e0b; letter-spacing: 1px;">10:00</span>
+          </div>
+        </div>
+        <div style="width: 100%; height: 5px; background: rgba(0, 0, 0, 0.3); border-radius: 3px; overflow: hidden;">
+          <div id="payment-timer-progress-fill" style="width: 100%; height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); transition: width 1s linear, background 0.5s ease; border-radius: 3px;"></div>
+        </div>
+      </div>
+
       <!-- QR Payment Tab Switcher -->
       <div style="display: flex; gap: 0.4rem; background: rgba(0, 0, 0, 0.25); padding: 0.25rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
         <button class="qr-tab-btn active" id="qr-mode-display-btn" style="flex: 1; padding: 0.4rem; font-size: 0.8rem; border: none; border-radius: var(--radius-sm); cursor: pointer;" onclick="switchQrPayTab('display')">
@@ -5180,6 +5197,23 @@
         </div>
         <div style="text-align: right; flex-shrink: 0;">
           <strong id="plan-summary-price" style="font-size: 1.5rem; font-weight: 900; color: #34d399; white-space: nowrap; display: inline-block; line-height: 1;">₹149</strong>
+        </div>
+      </div>
+
+      <!-- Plan Payment 10-Minute Session Timer Banner -->
+      <div id="plan-timer-banner" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.28); border-radius: var(--radius-md); padding: 0.65rem 0.9rem; margin-bottom: 1rem; transition: all 0.3s ease;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.35rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 700; color: #f59e0b;" id="plan-timer-header">
+            <i class="fa-solid fa-hourglass-half fa-spin" id="plan-timer-icon" style="font-size: 0.9rem; color: #f59e0b;"></i>
+            <span>Session Timer (UTR Expiry):</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <span class="badge" id="plan-timer-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.68rem; font-weight: 800; padding: 0.15rem 0.4rem;">LIVE SESSION</span>
+            <span id="plan-countdown-display" style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 800; color: #f59e0b; letter-spacing: 1px;">10:00</span>
+          </div>
+        </div>
+        <div style="width: 100%; height: 5px; background: rgba(0, 0, 0, 0.3); border-radius: 3px; overflow: hidden;">
+          <div id="plan-timer-progress-fill" style="width: 100%; height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); transition: width 1s linear, background 0.5s ease; border-radius: 3px;"></div>
         </div>
       </div>
 
@@ -13379,6 +13413,150 @@
       reader.readAsDataURL(file);
     }
 
+    /* ==========================================
+       PAYMENT MODAL 10-MINUTE COUNTDOWN TIMER & SESSION EXPIRATION
+       ========================================== */
+    let paymentSessionTimer = null;
+    let paymentSessionSecondsLeft = 600; // 10 minutes = 600 seconds
+    const PAYMENT_SESSION_TOTAL_SECONDS = 600;
+
+    function startPaymentSessionTimer(targetModal = 'payment-modal') {
+      stopPaymentSessionTimer(); // Clear any existing timer first
+
+      paymentSessionSecondsLeft = PAYMENT_SESSION_TOTAL_SECONDS;
+      updatePaymentSessionTimerUI(paymentSessionSecondsLeft, targetModal);
+
+      paymentSessionTimer = setInterval(() => {
+        paymentSessionSecondsLeft--;
+        updatePaymentSessionTimerUI(paymentSessionSecondsLeft, targetModal);
+
+        if (paymentSessionSecondsLeft <= 0) {
+          stopPaymentSessionTimer();
+          handlePaymentSessionExpired(targetModal);
+        }
+      }, 1000);
+    }
+
+    function stopPaymentSessionTimer() {
+      if (paymentSessionTimer) {
+        clearInterval(paymentSessionTimer);
+        paymentSessionTimer = null;
+      }
+    }
+
+    function updatePaymentSessionTimerUI(secondsLeft, targetModal) {
+      const minutes = Math.floor(secondsLeft / 60);
+      const seconds = secondsLeft % 60;
+      const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      const pct = Math.max(0, Math.min(100, (secondsLeft / PAYMENT_SESSION_TOTAL_SECONDS) * 100));
+
+      const isPlan = targetModal === 'plan-purchase-modal';
+      const displayEl = document.getElementById(isPlan ? 'plan-countdown-display' : 'payment-countdown-display');
+      const progressFill = document.getElementById(isPlan ? 'plan-timer-progress-fill' : 'payment-timer-progress-fill');
+      const bannerEl = document.getElementById(isPlan ? 'plan-timer-banner' : 'payment-timer-banner');
+      const headerEl = document.getElementById(isPlan ? 'plan-timer-header' : 'payment-timer-header');
+      const badgeEl = document.getElementById(isPlan ? 'plan-timer-badge' : 'payment-timer-badge');
+      const iconEl = document.getElementById(isPlan ? 'plan-timer-icon' : 'payment-timer-icon');
+
+      if (displayEl) displayEl.innerText = formattedTime;
+
+      if (progressFill) {
+        progressFill.style.width = `${pct}%`;
+      }
+
+      // Dynamic theme coloring based on urgency
+      if (secondsLeft <= 60) {
+        // Critical Warning (< 1 minute)
+        if (bannerEl) {
+          bannerEl.style.background = 'rgba(239, 68, 68, 0.15)';
+          bannerEl.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+        }
+        if (headerEl) headerEl.style.color = '#ef4444';
+        if (displayEl) displayEl.style.color = '#ef4444';
+        if (badgeEl) {
+          badgeEl.innerText = 'EXPIRING SOON ⚠️';
+          badgeEl.style.background = 'rgba(239, 68, 68, 0.25)';
+          badgeEl.style.color = '#ef4444';
+          badgeEl.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+        }
+        if (iconEl) iconEl.style.color = '#ef4444';
+        if (progressFill) progressFill.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+      } else if (secondsLeft <= 180) {
+        // Warning (< 3 minutes)
+        if (bannerEl) {
+          bannerEl.style.background = 'rgba(249, 115, 22, 0.12)';
+          bannerEl.style.borderColor = 'rgba(249, 115, 22, 0.4)';
+        }
+        if (headerEl) headerEl.style.color = '#f97316';
+        if (displayEl) displayEl.style.color = '#f97316';
+        if (badgeEl) {
+          badgeEl.innerText = '3 MIN LEFT';
+          badgeEl.style.background = 'rgba(249, 115, 22, 0.2)';
+          badgeEl.style.color = '#f97316';
+          badgeEl.style.borderColor = 'rgba(249, 115, 22, 0.4)';
+        }
+        if (iconEl) iconEl.style.color = '#f97316';
+        if (progressFill) progressFill.style.background = 'linear-gradient(90deg, #f97316, #fb923c)';
+      } else {
+        // Normal state (> 3 minutes)
+        if (bannerEl) {
+          bannerEl.style.background = 'rgba(245, 158, 11, 0.08)';
+          bannerEl.style.borderColor = 'rgba(245, 158, 11, 0.28)';
+        }
+        if (headerEl) headerEl.style.color = '#f59e0b';
+        if (displayEl) displayEl.style.color = '#f59e0b';
+        if (badgeEl) {
+          badgeEl.innerText = 'LIVE SESSION';
+          badgeEl.style.background = 'rgba(245, 158, 11, 0.2)';
+          badgeEl.style.color = '#f59e0b';
+          badgeEl.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+        }
+        if (iconEl) iconEl.style.color = '#f59e0b';
+        if (progressFill) progressFill.style.background = 'linear-gradient(90deg, #f59e0b, #fbbf24)';
+      }
+    }
+
+    function handlePaymentSessionExpired(targetModal = 'payment-modal') {
+      // 1. Reset UTR verification UI elements
+      const btn = document.getElementById('submit-utr-btn');
+      if (btn) btn.disabled = false;
+
+      const planBtn = document.getElementById('plan-submit-utr-btn');
+      if (planBtn) {
+        planBtn.disabled = false;
+        planBtn.innerHTML = `<i class="fa-solid fa-check"></i> Submit UTR`;
+      }
+
+      const progressBox = document.getElementById('payment-progress-box');
+      if (progressBox) progressBox.style.display = 'none';
+
+      const utrIn = document.getElementById('utr-input');
+      if (utrIn) {
+        utrIn.value = '';
+        utrIn.style.borderColor = '';
+        utrIn.style.boxShadow = '';
+      }
+
+      const planUtrIn = document.getElementById('plan-utr-input');
+      if (planUtrIn) {
+        planUtrIn.value = '';
+        planUtrIn.style.borderColor = '';
+      }
+
+      // 2. Stop camera scanning if active
+      stopQrCameraStream();
+
+      // 3. Close the modal
+      closeModal(targetModal);
+
+      // 4. Reset pending order state
+      AppState.pendingOrder = null;
+      SafeStorage.removeItem('vnh_pending_order');
+
+      // 5. Notify user with prominent toast notification
+      showToast('⏰ UTR payment verification session expired (10 min limit exceeded). Operation closed to prevent stale orders.', 'warning');
+    }
+
     function openModal(id) {
       const protectedModals = ['purchase-modal', 'payment-modal', 'plan-purchase-modal', 'plan-numbers-modal', 'topup-modal'];
       if (protectedModals.includes(id) && !AppState.isLoggedIn) {
@@ -13389,11 +13567,18 @@
       }
       const modal = document.getElementById(id);
       if (modal) modal.classList.add('active');
+
+      if (id === 'payment-modal' || id === 'plan-purchase-modal') {
+        startPaymentSessionTimer(id);
+      }
     }
     function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
-      if (id === 'payment-modal') {
+      const modalEl = document.getElementById(id);
+      if (modalEl) modalEl.classList.remove('active');
+
+      if (id === 'payment-modal' || id === 'plan-purchase-modal') {
         stopQrCameraStream();
+        stopPaymentSessionTimer();
       }
     }
 
