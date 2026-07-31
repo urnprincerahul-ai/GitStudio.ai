@@ -5033,9 +5033,27 @@
         <div style="background: white; padding: 0.75rem; border-radius: var(--radius-md); display: inline-block; box-shadow: var(--shadow-sm);">
           <img src="https://i.ibb.co/bMfHHTQ2/1785462317532.png" alt="UPI Payment QR Code" style="width: 210px; max-width: 100%; height: auto; border-radius: var(--radius-sm); display: block; margin: 0 auto;">
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.6rem; text-align: center;">
-          UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.6rem; text-align: center; margin-bottom: 0.4rem; display: flex; align-items: center; justify-content: center; gap: 0.45rem; flex-wrap: wrap;">
+          <span>UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong></span>
+          <button class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.72rem; display: inline-flex; align-items: center; gap: 0.3rem;" onclick="copyText('urn.princerahul-1@oksbi', 'UPI ID copied!')" title="Copy UPI ID">
+            <i class="fa-solid fa-copy"></i> Copy
+          </button>
         </p>
+        <!-- Supported UPI Apps Clickable Trust Label -->
+        <div onclick="showToast('🛡️ Compatible with Google Pay, PhonePe, Paytm, BHIM & all major UPI apps!', 'info')" 
+             style="cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.28); padding: 0.32rem 0.75rem; border-radius: 20px; font-size: 0.75rem; color: #60a5fa; font-weight: 600; transition: all 0.2s ease; margin-top: 0.2rem;"
+             onmouseover="this.style.background='rgba(59, 130, 246, 0.2)'; this.style.borderColor='rgba(59, 130, 246, 0.45)';"
+             onmouseout="this.style.background='rgba(59, 130, 246, 0.1)'; this.style.borderColor='rgba(59, 130, 246, 0.28)';"
+             title="Click to verify supported UPI apps">
+          <i class="fa-solid fa-shield-halved" style="color: #60a5fa; font-size: 0.8rem;"></i>
+          <span>Supported Apps:</span>
+          <span style="display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 700; color: var(--text-main);">
+            <span style="background: rgba(255,255,255,0.1); padding: 0.08rem 0.35rem; border-radius: 4px; font-size: 0.7rem;">PhonePe</span>
+            <span style="background: rgba(255,255,255,0.1); padding: 0.08rem 0.35rem; border-radius: 4px; font-size: 0.7rem;">Paytm</span>
+            <span style="background: rgba(255,255,255,0.1); padding: 0.08rem 0.35rem; border-radius: 4px; font-size: 0.7rem;">Google Pay</span>
+            <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem; opacity: 0.8; margin-left: 0.1rem;"></i>
+          </span>
+        </div>
       </div>
 
       <div style="margin-bottom: 1.25rem;">
@@ -5165,9 +5183,27 @@
           <div style="background: white; padding: 0.75rem; border-radius: var(--radius-sm); display: inline-block; box-shadow: var(--shadow-sm);">
             <img src="https://i.ibb.co/bMfHHTQ2/1785462317532.png" alt="UPI Payment QR Code" style="width: 210px; max-width: 100%; height: auto; border-radius: var(--radius-sm); display: block; margin: 0 auto;">
           </div>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.6rem; text-align: center;">
-            UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.6rem; text-align: center; margin-bottom: 0.4rem; display: flex; align-items: center; justify-content: center; gap: 0.45rem; flex-wrap: wrap;">
+            <span>UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong></span>
+            <button class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.72rem; display: inline-flex; align-items: center; gap: 0.3rem;" onclick="copyText('urn.princerahul-1@oksbi', 'UPI ID copied!')" title="Copy UPI ID">
+              <i class="fa-solid fa-copy"></i> Copy
+            </button>
           </p>
+          <!-- Supported UPI Apps Clickable Trust Label -->
+          <div onclick="showToast('🛡️ Compatible with Google Pay, PhonePe, Paytm, BHIM & all major UPI apps!', 'info')" 
+               style="cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.28); padding: 0.32rem 0.75rem; border-radius: 20px; font-size: 0.75rem; color: #60a5fa; font-weight: 600; transition: all 0.2s ease; margin-top: 0.2rem;"
+               onmouseover="this.style.background='rgba(59, 130, 246, 0.2)'; this.style.borderColor='rgba(59, 130, 246, 0.45)';"
+               onmouseout="this.style.background='rgba(59, 130, 246, 0.1)'; this.style.borderColor='rgba(59, 130, 246, 0.28)';"
+               title="Click to verify supported UPI apps">
+            <i class="fa-solid fa-shield-halved" style="color: #60a5fa; font-size: 0.8rem;"></i>
+            <span>Supported Apps:</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 700; color: var(--text-main);">
+              <span style="background: rgba(255,255,255,0.1); padding: 0.08rem 0.35rem; border-radius: 4px; font-size: 0.7rem;">PhonePe</span>
+              <span style="background: rgba(255,255,255,0.1); padding: 0.08rem 0.35rem; border-radius: 4px; font-size: 0.7rem;">Paytm</span>
+              <span style="background: rgba(255,255,255,0.1); padding: 0.08rem 0.35rem; border-radius: 4px; font-size: 0.7rem;">Google Pay</span>
+              <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem; opacity: 0.8; margin-left: 0.1rem;"></i>
+            </span>
+          </div>
         </div>
 
         <div style="margin-bottom: 1.25rem;">
