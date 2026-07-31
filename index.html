@@ -5059,7 +5059,10 @@
       <div style="margin-bottom: 1.25rem;">
         <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem;">Submit 12-Digit UTR Number:</label>
         <input type="text" id="utr-input" class="search-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validateUtrInput()" style="font-family: var(--font-mono); letter-spacing: 2px;">
-        <div id="utr-validation-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; margin-top: 0.35rem; display: none;"></div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 0.35rem; gap: 0.5rem;">
+          <div id="utr-validation-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; display: none; flex: 1;"></div>
+          <div id="utr-char-counter" style="font-size: 0.78rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted); white-space: nowrap; margin-left: auto;">0 / 12 digits</div>
+        </div>
       </div>
 
       <div id="payment-progress-box" style="display: none; margin-bottom: 1.25rem; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem;">
@@ -10765,9 +10768,22 @@
     function validateUtrInput() {
       const input = document.getElementById('utr-input');
       const msg = document.getElementById('utr-validation-msg');
+      const counterEl = document.getElementById('utr-char-counter');
       if (!input) return false;
 
       const val = input.value.trim();
+
+      if (counterEl) {
+        counterEl.innerText = `${val.length} / 12 digits`;
+        if (val.length === 12 && /^\d+$/.test(val)) {
+          counterEl.style.color = 'var(--success)';
+        } else if (val.length > 0 && (!/^\d+$/.test(val) || val.length < 12)) {
+          counterEl.style.color = '#ef4444';
+        } else {
+          counterEl.style.color = 'var(--text-muted)';
+        }
+      }
+
       if (val === '') {
         input.style.borderColor = '';
         input.style.boxShadow = '';
@@ -11075,8 +11091,7 @@
       const utrIn = document.getElementById('utr-input');
       if (utrIn) {
         utrIn.value = '';
-        utrIn.style.borderColor = '';
-        utrIn.style.boxShadow = '';
+        validateUtrInput();
       }
       const valMsg = document.getElementById('utr-validation-msg');
       if (valMsg) valMsg.style.display = 'none';
@@ -13489,8 +13504,7 @@
       const utrIn = document.getElementById('utr-input');
       if (utrIn) {
         utrIn.value = '';
-        utrIn.style.borderColor = '';
-        utrIn.style.boxShadow = '';
+        validateUtrInput();
       }
 
       const planUtrIn = document.getElementById('plan-utr-input');
