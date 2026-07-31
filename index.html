@@ -2263,11 +2263,13 @@
       inset: 0;
       background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       z-index: 2000;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1.25rem;
+      padding: clamp(0.5rem, 3vw, 1.25rem);
+      overflow-y: auto;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease;
@@ -2279,14 +2281,17 @@
     .modal-box {
       width: 100%;
       max-width: 520px;
+      margin: auto;
       background: var(--bg-surface);
       border: 1px solid var(--border-glow);
       border-radius: var(--radius-lg);
-      padding: 2rem;
+      padding: 1.5rem;
       box-shadow: var(--shadow-lg);
-      transform: scale(0.9);
-      transition: transform 0.3s ease;
+      transform: scale(0.94);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
       position: relative;
+      max-height: min(calc(100dvh - 2rem), 90vh);
+      overflow-y: auto;
     }
     .modal-backdrop.active .modal-box {
       transform: scale(1);
@@ -2298,19 +2303,15 @@
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      padding: clamp(0.5rem, 3vw, 1.25rem);
     }
     #payment-modal .modal-box, #plan-purchase-modal .modal-box {
       width: 100%;
-      max-width: min(500px, 94vw);
-      padding: clamp(1rem, 4vw, 1.75rem);
-      max-height: calc(100dvh - 2rem);
-      overflow-y: auto;
-      background: var(--bg-surface);
+      max-width: min(480px, 94vw);
+      padding: clamp(1rem, 3.5vw, 1.5rem);
       border: 1px solid var(--border-glow);
       box-shadow: var(--shadow-lg), 0 0 30px var(--accent-glow);
-      transform: scale(0.95) translateY(8px);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(0.95) translateY(6px);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
     }
     #payment-modal.active .modal-box, #plan-purchase-modal.active .modal-box {
       transform: scale(1) translateY(0);
@@ -5076,19 +5077,19 @@
       </div>
 
       <!-- 10-Minute Payment Session Timer Banner -->
-      <div id="payment-timer-banner" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.28); border-radius: var(--radius-md); padding: 0.65rem 0.9rem; margin-bottom: 1rem; transition: all 0.3s ease;">
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.35rem;">
-          <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 700; color: #f59e0b;" id="payment-timer-header">
-            <i class="fa-solid fa-hourglass-half fa-spin" id="payment-timer-icon" style="font-size: 0.9rem; color: #f59e0b;"></i>
-            <span>Session Timer (UTR Expiry):</span>
+      <div id="payment-timer-banner" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.28); border-radius: var(--radius-md); padding: 0.5rem 0.8rem; margin-bottom: 0.85rem; transition: all 0.3s ease;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.3rem;">
+          <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; font-weight: 700; color: #f59e0b;" id="payment-timer-header">
+            <i class="fa-solid fa-clock" id="payment-timer-icon" style="font-size: 0.85rem; color: #f59e0b;"></i>
+            <span>UTR Timer:</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 0.4rem;">
-            <span class="badge" id="payment-timer-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.68rem; font-weight: 800; padding: 0.15rem 0.4rem;">LIVE SESSION</span>
-            <span id="payment-countdown-display" style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 800; color: #f59e0b; letter-spacing: 1px;">10:00</span>
+          <div style="display: flex; align-items: center; gap: 0.35rem;">
+            <span class="badge" id="payment-timer-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.65rem; font-weight: 800; padding: 0.12rem 0.35rem;">LIVE</span>
+            <span id="payment-countdown-display" style="font-family: var(--font-mono); font-size: 1rem; font-weight: 800; color: #f59e0b; letter-spacing: 0.5px;">10:00</span>
           </div>
         </div>
-        <div style="width: 100%; height: 5px; background: rgba(0, 0, 0, 0.3); border-radius: 3px; overflow: hidden;">
-          <div id="payment-timer-progress-fill" style="width: 100%; height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); transition: width 1s linear, background 0.5s ease; border-radius: 3px;"></div>
+        <div style="width: 100%; height: 4px; background: rgba(0, 0, 0, 0.3); border-radius: 2px; overflow: hidden;">
+          <div id="payment-timer-progress-fill" style="width: 100%; height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); transition: width 1s linear, background 0.5s ease; border-radius: 2px;"></div>
         </div>
       </div>
 
@@ -5203,19 +5204,19 @@
       </div>
 
       <!-- Plan Payment 10-Minute Session Timer Banner -->
-      <div id="plan-timer-banner" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.28); border-radius: var(--radius-md); padding: 0.65rem 0.9rem; margin-bottom: 1rem; transition: all 0.3s ease;">
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.35rem;">
-          <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 700; color: #f59e0b;" id="plan-timer-header">
-            <i class="fa-solid fa-hourglass-half fa-spin" id="plan-timer-icon" style="font-size: 0.9rem; color: #f59e0b;"></i>
-            <span>Session Timer (UTR Expiry):</span>
+      <div id="plan-timer-banner" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.28); border-radius: var(--radius-md); padding: 0.5rem 0.8rem; margin-bottom: 0.85rem; transition: all 0.3s ease;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.3rem;">
+          <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; font-weight: 700; color: #f59e0b;" id="plan-timer-header">
+            <i class="fa-solid fa-clock" id="plan-timer-icon" style="font-size: 0.85rem; color: #f59e0b;"></i>
+            <span>UTR Timer:</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 0.4rem;">
-            <span class="badge" id="plan-timer-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.68rem; font-weight: 800; padding: 0.15rem 0.4rem;">LIVE SESSION</span>
-            <span id="plan-countdown-display" style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 800; color: #f59e0b; letter-spacing: 1px;">10:00</span>
+          <div style="display: flex; align-items: center; gap: 0.35rem;">
+            <span class="badge" id="plan-timer-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.65rem; font-weight: 800; padding: 0.12rem 0.35rem;">LIVE</span>
+            <span id="plan-countdown-display" style="font-family: var(--font-mono); font-size: 1rem; font-weight: 800; color: #f59e0b; letter-spacing: 0.5px;">10:00</span>
           </div>
         </div>
-        <div style="width: 100%; height: 5px; background: rgba(0, 0, 0, 0.3); border-radius: 3px; overflow: hidden;">
-          <div id="plan-timer-progress-fill" style="width: 100%; height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); transition: width 1s linear, background 0.5s ease; border-radius: 3px;"></div>
+        <div style="width: 100%; height: 4px; background: rgba(0, 0, 0, 0.3); border-radius: 2px; overflow: hidden;">
+          <div id="plan-timer-progress-fill" style="width: 100%; height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); transition: width 1s linear, background 0.5s ease; border-radius: 2px;"></div>
         </div>
       </div>
 
