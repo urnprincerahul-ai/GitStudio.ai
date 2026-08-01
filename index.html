@@ -6782,6 +6782,10 @@
       smsLogs: safeParseJSON('vnh_sms_logs_dedicated_v2', safeParseJSON('vnh_sms_logs', defaultSeedSmsLogs)),
       smsLogsFilter: 'ALL',
       smsLogsSearch: '',
+      smsLogsPage: 1,
+      smsLogsPageSize: 10,
+      smsLogsViewMode: 'paginated',
+      smsLogsVisibleCount: 10,
       autoDeleteOldSmsLogs: SafeStorage.getItem('vnh_auto_delete_sms_7d') === 'true',
       favorites: safeParseJSON('vnh_favorites', ['num_1', 'num_3', 'num_5']),
       favoritesFilter: 'ALL',
@@ -9789,11 +9793,47 @@
 
     function filterSmsLogsSearch(query) {
       AppState.smsLogsSearch = query || '';
+      AppState.smsLogsPage = 1;
+      AppState.smsLogsVisibleCount = parseInt(AppState.smsLogsPageSize) || 10;
       renderSmsLogsTab();
     }
 
     function filterSmsLogsStatus(status) {
       AppState.smsLogsFilter = status || 'ALL';
+      AppState.smsLogsPage = 1;
+      AppState.smsLogsVisibleCount = parseInt(AppState.smsLogsPageSize) || 10;
+      renderSmsLogsTab();
+    }
+
+    function setSmsLogsPage(page) {
+      AppState.smsLogsPage = page;
+      renderSmsLogsTab();
+      const el = document.getElementById('sms-logs-entries-list');
+      if (el) {
+        const yOffset = -90;
+        const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      }
+    }
+
+    function setSmsLogsPageSize(size) {
+      const parsed = parseInt(size);
+      AppState.smsLogsPageSize = parsed;
+      AppState.smsLogsPage = 1;
+      AppState.smsLogsVisibleCount = parsed;
+      renderSmsLogsTab();
+    }
+
+    function setSmsLogsViewMode(mode) {
+      AppState.smsLogsViewMode = mode;
+      AppState.smsLogsPage = 1;
+      AppState.smsLogsVisibleCount = parseInt(AppState.smsLogsPageSize) || 10;
+      renderSmsLogsTab();
+    }
+
+    function loadMoreSmsLogs() {
+      const pageSize = parseInt(AppState.smsLogsPageSize) || 10;
+      AppState.smsLogsVisibleCount = (AppState.smsLogsVisibleCount || pageSize) + pageSize;
       renderSmsLogsTab();
     }
 
@@ -10282,6 +10322,34 @@
         return matchStatus && matchSearch;
       });
 
+      // Pagination & Virtualized Scroll Calculations
+      const viewMode = AppState.smsLogsViewMode || 'paginated';
+      const pageSize = parseInt(AppState.smsLogsPageSize) || 10;
+      const totalFiltered = filteredLogs.length;
+
+      let displayedLogs = [];
+      let totalPages = 1;
+      let currentPage = AppState.smsLogsPage || 1;
+      let startIndex = 0;
+      let endIndex = 0;
+
+      if (viewMode === 'paginated') {
+        totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+        AppState.smsLogsPage = currentPage;
+
+        startIndex = (currentPage - 1) * pageSize;
+        endIndex = Math.min(totalFiltered, startIndex + pageSize);
+        displayedLogs = filteredLogs.slice(startIndex, endIndex);
+      } else {
+        // Infinite / Virtualized Scroll mode
+        const visibleCount = AppState.smsLogsVisibleCount || pageSize;
+        startIndex = 0;
+        endIndex = Math.min(totalFiltered, visibleCount);
+        displayedLogs = filteredLogs.slice(0, endIndex);
+      }
+
       container.innerHTML = `
         <!-- Top Summary Statistics Banner -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem;">
@@ -10348,7 +10416,24 @@
               <input type="text" class="input-field" style="padding-left: 2.2rem; height: 36px; font-size: 0.82rem;" placeholder="Search phone, OTP, sender..." value="${AppState.smsLogsSearch || ''}" oninput="filterSmsLogsSearch(this.value)">
             </div>
 
+            <!-- Page Size & View Mode Controls -->
             <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+              <div style="display: inline-flex; background: rgba(0,0,0,0.3); padding: 2px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);">
+                <button type="button" class="btn btn-sm" onclick="setSmsLogsViewMode('paginated')" style="padding: 0.2rem 0.55rem; font-size: 0.72rem; font-weight: 700; border-radius: 4px; ${viewMode === 'paginated' ? 'background: var(--accent); color: #fff;' : 'background: transparent; color: var(--text-muted);'}" title="Page Navigation Mode">
+                  <i class="fa-solid fa-list-ol"></i> Paged
+                </button>
+                <button type="button" class="btn btn-sm" onclick="setSmsLogsViewMode('infinite')" style="padding: 0.2rem 0.55rem; font-size: 0.72rem; font-weight: 700; border-radius: 4px; ${viewMode === 'infinite' ? 'background: var(--accent); color: #fff;' : 'background: transparent; color: var(--text-muted);'}" title="Infinite Scroll / Load More Mode">
+                  <i class="fa-solid fa-angles-down"></i> Scroll
+                </button>
+              </div>
+
+              <select class="select-input" onchange="setSmsLogsPageSize(this.value)" style="height: 32px; font-size: 0.75rem; padding: 0 0.5rem; width: auto; background: rgba(15, 23, 42, 0.8); border-radius: 6px; border: 1px solid rgba(255,255,255,0.12); color: var(--text-main);" title="Entries per page">
+                <option value="10" ${pageSize === 10 ? 'selected' : ''}>10 / page</option>
+                <option value="25" ${pageSize === 25 ? 'selected' : ''}>25 / page</option>
+                <option value="50" ${pageSize === 50 ? 'selected' : ''}>50 / page</option>
+                <option value="100" ${pageSize === 100 ? 'selected' : ''}>100 / page</option>
+              </select>
+
               <button class="btn btn-primary btn-sm" onclick="simulateIncomingSms()" style="font-size: 0.78rem;">
                 <i class="fa-solid fa-bolt"></i> Simulate SMS
               </button>
@@ -10361,23 +10446,33 @@
             </div>
           </div>
 
-          <!-- Status Filter Chips Group -->
-          <div style="display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap; border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 0.65rem;">
-            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-right: 0.2rem; display: inline-flex; align-items: center; gap: 0.35rem;">
-              <i class="fa-solid fa-filter" style="color: var(--accent); font-size: 0.72rem;"></i> Status:
-            </span>
-            <button type="button" class="sms-filter-chip ${statusFilter === 'ALL' ? 'active-all' : ''}" onclick="filterSmsLogsStatus('ALL')">
-              <i class="fa-solid fa-layer-group"></i> All Logs <span class="chip-count">${totalCount}</span>
-            </button>
-            <button type="button" class="sms-filter-chip ${(statusFilter === 'RECEIVED' || statusFilter === 'OTP Received') ? 'active-received' : ''}" onclick="filterSmsLogsStatus('RECEIVED')">
-              <i class="fa-solid fa-envelope-open-text"></i> OTP Received <span class="chip-count">${otpReceivedCount}</span>
-            </button>
-            <button type="button" class="sms-filter-chip ${(statusFilter === 'DELIVERED' || statusFilter === 'System Delivery') ? 'active-delivered' : ''}" onclick="filterSmsLogsStatus('DELIVERED')">
-              <i class="fa-solid fa-check-double"></i> System Delivery <span class="chip-count">${systemDeliveryCount}</span>
-            </button>
-            <button type="button" class="sms-filter-chip ${(statusFilter === 'FAILED' || statusFilter === 'Failed Delivery') ? 'active-failed' : ''}" onclick="filterSmsLogsStatus('FAILED')">
-              <i class="fa-solid fa-triangle-exclamation"></i> Failed Delivery <span class="chip-count">${failedDeliveryCount}</span>
-            </button>
+          <!-- Status Filter Chips & Active Entry Counter -->
+          <div style="display: flex; gap: 0.45rem; justify-content: space-between; align-items: center; flex-wrap: wrap; border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 0.65rem;">
+            <div style="display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap;">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-right: 0.2rem; display: inline-flex; align-items: center; gap: 0.35rem;">
+                <i class="fa-solid fa-filter" style="color: var(--accent); font-size: 0.72rem;"></i> Status:
+              </span>
+              <button type="button" class="sms-filter-chip ${statusFilter === 'ALL' ? 'active-all' : ''}" onclick="filterSmsLogsStatus('ALL')">
+                <i class="fa-solid fa-layer-group"></i> All Logs <span class="chip-count">${totalCount}</span>
+              </button>
+              <button type="button" class="sms-filter-chip ${(statusFilter === 'RECEIVED' || statusFilter === 'OTP Received') ? 'active-received' : ''}" onclick="filterSmsLogsStatus('RECEIVED')">
+                <i class="fa-solid fa-envelope-open-text"></i> OTP Received <span class="chip-count">${otpReceivedCount}</span>
+              </button>
+              <button type="button" class="sms-filter-chip ${(statusFilter === 'DELIVERED' || statusFilter === 'System Delivery') ? 'active-delivered' : ''}" onclick="filterSmsLogsStatus('DELIVERED')">
+                <i class="fa-solid fa-check-double"></i> System Delivery <span class="chip-count">${systemDeliveryCount}</span>
+              </button>
+              <button type="button" class="sms-filter-chip ${(statusFilter === 'FAILED' || statusFilter === 'Failed Delivery') ? 'active-failed' : ''}" onclick="filterSmsLogsStatus('FAILED')">
+                <i class="fa-solid fa-triangle-exclamation"></i> Failed Delivery <span class="chip-count">${failedDeliveryCount}</span>
+              </button>
+            </div>
+
+            <!-- Page range indicator badge -->
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; background: rgba(0, 0, 0, 0.3); padding: 0.25rem 0.65rem; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.08);">
+              ${totalFiltered === 0 ? 'No entries' : (viewMode === 'paginated' 
+                ? `Showing <strong style="color: var(--accent);">${startIndex + 1}–${endIndex}</strong> of <strong style="color: var(--text-main);">${totalFiltered}</strong> logs (Page ${currentPage}/${totalPages})`
+                : `Showing <strong style="color: var(--accent);">${endIndex}</strong> of <strong style="color: var(--text-main);">${totalFiltered}</strong> logs`
+              )}
+            </div>
           </div>
         </div>
 
@@ -10405,9 +10500,9 @@
           </div>
         </div>
 
-        <!-- Log Entries List -->
+        <!-- Log Entries List Container -->
         <div style="display: flex; flex-direction: column; gap: 0.85rem;" id="sms-logs-entries-list">
-          ${filteredLogs.length === 0 ? `
+          ${totalFiltered === 0 ? `
             <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted); background: rgba(255, 255, 255, 0.02); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
               <i class="fa-solid fa-receipt" style="font-size: 2.8rem; margin-bottom: 0.75rem; opacity: 0.5;"></i>
               <p style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;">No SMS Delivery Logs Found</p>
@@ -10418,7 +10513,8 @@
                 <i class="fa-solid fa-bolt"></i> Simulate Test Incoming SMS
               </button>
             </div>
-          ` : filteredLogs.map((log, idx) => {
+          ` : displayedLogs.map((log, idx) => {
+            const absoluteIdx = startIndex + idx + 1;
             const isReceived = log.status === 'RECEIVED' || log.status === 'OTP Received' || !!log.otpCode;
             const isDelivered = !isReceived && (log.status === 'DELIVERED' || log.status === 'System Delivery');
             const isFailed = log.status === 'FAILED' || log.status === 'PENDING' || log.status === 'Failed Delivery';
@@ -10429,7 +10525,7 @@
             const statusText = isReceived ? 'OTP Received' : (isDelivered ? 'System Delivery' : 'Failed Delivery');
 
             // Subtle alternating background colors and grid line accents
-            const isEven = idx % 2 === 0;
+            const isEven = absoluteIdx % 2 === 0;
             const rowBg = isEven ? 'rgba(30, 41, 59, 0.45)' : 'rgba(15, 23, 42, 0.75)';
             const gridBorderColor = isEven ? 'rgba(255, 255, 255, 0.07)' : 'rgba(56, 189, 248, 0.12)';
 
@@ -10438,7 +10534,7 @@
                 <!-- Log Header Row -->
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap;">
                   <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <span style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); font-family: var(--font-mono); background: rgba(255, 255, 255, 0.05); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.08);">#${idx + 1}</span>
+                    <span style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); font-family: var(--font-mono); background: rgba(255, 255, 255, 0.05); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.08);">#${absoluteIdx}</span>
                     <span style="font-size: 1.6rem; line-height: 1;">${log.flag || '🌐'}</span>
                     <div>
                       <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
@@ -10527,7 +10623,108 @@
             `;
           }).join('')}
         </div>
+
+        <!-- Pagination Bar / Infinite Load More Controls Footer -->
+        ${totalFiltered > 0 ? (viewMode === 'paginated' ? `
+          ${totalPages > 1 ? `
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.75rem; padding: 0.85rem 1rem; background: rgba(255, 255, 255, 0.02); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary btn-sm" onclick="setSmsLogsPage(1)" ${currentPage === 1 ? 'disabled style="opacity: 0.4; cursor: not-allowed;"' : ''} title="First Page">
+                  <i class="fa-solid fa-angles-left"></i> First
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="setSmsLogsPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled style="opacity: 0.4; cursor: not-allowed;"' : ''} title="Previous Page">
+                  <i class="fa-solid fa-angle-left"></i> Prev
+                </button>
+              </div>
+
+              <!-- Numeric Page Buttons -->
+              <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                ${(() => {
+                  let pages = [];
+                  let start = Math.max(1, currentPage - 2);
+                  let end = Math.min(totalPages, currentPage + 2);
+                  if (start > 1) {
+                    pages.push(`<button class="btn btn-secondary btn-sm" onclick="setSmsLogsPage(1)" style="min-width: 32px;">1</button>`);
+                    if (start > 2) pages.push(`<span style="color: var(--text-muted); font-size: 0.8rem; padding: 0 0.2rem;">...</span>`);
+                  }
+                  for (let p = start; p <= end; p++) {
+                    const isActive = p === currentPage;
+                    pages.push(`
+                      <button class="btn btn-sm ${isActive ? 'btn-primary' : 'btn-secondary'}" onclick="setSmsLogsPage(${p})" style="min-width: 32px; font-weight: 800; ${isActive ? 'box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);' : ''}">
+                        ${p}
+                      </button>
+                    `);
+                  }
+                  if (end < totalPages) {
+                    if (end < totalPages - 1) pages.push(`<span style="color: var(--text-muted); font-size: 0.8rem; padding: 0 0.2rem;">...</span>`);
+                    pages.push(`<button class="btn btn-secondary btn-sm" onclick="setSmsLogsPage(${totalPages})" style="min-width: 32px;">${totalPages}</button>`);
+                  }
+                  return pages.join('');
+                })()}
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary btn-sm" onclick="setSmsLogsPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled style="opacity: 0.4; cursor: not-allowed;"' : ''} title="Next Page">
+                  Next <i class="fa-solid fa-angle-right"></i>
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="setSmsLogsPage(${totalPages})" ${currentPage === totalPages ? 'disabled style="opacity: 0.4; cursor: not-allowed;"' : ''} title="Last Page">
+                  Last <i class="fa-solid fa-angles-right"></i>
+                </button>
+              </div>
+            </div>
+          ` : ''}
+        ` : `
+          <!-- Infinite Scroll / Load More Footer -->
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.65rem; margin-top: 1rem; text-align: center;">
+            <div style="width: 100%; max-width: 360px; height: 6px; background: rgba(255,255,255,0.08); border-radius: 9999px; overflow: hidden; position: relative;">
+              <div style="width: ${Math.min(100, Math.round((endIndex / totalFiltered) * 100))}%; height: 100%; background: linear-gradient(90deg, var(--accent), #a855f7); border-radius: 9999px; transition: width 0.3s ease;"></div>
+            </div>
+            <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">
+              Loaded ${endIndex} of ${totalFiltered} log entries (${Math.round((endIndex / totalFiltered) * 100)}%)
+            </span>
+
+            ${endIndex < totalFiltered ? `
+              <button class="btn btn-secondary" onclick="loadMoreSmsLogs()" style="font-size: 0.82rem; padding: 0.5rem 1.4rem; margin-top: 0.25rem;">
+                <i class="fa-solid fa-arrow-down"></i> Load More Logs (+${pageSize})
+              </button>
+              <div id="sms-logs-scroll-sentinel" style="height: 10px; width: 100%;"></div>
+            ` : `
+              <span class="badge badge-secondary" style="font-size: 0.72rem; padding: 0.3rem 0.8rem; margin-top: 0.2rem;">
+                <i class="fa-solid fa-check"></i> All ${totalFiltered} SMS logs loaded
+              </span>
+            `}
+          </div>
+        `) : ''}
       `;
+
+      // Trigger GSAP entry animation for log rows
+      if (window.gsap) {
+        const rows = document.querySelectorAll('.sms-log-item-row');
+        if (rows.length > 0) {
+          gsap.fromTo(rows, 
+            { opacity: 0, y: 12 }, 
+            { opacity: 1, y: 0, duration: 0.3, stagger: 0.03, ease: 'power2.out', clearProps: 'transform' }
+          );
+        }
+      }
+
+      // Auto Intersection Observer for Virtualized Infinite Scroll
+      if (viewMode === 'infinite' && endIndex < totalFiltered) {
+        setTimeout(() => {
+          const sentinel = document.getElementById('sms-logs-scroll-sentinel');
+          if (sentinel && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  observer.disconnect();
+                  loadMoreSmsLogs();
+                }
+              });
+            }, { rootMargin: '200px' });
+            observer.observe(sentinel);
+          }
+        }, 100);
+      }
 
       setTimeout(renderSmsRechartsTrend, 30);
     }
@@ -13125,31 +13322,40 @@
         emptyState.style.display = (totalMatchingQuestions === 0) ? 'block' : 'none';
       }
 
-      // Smooth GSAP slide-up & fade-in animation for filtered FAQ results
+      // Subtle GSAP slide-up & fade-in animation for filtered FAQ items & feedback
       if (window.gsap) {
         const visibleBlocks = Array.from(categoryBlocks).filter(b => b.style.display !== 'none');
         const visibleItems = Array.from(document.querySelectorAll('.faq-category-block:not([style*="display: none"]) .faq-item:not([style*="display: none"])'));
 
+        const allFaqItems = document.querySelectorAll('.faq-item');
         gsap.killTweensOf(categoryBlocks);
-        gsap.killTweensOf(document.querySelectorAll('.faq-item'));
+        gsap.killTweensOf(allFaqItems);
         if (emptyState) gsap.killTweensOf(emptyState);
+        if (countSpan) gsap.killTweensOf(countSpan);
+
+        if (countSpan) {
+          gsap.fromTo(countSpan, 
+            { opacity: 0.5, y: -2 }, 
+            { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out', clearProps: 'transform,opacity' }
+          );
+        }
 
         if (totalMatchingQuestions > 0 && visibleBlocks.length > 0) {
           gsap.fromTo(visibleBlocks, 
-            { y: 18, opacity: 0 }, 
-            { y: 0, opacity: 1, duration: 0.4, stagger: 0.06, ease: 'power2.out', clearProps: 'transform' }
+            { y: 12, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 0.3, stagger: 0.04, ease: 'power2.out', clearProps: 'transform,opacity' }
           );
 
           if (visibleItems.length > 0) {
             gsap.fromTo(visibleItems, 
-              { y: 12, opacity: 0 }, 
-              { y: 0, opacity: 1, duration: 0.35, stagger: 0.02, ease: 'power2.out', clearProps: 'transform' }
+              { y: 10, opacity: 0 }, 
+              { y: 0, opacity: 1, duration: 0.28, stagger: 0.025, ease: 'power2.out', clearProps: 'transform,opacity' }
             );
           }
         } else if (emptyState && emptyState.style.display !== 'none') {
           gsap.fromTo(emptyState, 
-            { y: 16, opacity: 0, scale: 0.96 }, 
-            { y: 0, opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.2)' }
+            { y: 14, opacity: 0, scale: 0.97 }, 
+            { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(1.2)', clearProps: 'transform,opacity' }
           );
         }
       }
