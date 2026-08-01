@@ -12565,6 +12565,9 @@
     function initFcmIntegration() {
       if (window.AndroidFCM) {
         try {
+          if (typeof window.AndroidFCM.requestPermission === 'function') {
+            window.AndroidFCM.requestPermission();
+          }
           fcmRegistrationToken = window.AndroidFCM.getFcmToken();
           console.log("FCM Token retrieved via Android bridge:", fcmRegistrationToken);
           updateFcmUiStatus(true, fcmRegistrationToken);
@@ -12576,6 +12579,11 @@
           fcmPermissionGranted = true;
           fcmRegistrationToken = "fcm_token_web_" + Math.floor(100000 + Math.random() * 900000);
           updateFcmUiStatus(true, fcmRegistrationToken);
+        } else if (Notification.permission === 'default') {
+          updateFcmUiStatus(false, null);
+          setTimeout(() => {
+            requestFcmPushPermission();
+          }, 1200);
         } else {
           updateFcmUiStatus(false, null);
         }
