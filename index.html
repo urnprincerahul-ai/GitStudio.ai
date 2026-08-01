@@ -1076,6 +1076,12 @@
       box-shadow: 0 0 10px var(--accent-glow);
     }
 
+    #filter-country-code-select {
+      flex: 1 1 100%;
+      width: 100% !important;
+      grid-column: span 2;
+    }
+
     .filter-btn-group {
       display: flex;
       align-items: center;
@@ -4573,11 +4579,11 @@
               <button class="btn btn-secondary btn-sm" id="reset-filters-btn">
                 <i class="fa-solid fa-rotate-left"></i> Reset
               </button>
-              <button class="btn btn-primary btn-sm" id="search-filter-trigger-btn" onclick="applyMarketplaceFilters()" title="Search Numbers">
-                <i class="fa-solid fa-magnifying-glass"></i> Search
-              </button>
               <button class="btn btn-secondary btn-sm" onclick="refreshMarketplaceInventory(false)" title="Refresh Inventory Now">
                 <i class="fa-solid fa-rotate"></i> Refresh
+              </button>
+              <button class="btn btn-primary btn-sm" id="search-filter-trigger-btn" onclick="applyMarketplaceFilters()" title="Search Numbers">
+                <i class="fa-solid fa-magnifying-glass"></i> Search
               </button>
             </div>
           </div>
