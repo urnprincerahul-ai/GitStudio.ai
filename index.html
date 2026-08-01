@@ -86,6 +86,106 @@
       --shadow-lg: 0 16px 32px rgba(37, 99, 235, 0.12);
     }
 
+    /* Day Mode / Light Theme Comprehensive Component Overrides */
+    [data-theme="light"] .glass-card,
+    [data-theme="light"] .hero-preview-card,
+    [data-theme="light"] .stat-card,
+    [data-theme="light"] .dash-stat-card,
+    [data-theme="light"] .pricing-card,
+    [data-theme="light"] .feature-card {
+      background: rgba(255, 255, 255, 0.94) !important;
+      border-color: rgba(203, 213, 225, 0.8) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+      color: #0f172a !important;
+    }
+
+    [data-theme="light"] .otp-card {
+      background: #ffffff !important;
+      border: 1px dashed #3b82f6 !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+      color: #0f172a !important;
+    }
+
+    [data-theme="light"] .otp-card > div[style*="background:"],
+    [data-theme="light"] .otp-card div[style*="background: rgba(0,0,0"],
+    [data-theme="light"] .otp-card div[style*="background: rgba(0, 0, 0"] {
+      background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+    }
+
+    [data-theme="light"] [id^="timer-box-"] {
+      background: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+    }
+
+    [data-theme="light"] [id^="timer-box-"] span {
+      color: #334155 !important;
+    }
+
+    [data-theme="light"] .otp-code {
+      color: #1e293b !important;
+      text-shadow: none !important;
+    }
+
+    [data-theme="light"] .mobile-bottom-nav {
+      background: rgba(255, 255, 255, 0.98) !important;
+      border-top: 1px solid rgba(203, 213, 225, 0.9) !important;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    [data-theme="light"] .mobile-bottom-nav-item {
+      color: #64748b !important;
+    }
+
+    [data-theme="light"] .mobile-bottom-nav-item:hover,
+    [data-theme="light"] .mobile-bottom-nav-item.active {
+      color: #2563eb !important;
+    }
+
+    [data-theme="light"] .mobile-bottom-nav-item.mob-nav-active-numbers-btn.active {
+      background: rgba(37, 99, 235, 0.12) !important;
+      color: #2563eb !important;
+    }
+
+    [data-theme="light"] .marketplace-bulk-toolbar {
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    [data-theme="light"] .marketplace-bulk-toolbar.has-selection {
+      background: #f8fafc !important;
+      border-color: #2563eb !important;
+    }
+
+    [data-theme="light"] #utr-input:focus,
+    [data-theme="light"] #plan-utr-input:focus,
+    [data-theme="light"] #topup-utr-input:focus {
+      background: #ffffff !important;
+      color: #0f172a !important;
+    }
+
+    [data-theme="light"] [style*="background: linear-gradient"][style*="15, 23, 42"],
+    [data-theme="light"] [style*="background: rgba(30, 41, 59"],
+    [data-theme="light"] [style*="background: rgba(15, 23, 42"] {
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+
+    [data-theme="light"] .modal-card,
+    [data-theme="light"] .modal-box {
+      background: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+
+    [data-theme="light"] .badge-secondary,
+    [data-theme="light"] .badge-dark {
+      background: #e2e8f0 !important;
+      color: #334155 !important;
+    }
+
     /* Global Theme Cross-Fade Transition Effects */
     body,
     .glass-card,
@@ -3723,7 +3823,7 @@
       align-items: center;
     }
 
-    .light-theme .mobile-bottom-nav {
+    [data-theme="light"] .mobile-bottom-nav {
       background: rgba(255, 255, 255, 0.95);
       border-top-color: rgba(226, 232, 240, 0.9);
       box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
