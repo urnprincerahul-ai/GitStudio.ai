@@ -6021,7 +6021,7 @@
 
   <!-- User Account & Auth Modal -->
   <div class="modal-backdrop" id="user-modal">
-    <div class="modal-box" style="max-width: 480px; width: 92%; padding: 1.6rem 1.4rem; border-radius: 20px; border: 1.5px solid rgba(59, 130, 246, 0.35); background: linear-gradient(150deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.96) 100%); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(59, 130, 246, 0.2); backdrop-filter: blur(16px); max-height: 90vh; overflow-y: auto;">
+    <div class="modal-box" style="max-width: 480px; width: 92%; padding: 1.6rem 1.4rem; border-radius: 20px; border: 1.5px solid rgba(59, 130, 246, 0.35); background: linear-gradient(150deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.96) 100%); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(59, 130, 246, 0.2); backdrop-filter: blur(16px); max-height: 90vh; overflow-y: auto; overflow-x: hidden; box-sizing: border-box;">
       <button class="modal-close" onclick="closeModal('user-modal')" style="top: 1rem; right: 1rem;"><i class="fa-solid fa-xmark"></i></button>
 
       <!-- LOGGED OUT CONTENT (SIGN IN / SIGN UP) -->
@@ -6063,7 +6063,7 @@
               <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Email Address</label>
               <div class="auth-input-wrapper">
                 <i class="fa-solid fa-envelope auth-input-icon"></i>
-                <input type="email" id="login-email-input" class="search-input" value="alex@virtualhub.io" placeholder="Enter Your Gmail">
+                <input type="email" id="login-email-input" class="search-input" value="" placeholder="Enter Your Gmail">
               </div>
             </div>
           </div>
@@ -6072,16 +6072,16 @@
           <div id="auth-signin-phone-fields" style="display: none;">
             <div style="margin-bottom: 0.95rem;">
               <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Phone Number</label>
-              <div style="display: flex; gap: 0.4rem; align-items: center; width: 100%; box-sizing: border-box;">
-                <select class="select-input" id="login-phone-code" style="width: 110px; max-width: 115px; min-width: 0; padding: 0.65rem 0.35rem; flex-shrink: 0; background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-glow); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.8rem; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+              <div style="display: flex; gap: 0.4rem; align-items: center; width: 100%; box-sizing: border-box; overflow: hidden;">
+                <select class="select-input" id="login-phone-code" style="width: 100px; max-width: 100px; min-width: 90px; padding: 0.65rem 0.35rem; flex: 0 0 100px; background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-glow); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.8rem; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; box-sizing: border-box;">
                   <option value="+91" selected>🇮🇳 +91 (India)</option>
                   <option value="+880">🇧🇩 +880 (Bangladesh)</option>
                   <option value="+1">🇺🇸 +1 (USA)</option>
                   <option value="+44">🇬🇧 +44 (UK)</option>
                   <option value="+92">🇵🇰 +92 (Pakistan)</option>
                 </select>
-                <div class="auth-input-wrapper" style="flex: 1; min-width: 0;">
-                  <input type="tel" id="login-phone-input" class="search-input" style="padding-left: 0.85rem;" value="9876543210" placeholder="Enter Your Phone Number">
+                <div class="auth-input-wrapper" style="flex: 1 1 auto; min-width: 0; width: 0; box-sizing: border-box;">
+                  <input type="tel" id="login-phone-input" class="search-input" style="padding-left: 0.85rem; padding-right: 0.85rem; width: 100%; box-sizing: border-box;" value="" placeholder="Enter Your Phone Number">
                 </div>
               </div>
             </div>
@@ -6091,7 +6091,7 @@
             <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Password</label>
             <div class="auth-input-wrapper">
               <i class="fa-solid fa-lock auth-input-icon"></i>
-              <input type="password" id="login-pass-input" class="search-input" value="password123" placeholder="Enter password">
+              <input type="password" id="login-pass-input" class="search-input" value="" placeholder="Enter Your Password">
               <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility('login-pass-input', this)" title="Toggle Password Visibility">
                 <i class="fa-solid fa-eye"></i>
               </button>
@@ -6135,16 +6135,16 @@
           <div id="auth-signup-phone-fields" style="display: none;">
             <div style="margin-bottom: 0.9rem;">
               <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Phone Number</label>
-              <div style="display: flex; gap: 0.4rem; align-items: center; width: 100%; box-sizing: border-box;">
-                <select class="select-input" id="signup-phone-code" style="width: 110px; max-width: 115px; min-width: 0; padding: 0.65rem 0.35rem; flex-shrink: 0; background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-glow); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.8rem; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+              <div style="display: flex; gap: 0.4rem; align-items: center; width: 100%; box-sizing: border-box; overflow: hidden;">
+                <select class="select-input" id="signup-phone-code" style="width: 100px; max-width: 100px; min-width: 90px; padding: 0.65rem 0.35rem; flex: 0 0 100px; background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-glow); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.8rem; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; box-sizing: border-box;">
                   <option value="+91" selected>🇮🇳 +91 (India)</option>
                   <option value="+880">🇧🇩 +880 (Bangladesh)</option>
                   <option value="+1">🇺🇸 +1 (USA)</option>
                   <option value="+44">🇬🇧 +44 (UK)</option>
                   <option value="+92">🇵🇰 +92 (Pakistan)</option>
                 </select>
-                <div class="auth-input-wrapper" style="flex: 1; min-width: 0;">
-                  <input type="tel" id="signup-phone-input" class="search-input" style="padding-left: 0.85rem;" placeholder="Enter Your Phone Number">
+                <div class="auth-input-wrapper" style="flex: 1 1 auto; min-width: 0; width: 0; box-sizing: border-box;">
+                  <input type="tel" id="signup-phone-input" class="search-input" style="padding-left: 0.85rem; padding-right: 0.85rem; width: 100%; box-sizing: border-box;" placeholder="Enter Your Phone Number">
                 </div>
               </div>
             </div>
@@ -6161,7 +6161,7 @@
             <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Create Password</label>
             <div class="auth-input-wrapper">
               <i class="fa-solid fa-lock auth-input-icon"></i>
-              <input type="password" id="signup-pass-input" class="search-input" placeholder="Enter password">
+              <input type="password" id="signup-pass-input" class="search-input" placeholder="Enter Your Password">
               <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility('signup-pass-input', this)" title="Toggle Password Visibility">
                 <i class="fa-solid fa-eye"></i>
               </button>
@@ -6172,7 +6172,7 @@
             <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Confirm Password</label>
             <div class="auth-input-wrapper">
               <i class="fa-solid fa-shield-halved auth-input-icon"></i>
-              <input type="password" id="signup-pass-confirm-input" class="search-input" placeholder="Enter password">
+              <input type="password" id="signup-pass-confirm-input" class="search-input" placeholder="Re-Enter Password">
               <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility('signup-pass-confirm-input', this)" title="Toggle Password Visibility">
                 <i class="fa-solid fa-eye"></i>
               </button>
