@@ -6527,6 +6527,8 @@
       smsLogsSearch: '',
       autoDeleteOldSmsLogs: SafeStorage.getItem('vnh_auto_delete_sms_7d') === 'true',
       favorites: safeParseJSON('vnh_favorites', ['num_1', 'num_3', 'num_5']),
+      favoritesFilter: 'ALL',
+      favoritesSearch: '',
       priceAlerts: safeParseJSON('vnh_price_alerts', [
         {
           id: 'alert_default_1',
@@ -9040,6 +9042,39 @@
       showToast(`🎉 Claimed ₹${claimedAmt.toFixed(2)} referral earnings directly to your Wallet!`, 'success');
     }
 
+    function setFavoritesFilter(filter) {
+      AppState.favoritesFilter = filter;
+      renderFavoritesTab();
+    }
+
+    function onFavoritesSearchInput(val) {
+      AppState.favoritesSearch = val;
+      renderFavoritesTab();
+    }
+
+    function clearAllFavorites() {
+      if (!AppState.favorites || AppState.favorites.length === 0) {
+        showToast('No favorites to clear.', 'info');
+        return;
+      }
+      if (confirm('Are you sure you want to remove all numbers from your Favorites?')) {
+        AppState.favorites = [];
+        SafeStorage.setItem('vnh_favorites', JSON.stringify([]));
+        updateFavoritesUI();
+        showToast('Cleared all saved favorites!', 'info');
+      }
+    }
+
+    function bulkBuyFavorites() {
+      const availableFavs = AppState.numbers.filter(n => AppState.favorites.includes(n.id) && n.status !== 'PURCHASED');
+      if (availableFavs.length === 0) {
+        showToast('No available numbers in your favorites to bulk buy.', 'warning');
+        return;
+      }
+      AppState.selectedNumberIds = availableFavs.map(n => n.id);
+      openBulkPurchaseModal();
+    }
+
     function updateFavoritesUI() {
       renderMarketplace();
       renderFavoritesTab();
@@ -9050,45 +9085,138 @@
 
       // Update badge count
       const badge = document.getElementById('favorites-count-badge');
-      if (badge) badge.innerText = AppState.favorites.length;
+      if (badge) badge.innerText = AppState.favorites ? AppState.favorites.length : 0;
 
       if (!container) return;
 
-      const favoriteNumbers = AppState.numbers.filter(n => AppState.favorites.includes(n.id));
+      const allFavs = AppState.numbers.filter(n => AppState.favorites.includes(n.id));
+      const availableFavs = allFavs.filter(n => n.status !== 'PURCHASED');
+      const purchasedFavs = allFavs.filter(n => n.status === 'PURCHASED');
+      const totalCostValue = allFavs.reduce((acc, n) => acc + (parseFloat(n.price) || 0), 0);
 
-      if (favoriteNumbers.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); background: var(--bg-card); border-radius: var(--radius-md);">
-            <i class="fa-solid fa-heart-crack" style="font-size: 2.5rem; margin-bottom: 0.75rem; color: #ef4444; opacity: 0.7;"></i>
-            <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-main);">No Favorites Saved Yet</h4>
-            <p style="font-size: 0.825rem; margin-top: 0.25rem;">Click the <i class="fa-regular fa-heart"></i> icon on any number card in the marketplace to save numbers here for quick access!</p>
+      const filter = AppState.favoritesFilter || 'ALL';
+      const search = (AppState.favoritesSearch || '').toLowerCase().trim();
+
+      const displayedFavs = allFavs.filter(n => {
+        if (filter === 'AVAILABLE' && n.status === 'PURCHASED') return false;
+        if (filter === 'PURCHASED' && n.status !== 'PURCHASED') return false;
+        if (search) {
+          const matchPhone = (n.phone || '').toLowerCase().includes(search);
+          const matchCountry = (n.countryName || '').toLowerCase().includes(search);
+          const matchPlatform = (n.platformName || '').toLowerCase().includes(search);
+          if (!matchPhone && !matchCountry && !matchPlatform) return false;
+        }
+        return true;
+      });
+
+      // Render Header Summary Banner & Controls
+      let html = `
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 0.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 0.9rem;">
+                <i class="fa-solid fa-heart"></i>
+              </div>
+              <div>
+                <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-main);">Favorites Manager</div>
+                <div style="font-size: 0.725rem; color: var(--text-muted);">Saved virtual numbers for 1-click quick purchases</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+              <span class="badge" style="background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25); font-size: 0.7rem; font-weight: 700;">
+                Total: ${allFavs.length}
+              </span>
+              <span class="badge" style="background: rgba(34, 197, 94, 0.12); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.25); font-size: 0.7rem; font-weight: 700;">
+                Available: ${availableFavs.length}
+              </span>
+              <span class="badge" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.25); font-size: 0.7rem; font-weight: 700;">
+                Value: ₹${totalCostValue.toFixed(2)}
+              </span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.75rem;">
+            <div style="position: relative; flex: 1; min-width: 170px;">
+              <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.75rem;"></i>
+              <input type="text" placeholder="Search saved numbers, platform..." value="${AppState.favoritesSearch || ''}" oninput="onFavoritesSearchInput(this.value)" style="width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.35rem 0.65rem 0.35rem 1.85rem; font-size: 0.78rem; color: var(--text-main); outline: none;">
+            </div>
+
+            <div style="display: flex; gap: 0.3rem;">
+              <button class="btn btn-sm ${filter === 'ALL' ? 'btn-primary' : 'btn-secondary'}" style="padding: 0.25rem 0.55rem; font-size: 0.72rem; font-weight: 700;" onclick="setFavoritesFilter('ALL')">All (${allFavs.length})</button>
+              <button class="btn btn-sm ${filter === 'AVAILABLE' ? 'btn-primary' : 'btn-secondary'}" style="padding: 0.25rem 0.55rem; font-size: 0.72rem; font-weight: 700;" onclick="setFavoritesFilter('AVAILABLE')">Available (${availableFavs.length})</button>
+              <button class="btn btn-sm ${filter === 'PURCHASED' ? 'btn-primary' : 'btn-secondary'}" style="padding: 0.25rem 0.55rem; font-size: 0.72rem; font-weight: 700;" onclick="setFavoritesFilter('PURCHASED')">Purchased (${purchasedFavs.length})</button>
+            </div>
+
+            <div style="display: flex; gap: 0.35rem; align-items: center;">
+              ${availableFavs.length > 0 ? `
+                <button class="btn btn-warning btn-sm" style="padding: 0.25rem 0.6rem; font-size: 0.72rem; font-weight: 700; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; border: none; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);" onclick="bulkBuyFavorites()" title="Bulk Buy All Available Favorite Numbers">
+                  <i class="fa-solid fa-bolt"></i> Bulk Buy (${availableFavs.length})
+                </button>
+              ` : ''}
+              ${allFavs.length > 0 ? `
+                <button class="btn btn-secondary btn-sm" style="padding: 0.25rem 0.5rem; font-size: 0.72rem; color: #ef4444;" onclick="clearAllFavorites()" title="Clear All Saved Favorites">
+                  <i class="fa-solid fa-trash-can"></i> Clear All
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+
+      if (allFavs.length === 0) {
+        html += `
+          <div style="text-align: center; padding: 3rem 1.5rem; color: var(--text-muted); background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+            <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); margin: 0 auto 1rem auto; display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 1.8rem;">
+              <i class="fa-regular fa-heart"></i>
+            </div>
+            <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem;">No Favorite Numbers Saved</h4>
+            <p style="font-size: 0.825rem; max-width: 420px; margin: 0 auto 1.25rem auto; line-height: 1.5;">Click the <i class="fa-solid fa-heart" style="color: #ef4444;"></i> heart icon on any number card in the marketplace to save numbers here for instant 1-click purchases!</p>
+            <button class="btn btn-primary btn-sm" onclick="scrollToSection('numbers')" style="padding: 0.55rem 1.25rem; font-weight: 700;">
+              <i class="fa-solid fa-store"></i> Explore Marketplace
+            </button>
           </div>
         `;
+        container.innerHTML = html;
         return;
       }
 
-      container.innerHTML = favoriteNumbers.map(num => {
+      if (displayedFavs.length === 0) {
+        html += `
+          <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+            <i class="fa-solid fa-filter-circle-xmark" style="font-size: 2rem; margin-bottom: 0.5rem; color: #f59e0b; opacity: 0.8;"></i>
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">No matching saved numbers found</h4>
+            <p style="font-size: 0.8rem; margin: 0.25rem 0 0.85rem 0;">Try adjusting your search query or filter tab.</p>
+            <button class="btn btn-secondary btn-sm" onclick="AppState.favoritesSearch=''; AppState.favoritesFilter='ALL'; renderFavoritesTab();">
+              <i class="fa-solid fa-rotate-left"></i> Reset Filter
+            </button>
+          </div>
+        `;
+        container.innerHTML = html;
+        return;
+      }
+
+      const cardsHtml = displayedFavs.map(num => {
         const isPurchased = num.status === 'PURCHASED';
         return `
-          <div class="otp-card" style="border: 1px solid rgba(239, 68, 68, 0.25); background: var(--bg-card);">
+          <div class="otp-card" style="border: 1px solid rgba(239, 68, 68, 0.25); background: var(--bg-card); transition: transform 0.2s ease, box-shadow 0.2s ease;" onmouseenter="this.style.borderColor='rgba(239, 68, 68, 0.55)'; this.style.boxShadow='0 4px 18px rgba(239, 68, 68, 0.15)'" onmouseleave="this.style.borderColor='rgba(239, 68, 68, 0.25)'; this.style.boxShadow='none'">
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <div class="country-info">
                 <span style="font-size: 1.25rem;">${num.flag}</span>
-                <span style="font-weight: 700;">${num.countryName}</span>
+                <span style="font-weight: 700; color: var(--text-main);">${num.countryName}</span>
                 <span style="color: var(--text-muted); font-size: 0.8rem;">(<i class="${num.platformIcon}"></i> ${num.platformName})</span>
               </div>
               <div style="display: flex; align-items: center; gap: 0.4rem;">
-                <span class="badge ${isPurchased ? 'badge-warning' : 'badge-success'}">${num.status}</span>
-                <button class="btn btn-secondary btn-icon" style="width: 28px; height: 28px; font-size: 0.8rem; border-radius: 50%; color: #ef4444;" title="Remove from Favorites" onclick="toggleFavorite('${num.id}')">
+                <span class="badge ${isPurchased ? 'badge-warning' : 'badge-success'}" style="font-size: 0.65rem; font-weight: 700;">${num.status}</span>
+                <button class="btn btn-secondary btn-icon" style="width: 30px; height: 30px; font-size: 0.85rem; border-radius: 50%; color: #ef4444; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3);" title="Remove from Favorites" onclick="toggleFavorite('${num.id}')">
                   <i class="fa-solid fa-heart"></i>
                 </button>
               </div>
             </div>
 
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.6rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.65rem;">
               <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 0.4rem;">
                 <span>${num.phone}</span>
-                <button class="btn btn-secondary btn-icon" style="width: 24px; height: 24px; font-size: 0.7rem; border-radius: var(--radius-sm); padding: 0; flex-shrink: 0;" title="Copy Phone Number" onclick="copyText('${num.phone}', 'Copied ${num.phone} to clipboard!')">
+                <button class="btn btn-secondary btn-icon" style="width: 26px; height: 26px; font-size: 0.72rem; border-radius: var(--radius-sm); padding: 0; flex-shrink: 0;" title="Copy Phone Number" onclick="copyText('${num.phone}', 'Copied ${num.phone} to clipboard!')">
                   <i class="fa-solid fa-copy"></i>
                 </button>
               </div>
@@ -9097,19 +9225,19 @@
               </div>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.6rem;">
-              <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="openQuickAlertModal('${num.countryName}', 'country', ${num.price})" title="Set Price Alert">
+            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 0.5rem; margin-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.6rem;">
+              <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="openQuickAlertModal('${num.countryName}', 'country', ${num.price})" title="Set Price Alert">
                 <i class="fa-solid fa-bell"></i> Alert
               </button>
               ${isPurchased ? `
-                <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="scrollToSection('dashboard'); switchDashboardTab('purchases');">
-                  <i class="fa-solid fa-eye"></i> View OTP
+                <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="scrollToSection('dashboard'); switchDashboardTab('purchases');">
+                  <i class="fa-solid fa-eye"></i> View Active OTP
                 </button>
               ` : `
-                <button class="btn btn-warning btn-sm" style="font-size: 0.75rem; padding: 0.3rem 0.6rem; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b; font-weight: 700;" onclick="quickBuyNumber('${num.id}')" title="Quick Buy via UPI">
+                <button class="btn btn-warning btn-sm" style="font-size: 0.75rem; padding: 0.3rem 0.65rem; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b; font-weight: 700;" onclick="quickBuyNumber('${num.id}')" title="Quick Buy via UPI">
                   <i class="fa-solid fa-bolt"></i> Quick Buy
                 </button>
-                <button class="btn btn-primary btn-sm" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="openPurchaseModal('${num.id}')">
+                <button class="btn btn-primary btn-sm" style="font-size: 0.75rem; padding: 0.3rem 0.65rem; font-weight: 700;" onclick="openPurchaseModal('${num.id}')">
                   <i class="fa-solid fa-cart-plus"></i> Buy Now
                 </button>
               `}
@@ -9117,6 +9245,9 @@
           </div>
         `;
       }).join('');
+
+      html += `<div style="display: flex; flex-direction: column; gap: 0.85rem;">${cardsHtml}</div>`;
+      container.innerHTML = html;
     }
 
     function triggerOtpPulseAnimation(element) {
