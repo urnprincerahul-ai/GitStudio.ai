@@ -15486,17 +15486,31 @@
 
       let amt = 99;
       const customWalletInput = document.getElementById('custom-wallet-amount-input');
-      if (customWalletInput && customWalletInput.value && !isNaN(parseFloat(customWalletInput.value)) && parseFloat(customWalletInput.value) >= 99) {
+      if (customWalletInput && customWalletInput.value && !isNaN(parseFloat(customWalletInput.value)) && parseFloat(customWalletInput.value) >= 10) {
         amt = parseFloat(customWalletInput.value);
       } else if (AppState.pendingOrder && AppState.pendingOrder.price) {
         amt = AppState.pendingOrder.price;
       } else if (AppState.activeSelectedPlan && VIRTUAL_PLANS_META[AppState.activeSelectedPlan]) {
         amt = VIRTUAL_PLANS_META[AppState.activeSelectedPlan].price;
       }
+
+      const pa = 'urn.princerahul-1@oksbi';
+      const pn = encodeURIComponent('VirtualNumberHub');
+      const tn = encodeURIComponent(`Wallet Topup ₹${amt.toFixed(2)}`);
+      const tr = `VNH${Date.now()}`;
+      const upiDeepLink = `upi://pay?pa=${pa}&pn=${pn}&am=${amt.toFixed(2)}&cu=INR&tn=${tn}&tr=${tr}`;
+
       showToast(`📲 Opening UPI App for ₹${amt.toFixed(2)}...`, 'info');
+
       setTimeout(() => {
-        window.location.href = `upi://pay?pa=urn.princerahul-1@oksbi&pn=VirtualNumberHub&am=${amt}&cu=INR`;
-      }, 300);
+        try {
+          window.location.href = upiDeepLink;
+        } catch (e) {
+          const a = document.createElement('a');
+          a.href = upiDeepLink;
+          a.click();
+        }
+      }, 200);
     }
 
     /* ==========================================
