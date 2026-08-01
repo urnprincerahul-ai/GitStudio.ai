@@ -2592,6 +2592,87 @@
       background: rgba(16, 185, 129, 0.08) !important;
     }
 
+    /* UTR Real-Time Progress & Step Indicator Styling */
+    .utr-progress-container {
+      margin-top: 0.5rem;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.75rem;
+      box-sizing: border-box;
+      transition: all 0.25s ease;
+    }
+    .utr-progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+    .utr-progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #3b82f6, #06b6d4);
+      border-radius: 10px;
+      transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease;
+    }
+    .utr-progress-bar-fill.valid {
+      background: linear-gradient(90deg, #10b981, #34d399);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+    }
+    .utr-progress-bar-fill.error {
+      background: linear-gradient(90deg, #f87171, #ef4444);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+    }
+    .utr-steps-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.35rem;
+      font-size: 0.75rem;
+    }
+    .utr-step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      transition: all 0.2s ease;
+    }
+    .utr-step-badge.active {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+    .utr-step-badge.success {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .utr-step-badge.error {
+      background: rgba(239, 68, 68, 0.18);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    .utr-live-feedback {
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+
     @media (max-width: 576px) {
       #payment-modal, #plan-purchase-modal, #topup-modal {
         padding: clamp(0.2rem, 1.5vw, 0.5rem);
@@ -5602,10 +5683,30 @@
       <div style="margin-bottom: 1rem;">
         <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Submit 12-Digit UTR Number:</label>
         <input type="text" id="utr-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validateUtrInput()" onfocus="if(!this.value) this.placeholder='Enter 12-digit UTR'" onblur="if(!this.value) this.placeholder='e.g. 420192837465'">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 0.35rem; gap: 0.5rem;">
-          <div id="utr-validation-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; display: none; flex: 1;"></div>
-          <div id="utr-char-counter" style="font-size: 0.78rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted); white-space: nowrap; margin-left: auto;">0 / 12 digits</div>
+        
+        <!-- Real-Time Progress & Step-by-Step Visual Feedback -->
+        <div class="utr-progress-container" id="utr-progress-box">
+          <div class="utr-progress-track">
+            <div class="utr-progress-bar-fill" id="utr-bar-fill" style="width: 0%;"></div>
+          </div>
+          <div class="utr-steps-row">
+            <div style="display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;">
+              <span class="utr-step-badge" id="utr-step-digits">
+                <i class="fa-solid fa-calculator"></i> Numbers Only
+              </span>
+              <span class="utr-step-badge" id="utr-step-length">
+                <i class="fa-solid fa-list-ol"></i> 0/12 Digits
+              </span>
+            </div>
+            <span id="utr-char-counter" style="font-size: 0.75rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted);">0 / 12</span>
+          </div>
+          <div class="utr-live-feedback" id="utr-live-text">
+            <i class="fa-solid fa-circle-info" style="color: var(--accent);"></i>
+            <span>Enter 12-digit UTR/RRN reference number from payment receipt</span>
+          </div>
         </div>
+
+        <div id="utr-validation-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; margin-top: 0.35rem; display: none;"></div>
       </div>
 
       <div id="payment-progress-box" style="display: none; margin-bottom: 1.25rem; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem;">
@@ -5685,12 +5786,29 @@
       <div style="margin-bottom: 0.85rem;">
         <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Submit 12-Digit UTR Number:</label>
         <input type="text" id="topup-utr-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validateTopUpUtrInput()">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.35rem;">
-          <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted);">
-            <i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> 12-Digit Banking Reference
-          </span>
-          <span id="topup-utr-char-counter" style="font-size: 0.78rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted);">0 / 12 digits</span>
+        
+        <!-- Real-Time Progress & Step-by-Step Visual Feedback -->
+        <div class="utr-progress-container" id="topup-utr-progress-box">
+          <div class="utr-progress-track">
+            <div class="utr-progress-bar-fill" id="topup-utr-bar-fill" style="width: 0%;"></div>
+          </div>
+          <div class="utr-steps-row">
+            <div style="display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;">
+              <span class="utr-step-badge" id="topup-utr-step-digits">
+                <i class="fa-solid fa-calculator"></i> Numbers Only
+              </span>
+              <span class="utr-step-badge" id="topup-utr-step-length">
+                <i class="fa-solid fa-list-ol"></i> 0/12 Digits
+              </span>
+            </div>
+            <span id="topup-utr-char-counter" style="font-size: 0.75rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted);">0 / 12</span>
+          </div>
+          <div class="utr-live-feedback" id="topup-utr-live-text">
+            <i class="fa-solid fa-circle-info" style="color: var(--accent);"></i>
+            <span>Enter 12-digit UTR/RRN reference number from payment receipt</span>
+          </div>
         </div>
+
         <!-- Clean, beautifully padded Red/Amber Error Banner -->
         <div id="topup-utr-validation-msg" style="font-size: 0.78rem; font-weight: 700; color: #f87171; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 0.5rem 0.75rem; margin-top: 0.45rem; display: none; align-items: center; gap: 0.45rem; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);">
         </div>
@@ -5803,6 +5921,29 @@
         <div style="margin-bottom: 1rem;">
           <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Submit 12-Digit UTR Number:</label>
           <input type="text" id="plan-utr-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validatePlanUtrInput()">
+          
+          <!-- Real-Time Progress & Step-by-Step Visual Feedback -->
+          <div class="utr-progress-container" id="plan-utr-progress-box">
+            <div class="utr-progress-track">
+              <div class="utr-progress-bar-fill" id="plan-utr-bar-fill" style="width: 0%;"></div>
+            </div>
+            <div class="utr-steps-row">
+              <div style="display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;">
+                <span class="utr-step-badge" id="plan-utr-step-digits">
+                  <i class="fa-solid fa-calculator"></i> Numbers Only
+                </span>
+                <span class="utr-step-badge" id="plan-utr-step-length">
+                  <i class="fa-solid fa-list-ol"></i> 0/12 Digits
+                </span>
+              </div>
+              <span id="plan-utr-char-counter" style="font-size: 0.75rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted);">0 / 12</span>
+            </div>
+            <div class="utr-live-feedback" id="plan-utr-live-text">
+              <i class="fa-solid fa-circle-info" style="color: var(--accent);"></i>
+              <span>Enter 12-digit UTR/RRN reference number from payment receipt</span>
+            </div>
+          </div>
+
           <div id="plan-utr-validation-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; margin-top: 0.35rem; display: none;"></div>
         </div>
 
@@ -11752,124 +11893,172 @@
       renderFavoritesTab();
     }
 
-    function validateUtrInput() {
-      const input = document.getElementById('utr-input');
-      const msg = document.getElementById('utr-validation-msg');
-      const counterEl = document.getElementById('utr-char-counter');
+    /* Centralized Real-Time UTR Validation & Visual Progress Feedback Helper */
+    function updateUtrValidationAndProgress(inputId, barFillId, stepDigitsId, stepLengthId, counterId, liveTextId, msgId) {
+      const input = document.getElementById(inputId);
       if (!input) return false;
 
       const val = input.value.trim();
-      const isExactly12Digits = /^\d{12}$/.test(val);
+      const len = val.length;
       const isDigitsOnly = /^\d+$/.test(val);
+      const isExactly12Digits = /^\d{12}$/.test(val);
 
-      if (counterEl) {
-        counterEl.innerText = `${val.length} / 12 digits`;
+      const barFill = document.getElementById(barFillId);
+      const stepDigits = document.getElementById(stepDigitsId);
+      const stepLength = document.getElementById(stepLengthId);
+      const counter = document.getElementById(counterId);
+      const liveText = document.getElementById(liveTextId);
+      const msg = document.getElementById(msgId);
+
+      // Character counter update
+      if (counter) {
+        counter.innerText = `${len} / 12`;
         if (isExactly12Digits) {
-          counterEl.style.color = 'var(--success)';
-        } else if (val.length > 0) {
-          counterEl.style.color = '#ef4444';
+          counter.style.color = '#10b981';
+        } else if (len > 0 && !isDigitsOnly) {
+          counter.style.color = '#ef4444';
+        } else if (len > 0) {
+          counter.style.color = '#f59e0b';
         } else {
-          counterEl.style.color = 'var(--text-muted)';
+          counter.style.color = 'var(--text-muted)';
         }
       }
 
+      // Empty state
       if (val === '') {
         input.classList.remove('utr-valid-success');
         input.style.borderColor = '';
         input.style.boxShadow = '';
+
+        if (barFill) {
+          barFill.style.width = '0%';
+          barFill.className = 'utr-progress-bar-fill';
+        }
+        if (stepDigits) {
+          stepDigits.className = 'utr-step-badge';
+          stepDigits.innerHTML = '<i class="fa-solid fa-calculator"></i> Numbers Only';
+        }
+        if (stepLength) {
+          stepLength.className = 'utr-step-badge';
+          stepLength.innerHTML = '<i class="fa-solid fa-list-ol"></i> 0/12 Digits';
+        }
+        if (liveText) {
+          liveText.innerHTML = '<i class="fa-solid fa-circle-info" style="color: var(--accent);"></i> <span>Enter 12-digit UTR/RRN reference number from payment receipt</span>';
+          liveText.style.color = 'var(--text-muted)';
+        }
         if (msg) msg.style.display = 'none';
         return false;
       }
 
+      // Invalid non-numeric character
+      if (!isDigitsOnly) {
+        input.classList.remove('utr-valid-success');
+        input.style.borderColor = '#ef4444';
+        input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+
+        if (barFill) {
+          barFill.style.width = '100%';
+          barFill.className = 'utr-progress-bar-fill error';
+        }
+        if (stepDigits) {
+          stepDigits.className = 'utr-step-badge error';
+          stepDigits.innerHTML = '<i class="fa-solid fa-xmark"></i> Digits Only Required';
+        }
+        if (stepLength) {
+          stepLength.className = 'utr-step-badge error';
+          stepLength.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Invalid Format';
+        }
+        if (liveText) {
+          liveText.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> <span style="color: #f87171;">Only numeric digits (0-9) are allowed in UTR numbers!</span>';
+        }
+        if (msg) {
+          msg.style.display = 'flex';
+          msg.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color: #ef4444; font-size: 0.9rem; flex-shrink: 0;"></i> <span>Invalid UTR: Non-numeric character detected! UTR must contain digits only.</span>';
+        }
+        return false;
+      }
+
+      // Valid numeric input - progress logic
+      const percentage = Math.min(100, Math.round((len / 12) * 100));
+
+      if (stepDigits) {
+        stepDigits.className = 'utr-step-badge success';
+        stepDigits.innerHTML = '<i class="fa-solid fa-check"></i> Valid Numbers';
+      }
+
       if (isExactly12Digits) {
+        // 12 Digits complete
         if (!input.classList.contains('utr-valid-success')) {
           input.classList.add('utr-valid-success');
           if (window.gsap) {
             gsap.killTweensOf(input);
-            gsap.fromTo(input,
-              { scale: 0.95 },
-              { scale: 1, duration: 0.35, ease: 'back.out(2)' }
-            );
+            gsap.fromTo(input, { scale: 0.96 }, { scale: 1, duration: 0.3, ease: 'back.out(2)' });
           }
         }
-        input.style.borderColor = '';
-        input.style.boxShadow = '';
+        input.style.borderColor = '#10b981';
+        input.style.boxShadow = '0 0 12px rgba(16, 185, 129, 0.4)';
+
+        if (barFill) {
+          barFill.style.width = '100%';
+          barFill.className = 'utr-progress-bar-fill valid';
+        }
+        if (stepLength) {
+          stepLength.className = 'utr-step-badge success';
+          stepLength.innerHTML = '<i class="fa-solid fa-circle-check"></i> 12/12 Complete';
+        }
+        if (liveText) {
+          liveText.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #10b981;"></i> <span style="color: #34d399; font-weight: 700;">12-digit UTR format verified! Ready for verification.</span>';
+        }
         if (msg) msg.style.display = 'none';
+
         return true;
       } else {
+        // Incomplete (1-11 digits)
         input.classList.remove('utr-valid-success');
-        input.style.borderColor = '#ef4444';
-        input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
-        if (msg) {
-          msg.style.display = 'block';
-          if (!isDigitsOnly) {
-            msg.innerText = '⚠️ Invalid UTR: Non-numeric characters detected! UTR must contain digits only (0-9).';
-          } else {
-            msg.innerText = `⚠️ UTR number is too short! Must be exactly 12 digits (${val.length}/12 entered).`;
-          }
+        input.style.borderColor = '#f59e0b';
+        input.style.boxShadow = '0 0 10px rgba(245, 158, 11, 0.3)';
+
+        const remaining = 12 - len;
+
+        if (barFill) {
+          barFill.style.width = `${percentage}%`;
+          barFill.className = 'utr-progress-bar-fill';
         }
+        if (stepLength) {
+          stepLength.className = 'utr-step-badge active';
+          stepLength.innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> ${len}/12 Digits (${remaining} needed)`;
+        }
+        if (liveText) {
+          liveText.innerHTML = `<i class="fa-solid fa-arrow-trend-up" style="color: #f59e0b;"></i> <span style="color: #fbbf24;">Progress: ${len} of 12 digits entered (${remaining} more required)</span>`;
+        }
+        if (msg) msg.style.display = 'none';
+
         return false;
       }
     }
 
+    function validateUtrInput() {
+      return updateUtrValidationAndProgress(
+        'utr-input',
+        'utr-bar-fill',
+        'utr-step-digits',
+        'utr-step-length',
+        'utr-char-counter',
+        'utr-live-text',
+        'utr-validation-msg'
+      );
+    }
+
     function validatePlanUtrInput() {
-      const input = document.getElementById('plan-utr-input');
-      const msg = document.getElementById('plan-utr-validation-msg');
-      const counterEl = document.getElementById('plan-utr-char-counter');
-      if (!input) return false;
-
-      const val = input.value.trim();
-      const isExactly12Digits = /^\d{12}$/.test(val);
-      const isDigitsOnly = /^\d+$/.test(val);
-
-      if (counterEl) {
-        counterEl.innerText = `${val.length} / 12 digits`;
-        if (isExactly12Digits) {
-          counterEl.style.color = 'var(--success)';
-        } else if (val.length > 0) {
-          counterEl.style.color = '#ef4444';
-        } else {
-          counterEl.style.color = 'var(--text-muted)';
-        }
-      }
-
-      if (val === '') {
-        input.classList.remove('utr-valid-success');
-        input.style.borderColor = '';
-        input.style.boxShadow = '';
-        if (msg) msg.style.display = 'none';
-        return false;
-      }
-
-      if (isExactly12Digits) {
-        if (!input.classList.contains('utr-valid-success')) {
-          input.classList.add('utr-valid-success');
-          if (window.gsap) {
-            gsap.killTweensOf(input);
-            gsap.fromTo(input,
-              { scale: 0.95 },
-              { scale: 1, duration: 0.35, ease: 'back.out(2)' }
-            );
-          }
-        }
-        input.style.borderColor = '';
-        input.style.boxShadow = '';
-        if (msg) msg.style.display = 'none';
-        return true;
-      } else {
-        input.classList.remove('utr-valid-success');
-        input.style.borderColor = '#ef4444';
-        input.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
-        if (msg) {
-          msg.style.display = 'block';
-          if (!isDigitsOnly) {
-            msg.innerText = '⚠️ Invalid UTR: Non-numeric characters detected! UTR must contain digits only (0-9).';
-          } else {
-            msg.innerText = `⚠️ UTR number is too short! Must be exactly 12 digits (${val.length}/12 entered).`;
-          }
-        }
-        return false;
-      }
+      return updateUtrValidationAndProgress(
+        'plan-utr-input',
+        'plan-utr-bar-fill',
+        'plan-utr-step-digits',
+        'plan-utr-step-length',
+        'plan-utr-char-counter',
+        'plan-utr-live-text',
+        'plan-utr-validation-msg'
+      );
     }
 
     /* ==========================================
@@ -15213,65 +15402,15 @@
     }
 
     function validateTopUpUtrInput() {
-      const input = document.getElementById('topup-utr-input');
-      const msg = document.getElementById('topup-utr-validation-msg');
-      const counter = document.getElementById('topup-utr-char-counter');
-      if (!input) return false;
-
-      const val = input.value.trim();
-      if (counter) {
-        counter.innerText = `${val.length} / 12 digits`;
-        if (val.length === 12 && /^\d+$/.test(val)) {
-          counter.style.color = '#10b981';
-        } else if (val.length > 0 && (!/^\d+$/.test(val) || val.length < 12)) {
-          counter.style.color = '#f59e0b';
-        } else {
-          counter.style.color = 'var(--text-muted)';
-        }
-      }
-
-      if (val === '') {
-        input.classList.remove('utr-valid-success');
-        input.style.borderColor = '';
-        input.style.boxShadow = '';
-        if (msg) msg.style.display = 'none';
-        return false;
-      }
-
-      const isNumeric = /^\d+$/.test(val);
-      const isValidLength = val.length === 12;
-
-      if (isNumeric && isValidLength) {
-        if (!input.classList.contains('utr-valid-success')) {
-          input.classList.add('utr-valid-success');
-          if (window.gsap) {
-            gsap.killTweensOf(input);
-            gsap.fromTo(input,
-              { scale: 0.95 },
-              { scale: 1, duration: 0.35, ease: 'back.out(2)' }
-            );
-          }
-        }
-        input.style.borderColor = '#10b981';
-        input.style.boxShadow = '0 0 12px rgba(16, 185, 129, 0.4)';
-        if (msg) msg.style.display = 'none';
-        return true;
-      } else {
-        input.classList.remove('utr-valid-success');
-        input.style.borderColor = '#ef4444';
-        input.style.boxShadow = '0 0 12px rgba(239, 68, 68, 0.4)';
-        if (msg) {
-          msg.style.display = 'flex';
-          let errTxt = '';
-          if (!isNumeric) {
-            errTxt = 'Invalid UTR: Non-numeric character detected!';
-          } else {
-            errTxt = `UTR length must be exactly 12 digits (${val.length}/12 entered).`;
-          }
-          msg.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="color: #ef4444; font-size: 1rem; flex-shrink: 0;"></i> <span>${errTxt}</span>`;
-        }
-        return false;
-      }
+      return updateUtrValidationAndProgress(
+        'topup-utr-input',
+        'topup-utr-bar-fill',
+        'topup-utr-step-digits',
+        'topup-utr-step-length',
+        'topup-utr-char-counter',
+        'topup-utr-live-text',
+        'topup-utr-validation-msg'
+      );
     }
 
     function appendTopUpTerminalLog(msg, type = 'info') {
