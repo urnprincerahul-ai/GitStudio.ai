@@ -5451,22 +5451,24 @@
       </div>
 
       <!-- Cyber / Hacking Terminal Verification Console Box -->
-      <div id="topup-terminal-box" style="display: none; background: #020617; border: 1px solid #00ff88; border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 0.85rem; font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; font-size: 0.75rem; color: #00ff88; box-shadow: 0 0 25px rgba(0, 255, 136, 0.25); position: relative; overflow: hidden;">
+      <div id="topup-terminal-box" style="display: none; background: #020617; border: 1px solid #00ff88; border-radius: var(--radius-md); padding: 0.7rem 0.8rem; margin-bottom: 0.85rem; font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; font-size: 0.72rem; color: #00ff88; box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); position: relative; overflow: hidden;">
         <!-- Cyber Scanline Overlay -->
-        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%); background-size: 100% 4px; pointer-events: none; opacity: 0.6;"></div>
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%); background-size: 100% 4px; pointer-events: none; opacity: 0.5;"></div>
         
-        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0, 255, 136, 0.3); padding-bottom: 0.45rem; margin-bottom: 0.6rem; font-weight: 800; font-size: 0.78rem; color: #a7f3d0; position: relative; z-index: 2;">
-          <div style="display: flex; align-items: center; gap: 0.45rem;">
-            <span style="display: flex; gap: 4px;">
-              <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
-              <span style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
-              <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0, 255, 136, 0.25); padding-bottom: 0.4rem; margin-bottom: 0.5rem; font-weight: 800; color: #a7f3d0; position: relative; z-index: 2; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.4rem; min-width: 0; flex: 1;">
+            <span style="display: flex; gap: 4px; flex-shrink: 0;">
+              <span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+              <span style="width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
+              <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
             </span>
-            <span><i class="fa-solid fa-terminal" style="color: #00ff88;"></i> UTR_VERIFICATION_KERNEL_v4.2</span>
+            <span style="font-size: 0.7rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #6ee7b7;">
+              <i class="fa-solid fa-terminal" style="color: #00ff88;"></i> UTR_KERNEL_v4.2
+            </span>
           </div>
-          <span class="badge" style="background: rgba(0, 255, 136, 0.15); color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.4); font-size: 0.65rem; font-weight: 800; font-family: monospace;" id="topup-terminal-status-badge">ONLINE</span>
+          <span class="badge" style="background: rgba(0, 255, 136, 0.15); color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.4); font-size: 0.6rem; font-weight: 800; font-family: monospace; white-space: nowrap; flex-shrink: 0; padding: 0.2rem 0.45rem;" id="topup-terminal-status-badge">ONLINE</span>
         </div>
-        <div id="topup-terminal-logs" style="display: flex; flex-direction: column; gap: 0.3rem; max-height: 130px; overflow-y: auto; position: relative; z-index: 2; scrollbar-width: thin;">
+        <div id="topup-terminal-logs" style="display: flex; flex-direction: column; gap: 0.25rem; max-height: 120px; min-height: 70px; overflow-y: auto; overflow-x: hidden; position: relative; z-index: 2; scrollbar-width: thin; word-break: break-word;">
         </div>
       </div>
 
@@ -14728,14 +14730,16 @@
 
       const timeStr = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
       line.style.color = color;
-      line.style.fontSize = '0.73rem';
-      line.style.lineHeight = '1.4';
+      line.style.fontSize = '0.68rem';
+      line.style.lineHeight = '1.35';
       line.style.fontFamily = "'JetBrains Mono', 'Fira Code', 'Courier New', monospace";
-      line.style.textShadow = '0 0 5px rgba(0, 255, 136, 0.3)';
+      line.style.textShadow = '0 0 5px rgba(0, 255, 136, 0.25)';
       line.style.display = 'flex';
       line.style.alignItems = 'flex-start';
-      line.style.gap = '0.35rem';
-      line.innerHTML = `<span style="color: #475569; font-size: 0.68rem; flex-shrink: 0;">[${timeStr}]</span> <i class="fa-solid ${icon}" style="font-size: 0.65rem; margin-top: 3px; flex-shrink: 0;"></i> <span>${msg}</span>`;
+      line.style.gap = '0.3rem';
+      line.style.wordBreak = 'break-word';
+      line.style.minWidth = '0';
+      line.innerHTML = `<span style="color: #475569; font-size: 0.64rem; flex-shrink: 0; font-weight: 600;">[${timeStr}]</span> <i class="fa-solid ${icon}" style="font-size: 0.6rem; margin-top: 3px; flex-shrink: 0;"></i> <span style="flex: 1; min-width: 0; word-break: break-word;">${msg}</span>`;
       logs.appendChild(line);
       logs.scrollTop = logs.scrollHeight;
     }
