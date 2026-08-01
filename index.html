@@ -2211,8 +2211,13 @@
     }
     @media (max-width: 540px) {
       .tz-matrix-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+    }
+    @media (max-width: 320px) {
+      .tz-matrix-grid {
         grid-template-columns: 1fr;
-        gap: 0.65rem;
       }
     }
     
@@ -6000,7 +6005,7 @@
       <!-- Mandatory Launch UPI Notice Banner -->
       <div id="upi-launch-required-msg" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.78rem; font-weight: 700; color: #fbbf24; margin-bottom: 0.75rem; align-items: center; gap: 0.5rem;">
         <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.1rem; color: #f59e0b; flex-shrink: 0;"></i>
-        <span>⚠️ <strong>Payment Required:</strong> Click <strong>"Launch UPI"</strong> or Copy UPI ID to make payment before verifying UTR!</span>
+        <span>⚠️ <strong>Payment Required:</strong> Click <strong>"Launch UPI"</strong> to make payment before verifying UTR!</span>
       </div>
 
       <div style="display: flex; gap: 0.65rem;">
@@ -6239,56 +6244,56 @@
 
   <!-- Server Time & World Clock Modal -->
   <div class="modal-backdrop" id="server-time-modal">
-    <div class="modal-box" style="max-width: 580px;">
+    <div class="modal-box" style="max-width: 560px; width: 94vw; max-height: 88vh; overflow-y: auto; box-sizing: border-box; padding: 1.1rem 0.9rem;">
       <button class="modal-close" onclick="closeModal('server-time-modal')"><i class="fa-solid fa-xmark"></i></button>
       
-      <div style="text-align: center; margin-bottom: 1.5rem;">
-        <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(59, 130, 246, 0.15); color: var(--accent); padding: 0.35rem 0.85rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 700; margin-bottom: 0.75rem; border: 1px solid rgba(59, 130, 246, 0.3);">
+      <div style="text-align: center; margin-bottom: 0.85rem;">
+        <div style="display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(59, 130, 246, 0.15); color: var(--accent); padding: 0.25rem 0.65rem; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 700; margin-bottom: 0.45rem; border: 1px solid rgba(59, 130, 246, 0.3);">
           <i class="fa-solid fa-globe"></i> GLOBAL RELIABILITY TIME SERVER
         </div>
-        <h3 style="font-size: 1.5rem; font-weight: 800;">Real-Time System Server Clock</h3>
-        <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 440px; margin: 0.25rem auto 0 auto;">
+        <h3 style="font-size: clamp(1.15rem, 4vw, 1.4rem); font-weight: 800; margin-top: 0.2rem;">Real-Time System Server Clock</h3>
+        <p style="color: var(--text-muted); font-size: 0.78rem; max-width: 440px; margin: 0.2rem auto 0 auto; line-height: 1.35;">
           High-precision UTC synchronization powered by Stratum-1 Atomic NTP Servers for global transaction reliability.
         </p>
       </div>
 
       <!-- Prominent Digital UTC Display -->
-      <div style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%); border: 1px solid var(--accent); border-radius: var(--radius-md); padding: 1.25rem 1rem; text-align: center; box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 1.25rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.6rem;">
-          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; text-align: left;">Active Primary Local Timezone</div>
-          <span class="badge badge-success" style="font-size: 0.65rem; padding: 0.25rem 0.55rem;">
-            <i class="fa-solid fa-circle" style="font-size: 0.5rem; color: #10b981;"></i> NTP SYNCHRONIZED
+      <div style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%); border: 1px solid var(--accent); border-radius: var(--radius-md); padding: 0.85rem 0.75rem; text-align: center; box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 0.85rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.4rem;">
+          <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; text-align: left;">Active Primary Local Timezone</div>
+          <span class="badge badge-success" style="font-size: 0.62rem; padding: 0.2rem 0.45rem;">
+            <i class="fa-solid fa-circle" style="font-size: 0.45rem; color: #10b981;"></i> NTP SYNCHRONIZED
           </span>
         </div>
-        <div style="font-family: var(--font-mono); font-size: clamp(1.6rem, 6vw, 2.3rem); font-weight: 900; color: #3b82f6; letter-spacing: 1px; text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);" id="modal-utc-clock">
+        <div style="font-family: var(--font-mono); font-size: clamp(1.35rem, 5vw, 1.95rem); font-weight: 900; color: #3b82f6; letter-spacing: 1px; text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);" id="modal-utc-clock">
           00:00:00 UTC
         </div>
-        <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-top: 0.35rem;" id="modal-utc-full-date">
+        <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-main); margin-top: 0.25rem;" id="modal-utc-full-date">
           Synchronizing...
         </div>
 
-        <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 0.85rem; flex-wrap: wrap;">
-          <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.45rem 0.75rem;" onclick="copyUtcIsoString()">
+        <div style="display: flex; justify-content: center; gap: 0.4rem; margin-top: 0.65rem; flex-wrap: wrap;">
+          <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.35rem 0.65rem;" onclick="copyUtcIsoString()">
             <i class="fa-solid fa-copy"></i> Copy ISO Timestamp
           </button>
-          <button class="btn btn-primary btn-sm" style="font-size: 0.75rem; padding: 0.45rem 0.75rem;" onclick="resyncNtpServerTime()">
+          <button class="btn btn-primary btn-sm" style="font-size: 0.72rem; padding: 0.35rem 0.65rem;" onclick="resyncNtpServerTime()">
             <i class="fa-solid fa-rotate"></i> Re-Sync NTP
           </button>
         </div>
       </div>
 
       <!-- Timezone Preference Selector Control -->
-      <div style="background: rgba(30, 41, 59, 0.65); border: 1px solid var(--accent); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.4rem;">
-          <label for="app-timezone-select" style="font-weight: 800; font-size: 0.82rem; color: var(--text-main); display: flex; align-items: center; gap: 0.4rem;">
+      <div style="background: rgba(30, 41, 59, 0.65); border: 1px solid var(--accent); border-radius: var(--radius-md); padding: 0.75rem 0.85rem; margin-bottom: 0.85rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.35rem;">
+          <label for="app-timezone-select" style="font-weight: 800; font-size: 0.78rem; color: var(--text-main); display: flex; align-items: center; gap: 0.35rem;">
             <i class="fa-solid fa-earth-asia" style="color: var(--accent);"></i> Primary Active Timezone:
           </label>
-          <span class="badge badge-primary" id="active-tz-badge-display" style="font-size: 0.72rem; font-weight: 800; max-width: 100%; word-break: break-all;">
+          <span class="badge badge-primary" id="active-tz-badge-display" style="font-size: 0.68rem; font-weight: 800; max-width: 100%; word-break: break-all;">
             🇮🇳 Asia/Kolkata (IST)
           </span>
         </div>
 
-        <select id="app-timezone-select" onchange="changeActiveTimezone(this.value)" style="width: 100%; max-width: 100%; box-sizing: border-box; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.55rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.82rem; font-weight: 700; cursor: pointer; outline: none; margin-bottom: 0.65rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+        <select id="app-timezone-select" onchange="changeActiveTimezone(this.value)" style="width: 100%; max-width: 100%; box-sizing: border-box; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.45rem 0.6rem; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 700; cursor: pointer; outline: none; margin-bottom: 0.5rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
           <option value="Asia/Kolkata">🇮🇳 Asia/Kolkata (IST - Kolkata, West Bengal / India UTC+5:30)</option>
           <option value="Asia/Dhaka">🇧🇩 Asia/Dhaka (BST - Dhaka / Bangladesh UTC+6:00)</option>
           <option value="AUTO">🌐 Auto-Detect System Browser Timezone</option>
@@ -6298,51 +6303,51 @@
         </select>
 
         <!-- Quick Timezone Shortcut Chips -->
-        <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
-          <button class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 0.25rem 0.5rem; font-weight: 700;" onclick="changeActiveTimezone('Asia/Kolkata')">
+        <div style="display: flex; gap: 0.3rem; flex-wrap: wrap;">
+          <button class="btn btn-secondary btn-sm" style="font-size: 0.68rem; padding: 0.2rem 0.45rem; font-weight: 700;" onclick="changeActiveTimezone('Asia/Kolkata')">
             🇮🇳 Kolkata (IST)
           </button>
-          <button class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 0.25rem 0.5rem; font-weight: 700;" onclick="changeActiveTimezone('Asia/Dhaka')">
+          <button class="btn btn-secondary btn-sm" style="font-size: 0.68rem; padding: 0.2rem 0.45rem; font-weight: 700;" onclick="changeActiveTimezone('Asia/Dhaka')">
             🇧🇩 Dhaka (BST)
           </button>
-          <button class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 0.25rem 0.5rem; font-weight: 700;" onclick="changeActiveTimezone('AUTO')">
+          <button class="btn btn-secondary btn-sm" style="font-size: 0.68rem; padding: 0.2rem 0.45rem; font-weight: 700;" onclick="changeActiveTimezone('AUTO')">
             🌐 Auto Local
           </button>
-          <button class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 0.25rem 0.5rem; font-weight: 700;" onclick="changeActiveTimezone('UTC')">
+          <button class="btn btn-secondary btn-sm" style="font-size: 0.68rem; padding: 0.2rem 0.45rem; font-weight: 700;" onclick="changeActiveTimezone('UTC')">
             🌍 UTC
           </button>
         </div>
       </div>
 
       <!-- World Timezone Matrix -->
-      <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px;">Global Timezone Matrix</h4>
+      <h4 style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.45rem; text-transform: uppercase; letter-spacing: 0.5px;">Global Timezone Matrix</h4>
       <div class="tz-matrix-grid">
-        <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.75rem 0.85rem; border-radius: var(--radius-sm);">
-          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.3px;">📍 YOUR LOCAL TIME</div>
-          <div style="font-family: var(--font-mono); font-size: clamp(1.1rem, 4vw, 1.3rem); font-weight: 800; color: var(--text-main); margin-top: 0.2rem;" id="modal-local-time">--:--:--</div>
-          <div style="font-size: 0.68rem; color: var(--text-muted);" id="modal-local-tz">Local Zone</div>
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.55rem 0.65rem; border-radius: var(--radius-sm);">
+          <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.3px;">📍 YOUR LOCAL TIME</div>
+          <div style="font-family: var(--font-mono); font-size: clamp(1rem, 3.5vw, 1.18rem); font-weight: 800; color: var(--text-main); margin-top: 0.15rem;" id="modal-local-time">--:--:--</div>
+          <div style="font-size: 0.65rem; color: var(--text-muted);" id="modal-local-tz">Local Zone</div>
         </div>
 
-        <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.75rem 0.85rem; border-radius: var(--radius-sm);">
-          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.3px;">🇮🇳 KOLKATA / INDIA (IST)</div>
-          <div style="font-family: var(--font-mono); font-size: clamp(1.1rem, 4vw, 1.3rem); font-weight: 800; color: var(--text-main); margin-top: 0.2rem;" id="modal-ist-time">--:--:--</div>
-          <div style="font-size: 0.68rem; color: var(--text-muted);">UTC+5:30 / Kolkata, West Bengal</div>
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.55rem 0.65rem; border-radius: var(--radius-sm);">
+          <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.3px;">🇮🇳 KOLKATA / INDIA (IST)</div>
+          <div style="font-family: var(--font-mono); font-size: clamp(1rem, 3.5vw, 1.18rem); font-weight: 800; color: var(--text-main); margin-top: 0.15rem;" id="modal-ist-time">--:--:--</div>
+          <div style="font-size: 0.65rem; color: var(--text-muted);">UTC+5:30 / Kolkata</div>
         </div>
 
-        <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.75rem 0.85rem; border-radius: var(--radius-sm);">
-          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.3px;">🇧🇩 DHAKA / BANGLADESH (BST)</div>
-          <div style="font-family: var(--font-mono); font-size: clamp(1.1rem, 4vw, 1.3rem); font-weight: 800; color: var(--text-main); margin-top: 0.2rem;" id="modal-bst-time">--:--:--</div>
-          <div style="font-size: 0.68rem; color: var(--text-muted);">UTC+6:00 / Dhaka, Bangladesh</div>
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.55rem 0.65rem; border-radius: var(--radius-sm);">
+          <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.3px;">🇧🇩 DHAKA / BANGLADESH (BST)</div>
+          <div style="font-family: var(--font-mono); font-size: clamp(1rem, 3.5vw, 1.18rem); font-weight: 800; color: var(--text-main); margin-top: 0.15rem;" id="modal-bst-time">--:--:--</div>
+          <div style="font-size: 0.65rem; color: var(--text-muted);">UTC+6:00 / Dhaka</div>
         </div>
 
-        <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.75rem 0.85rem; border-radius: var(--radius-sm);">
-          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.3px;">🗽 US EASTERN (EST/EDT)</div>
-          <div style="font-family: var(--font-mono); font-size: clamp(1.1rem, 4vw, 1.3rem); font-weight: 800; color: var(--text-main); margin-top: 0.2rem;" id="modal-est-time">--:--:--</div>
-          <div style="font-size: 0.68rem; color: var(--text-muted);">UTC-5 / New York</div>
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.55rem 0.65rem; border-radius: var(--radius-sm);">
+          <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.3px;">🗽 US EASTERN (EST/EDT)</div>
+          <div style="font-family: var(--font-mono); font-size: clamp(1rem, 3.5vw, 1.18rem); font-weight: 800; color: var(--text-main); margin-top: 0.15rem;" id="modal-est-time">--:--:--</div>
+          <div style="font-size: 0.65rem; color: var(--text-muted);">UTC-5 / New York</div>
         </div>
       </div>
 
-      <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-main); display: flex; align-items: center; justify-content: space-between;">
+      <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.55rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.75rem; color: var(--text-main); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.35rem;">
         <span><i class="fa-solid fa-shield-halved" style="color: var(--success);"></i> System Gateway Status: <strong>All Routes Synced</strong></span>
         <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--success);" id="modal-ping-value">Latency: 12ms</span>
       </div>
@@ -15690,7 +15695,7 @@
             gsap.fromTo(launchBtn, { scale: 1 }, { scale: 1.08, yoyo: true, repeat: 3, duration: 0.12 });
           }
         }
-        showToast('⚠️ Please click "Launch UPI" or copy UPI ID to complete payment before verifying UTR!', 'warning');
+        showToast('⚠️ Please click "Launch UPI" to complete payment before verifying UTR!', 'warning');
         return;
       }
 
