@@ -8125,6 +8125,33 @@
 
     function checkAndProcessIncomingReferral() {
       try {
+        const isBonusClaimed = SafeStorage.getItem('vnh_welcome_claimed') === 'true' || 
+                               SafeStorage.getItem('vnh_ref_claimed') === 'true' ||
+                               (AppState.currentUser && AppState.currentUser.claimedWelcomeBonus);
+
+        if (AppState.isLoggedIn || isBonusClaimed) {
+          SafeStorage.removeItem('vnh_incoming_ref_code');
+          SafeStorage.removeItem('vnh_ref_toast_shown');
+          AppState.incomingRefCode = '';
+
+          const badge = document.getElementById('signup-ref-applied-badge');
+          if (badge) badge.style.display = 'none';
+
+          if (window.history && window.history.replaceState && window.location.search) {
+            try {
+              const url = new URL(window.location.href);
+              if (url.searchParams.has('ref') || url.searchParams.has('referral') || url.searchParams.has('refCode')) {
+                url.searchParams.delete('ref');
+                url.searchParams.delete('referral');
+                url.searchParams.delete('refCode');
+                const cleanUrl = url.pathname + (url.search && url.search !== '?' ? url.search : '') + url.hash;
+                window.history.replaceState({}, document.title, cleanUrl);
+              }
+            } catch(e) {}
+          }
+          return;
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         let refCode = urlParams.get('ref') || urlParams.get('referral') || urlParams.get('refCode');
         
@@ -8140,6 +8167,18 @@
           refCode = refCode.trim().toUpperCase();
           SafeStorage.setItem('vnh_incoming_ref_code', refCode);
           AppState.incomingRefCode = refCode;
+
+          // Strip query param from URL so page refreshes don't re-trigger
+          if (window.history && window.history.replaceState) {
+            try {
+              const url = new URL(window.location.href);
+              url.searchParams.delete('ref');
+              url.searchParams.delete('referral');
+              url.searchParams.delete('refCode');
+              const cleanUrl = url.pathname + (url.search && url.search !== '?' ? url.search : '') + url.hash;
+              window.history.replaceState({}, document.title, cleanUrl);
+            } catch(e) {}
+          }
         } else {
           AppState.incomingRefCode = SafeStorage.getItem('vnh_incoming_ref_code') || '';
         }
@@ -8154,7 +8193,8 @@
             badge.innerText = `🎁 ${AppState.incomingRefCode} Applied (+₹50 Bonus)`;
           }
 
-          if (refCode) {
+          if (refCode && !SafeStorage.getItem('vnh_ref_toast_shown')) {
+            SafeStorage.setItem('vnh_ref_toast_shown', 'true');
             showToast(`🎁 Referral Code Active (${refCode})! Sign up to claim your ₹50 welcome bonus!`, 'success');
             
             if (!AppState.isLoggedIn) {
@@ -11668,11 +11708,30 @@
         SafeStorage.setItem('vnh_ref_list', JSON.stringify(AppState.referralsList));
         renderReferralTab();
 
+        SafeStorage.setItem('vnh_welcome_claimed', 'true');
+        SafeStorage.setItem('vnh_ref_claimed', 'true');
         SafeStorage.removeItem('vnh_incoming_ref_code');
+        SafeStorage.removeItem('vnh_ref_toast_shown');
         AppState.incomingRefCode = '';
+        if (AppState.currentUser) AppState.currentUser.claimedWelcomeBonus = true;
+
+        if (window.history && window.history.replaceState) {
+          try {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('ref');
+            url.searchParams.delete('referral');
+            url.searchParams.delete('refCode');
+            const cleanUrl = url.pathname + (url.search && url.search !== '?' ? url.search : '') + url.hash;
+            window.history.replaceState({}, document.title, cleanUrl);
+          } catch(e) {}
+        }
 
         showToast(`🎉 Welcome ${name}! Applied referral code ${enteredRefCode} & credited ₹50 Welcome Bonus!`, 'success');
       } else {
+        SafeStorage.setItem('vnh_welcome_claimed', 'true');
+        SafeStorage.removeItem('vnh_incoming_ref_code');
+        SafeStorage.removeItem('vnh_ref_toast_shown');
+        AppState.incomingRefCode = '';
         showToast('🎉 Account created successfully! Welcome to Virtual Hub.', 'success');
       }
     }
@@ -11684,6 +11743,24 @@
       AppState.currentUser.email = email || AppState.currentUser.email || 'alex@virtualhub.io';
       if (phone) AppState.currentUser.phone = phone;
       if (!AppState.currentUser.tier) AppState.currentUser.tier = 'Pro VIP';
+      AppState.currentUser.claimedWelcomeBonus = true;
+
+      SafeStorage.setItem('vnh_welcome_claimed', 'true');
+      SafeStorage.setItem('vnh_ref_claimed', 'true');
+      SafeStorage.removeItem('vnh_incoming_ref_code');
+      SafeStorage.removeItem('vnh_ref_toast_shown');
+      AppState.incomingRefCode = '';
+
+      if (window.history && window.history.replaceState) {
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.delete('ref');
+          url.searchParams.delete('referral');
+          url.searchParams.delete('refCode');
+          const cleanUrl = url.pathname + (url.search && url.search !== '?' ? url.search : '') + url.hash;
+          window.history.replaceState({}, document.title, cleanUrl);
+        } catch(e) {}
+      }
 
       SafeStorage.setItem('vnh_is_logged_in', JSON.stringify(true));
       SafeStorage.setItem('vnh_user', JSON.stringify(AppState.currentUser));
