@@ -11611,6 +11611,8 @@
       if (valMsg) valMsg.style.display = 'none';
 
       triggerConfetti();
+      if (typeof playOtpSoundNotification === 'function') playOtpSoundNotification();
+      speakPaymentSuccessVoice();
 
       if (order.isBulk && order.items && order.items.length > 0) {
         const uniqueCountries = [...new Set(order.items.map(num => `${num.countryName || num.country || ''} ${num.flag || ''}`.trim()))].filter(Boolean).join(', ');
@@ -12275,6 +12277,27 @@
 
     function speakOtpCode(otp, platform = 'Service', btnElement = null) {
       speakIncomingSms('', platform, '', otp, btnElement);
+    }
+
+    function speakPaymentSuccessVoice() {
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance("Thank You Boss, Payment Successful!");
+        utterance.rate = 0.95;
+        utterance.pitch = 1.05;
+        utterance.volume = 1.0;
+
+        const voices = window.speechSynthesis.getVoices();
+        if (voices && voices.length > 0) {
+          const preferredVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('Male') || v.name.includes('Female')));
+          if (preferredVoice) utterance.voice = preferredVoice;
+        }
+
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.warn('Payment speech error:', err);
+      }
     }
 
     function toggleAutoSpeakOtp() {
@@ -14861,6 +14884,7 @@
         updateWalletUI(true);
         if (typeof triggerEnhancedBurstConfetti === 'function') triggerEnhancedBurstConfetti();
         if (typeof playOtpSoundNotification === 'function') playOtpSoundNotification();
+        speakPaymentSuccessVoice();
 
         setTimeout(() => {
           amountInput.value = '';
@@ -15065,6 +15089,10 @@
           renderReferralTab();
         }
 
+        if (typeof triggerEnhancedBurstConfetti === 'function') triggerEnhancedBurstConfetti();
+        if (typeof playOtpSoundNotification === 'function') playOtpSoundNotification();
+        speakPaymentSuccessVoice();
+
         showToast(`🎉 UTR Verified Successfully! ${plan.name} Activated with 100+ Virtual Numbers!`, 'success');
         closeModal('plan-purchase-modal');
 
@@ -15088,6 +15116,10 @@
         updatePremiumVIPBadgeUI();
         renderReferralTab();
       }
+
+      if (typeof triggerEnhancedBurstConfetti === 'function') triggerEnhancedBurstConfetti();
+      if (typeof playOtpSoundNotification === 'function') playOtpSoundNotification();
+      speakPaymentSuccessVoice();
 
       showToast(`🎉 ${plan.name} Activated! Select your preferred platform and pick 1 virtual number.`, 'success');
       closeModal('plan-purchase-modal');
