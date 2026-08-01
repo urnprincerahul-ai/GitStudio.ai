@@ -2752,6 +2752,32 @@
     }
 
     /* Auth Modal Input Styling */
+    .phone-code-select {
+      height: 42px !important;
+      width: 105px !important;
+      max-width: 105px !important;
+      min-width: 90px !important;
+      flex: 0 0 105px !important;
+      padding: 0 1.2rem 0 0.45rem !important;
+      background: rgba(15, 23, 42, 0.85) !important;
+      border: 1px solid var(--border-glow) !important;
+      border-radius: var(--radius-md) !important;
+      color: var(--text-main) !important;
+      font-family: inherit !important;
+      font-size: 0.8rem !important;
+      font-weight: 600 !important;
+      cursor: pointer !important;
+      outline: none !important;
+      transition: all 0.2s ease !important;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 0.35rem center !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+      box-sizing: border-box !important;
+    }
     .auth-input-wrapper {
       position: relative;
       display: flex;
@@ -6072,8 +6098,8 @@
           <div id="auth-signin-phone-fields" style="display: none;">
             <div style="margin-bottom: 0.95rem;">
               <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Phone Number</label>
-              <div style="display: flex; gap: 0.4rem; align-items: center; width: 100%; box-sizing: border-box; overflow: hidden;">
-                <select class="select-input" id="login-phone-code" style="width: 100px; max-width: 100px; min-width: 90px; padding: 0.65rem 0.35rem; flex: 0 0 100px; background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-glow); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.8rem; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; box-sizing: border-box;">
+              <div style="display: flex; gap: 0.4rem; align-items: center; width: 100%; box-sizing: border-box;">
+                <select class="phone-code-select" id="login-phone-code">
                   <option value="+91" selected>🇮🇳 +91 (India)</option>
                   <option value="+880">🇧🇩 +880 (Bangladesh)</option>
                   <option value="+1">🇺🇸 +1 (USA)</option>
@@ -6081,7 +6107,8 @@
                   <option value="+92">🇵🇰 +92 (Pakistan)</option>
                 </select>
                 <div class="auth-input-wrapper" style="flex: 1 1 auto; min-width: 0; width: 0; box-sizing: border-box;">
-                  <input type="tel" id="login-phone-input" class="search-input" style="padding-left: 0.85rem; padding-right: 0.85rem; width: 100%; box-sizing: border-box;" value="" placeholder="Enter Your Phone Number">
+                  <i class="fa-solid fa-phone auth-input-icon"></i>
+                  <input type="tel" id="login-phone-input" class="search-input" value="" placeholder="Enter Your Phone Number">
                 </div>
               </div>
             </div>
@@ -6136,7 +6163,7 @@
             <div style="margin-bottom: 0.9rem;">
               <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Phone Number</label>
               <div style="display: flex; gap: 0.4rem; align-items: center; width: 100%; box-sizing: border-box; overflow: hidden;">
-                <select class="select-input" id="signup-phone-code" style="width: 100px; max-width: 100px; min-width: 90px; padding: 0.65rem 0.35rem; flex: 0 0 100px; background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-glow); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.8rem; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; box-sizing: border-box;">
+                <select class="phone-code-select" id="signup-phone-code">
                   <option value="+91" selected>🇮🇳 +91 (India)</option>
                   <option value="+880">🇧🇩 +880 (Bangladesh)</option>
                   <option value="+1">🇺🇸 +1 (USA)</option>
@@ -6144,7 +6171,8 @@
                   <option value="+92">🇵🇰 +92 (Pakistan)</option>
                 </select>
                 <div class="auth-input-wrapper" style="flex: 1 1 auto; min-width: 0; width: 0; box-sizing: border-box;">
-                  <input type="tel" id="signup-phone-input" class="search-input" style="padding-left: 0.85rem; padding-right: 0.85rem; width: 100%; box-sizing: border-box;" placeholder="Enter Your Phone Number">
+                  <i class="fa-solid fa-phone auth-input-icon"></i>
+                  <input type="tel" id="signup-phone-input" class="search-input" placeholder="Enter Your Phone Number">
                 </div>
               </div>
             </div>
