@@ -1944,6 +1944,15 @@
       will-change: transform;
       transform: translateZ(0);
       -webkit-transform: translateZ(0);
+      transition: color 0.3s ease;
+    }
+    .dash-stat-number.trend-negative,
+    .dash-stat-number.trend-negative .stat-num-val {
+      color: #f87171 !important;
+    }
+    .dash-stat-number.trend-positive,
+    .dash-stat-number.trend-positive .stat-num-val {
+      color: #22c55e !important;
     }
     .dash-stat-tooltip {
       position: absolute;
@@ -15389,6 +15398,19 @@
           <span style="color: #cbd5e1; font-size: 0.7rem;">${prevValueStr}</span>
         </div>
       `;
+
+      // Set dynamic text color based on daily percentage change trend:
+      // Negative trend = Light Red (#f87171), Positive trend = Green (#22c55e)
+      const isNegative = badgeClass === 'negative' || pctStr.startsWith('-');
+      if (isNegative) {
+        el.classList.add('trend-negative');
+        el.classList.remove('trend-positive');
+        el.style.color = '#f87171';
+      } else {
+        el.classList.add('trend-positive');
+        el.classList.remove('trend-negative');
+        el.style.color = '#22c55e';
+      }
     }
 
     function animateDashboardStats(force = false) {
