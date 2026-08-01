@@ -6514,12 +6514,16 @@
       isBatterySimulated: false,
       walletBalance: (() => {
         const saved = SafeStorage.getItem('vnh_wallet');
-        if (saved === null || saved === '500' || saved === '500.00') {
-          SafeStorage.setItem('vnh_wallet', '0.00');
-          return 0.00;
+        if (saved === null) {
+          SafeStorage.setItem('vnh_wallet', '250.00');
+          return 250.00;
         }
-        const val = parseFloat(saved);
-        return isNaN(val) ? 0.00 : val;
+        let val = parseFloat(saved);
+        if (isNaN(val) || val < 0) {
+          val = 250.00;
+          SafeStorage.setItem('vnh_wallet', '250.00');
+        }
+        return val;
       })(),
       purchases: storedPurchases,
       smsLogs: safeParseJSON('vnh_sms_logs_dedicated_v2', safeParseJSON('vnh_sms_logs', defaultSeedSmsLogs)),
@@ -11556,11 +11560,12 @@
         });
       }
 
-      AppState.walletBalance -= order.price;
+      // Direct UPI payment: maintain non-negative wallet balance
+      AppState.walletBalance = Math.max(0, AppState.walletBalance || 0);
 
       // Persist
       SafeStorage.setItem('vnh_purchases', JSON.stringify(AppState.purchases));
-      SafeStorage.setItem('vnh_wallet', AppState.walletBalance);
+      SafeStorage.setItem('vnh_wallet', AppState.walletBalance.toString());
 
       closeModal('payment-modal');
       document.getElementById('payment-progress-box').style.display = 'none';
@@ -14459,7 +14464,11 @@
     let lastWalletBalance = null;
 
     function updateWalletUI(animate = true) {
-      const targetBalance = AppState.walletBalance || 0;
+      if (typeof AppState.walletBalance !== 'number' || isNaN(AppState.walletBalance) || AppState.walletBalance < 0) {
+        AppState.walletBalance = 250.00;
+        SafeStorage.setItem('vnh_wallet', '250.00');
+      }
+      const targetBalance = Math.max(0, AppState.walletBalance);
       const formatted = `₹${targetBalance.toFixed(2)}`;
 
       const w1 = document.getElementById('wallet-balance-display');
@@ -14472,6 +14481,12 @@
       if (walletStat) {
         walletStat.setAttribute('data-target', targetBalance.toFixed(2));
       }
+
+      const bulkBal = document.getElementById('bulk-modal-wallet-balance');
+      if (bulkBal) bulkBal.innerText = formatted;
+
+      const planBal = document.getElementById('plan-wallet-avail-balance');
+      if (planBal) planBal.innerText = formatted;
 
       const w2 = document.getElementById('dashboard-wallet-balance');
       if (w2) {
@@ -14687,8 +14702,10 @@
         }
 
         AppState.walletBalance += amt;
-        SafeStorage.setItem('vnh_wallet', AppState.walletBalance);
-        updateWalletUI();
+        SafeStorage.setItem('vnh_wallet', AppState.walletBalance.toString());
+        updateWalletUI(true);
+        if (typeof triggerEnhancedBurstConfetti === 'function') triggerEnhancedBurstConfetti();
+        if (typeof playOtpSoundNotification === 'function') playOtpSoundNotification();
 
         amountInput.value = '';
         amountInput.style.borderColor = '';
