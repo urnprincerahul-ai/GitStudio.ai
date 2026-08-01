@@ -15128,15 +15128,21 @@
 
         if (window.gsap) {
           gsap.killTweensOf(counterObj);
+          gsap.killTweensOf(el);
+          gsap.fromTo(el,
+            { scale: 0.88, opacity: 0.7 },
+            { scale: 1, opacity: 1, duration: 0.45, ease: 'back.out(1.7)' }
+          );
           gsap.to(counterObj, {
             val: targetVal,
-            duration: 1.4,
+            duration: 1.5,
             ease: 'power2.out',
             onUpdate: () => {
               el.innerText = prefix + counterObj.val.toFixed(decimals) + suffix;
             },
             onComplete: () => {
               el.innerText = prefix + targetVal.toFixed(decimals) + suffix;
+              gsap.to(el, { scale: 1.06, duration: 0.12, yoyo: true, repeat: 1, ease: 'sine.inOut' });
             }
           });
         } else {
@@ -16207,15 +16213,19 @@
 
       // Intersection Observer & Nav Links for Dashboard Stats Count-Up Animation
       const dashboardSec = document.getElementById('dashboard');
-      if (dashboardSec && 'IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
+      if ('IntersectionObserver' in window) {
+        const statsObserver = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
               animateDashboardStats();
             }
           });
-        }, { threshold: 0.15 });
-        observer.observe(dashboardSec);
+        }, { threshold: 0.1 });
+
+        if (dashboardSec) statsObserver.observe(dashboardSec);
+        document.querySelectorAll('.dash-stat-number').forEach(statEl => {
+          statsObserver.observe(statEl);
+        });
       }
 
       document.querySelectorAll('a[href="#dashboard"]').forEach(link => {
