@@ -4755,7 +4755,7 @@
                 <i class="fa-solid fa-sim-card"></i>
               </div>
             </div>
-            <div class="dash-stat-number" id="dash-stat-numbers-count" data-target="12" data-prefix="" data-suffix="" data-decimals="0">0</div>
+            <div class="dash-stat-number" id="dash-stat-numbers-count" data-target="0" data-prefix="" data-suffix="" data-decimals="0">0</div>
             <div class="dash-stat-footer">
               <i class="fa-solid fa-circle-check"></i> <span>Ready for instant OTPs</span>
             </div>
@@ -4768,7 +4768,7 @@
                 <i class="fa-solid fa-message"></i>
               </div>
             </div>
-            <div class="dash-stat-number" id="dash-stat-otp-count" data-target="48" data-prefix="" data-suffix="" data-decimals="0">0</div>
+            <div class="dash-stat-number" id="dash-stat-otp-count" data-target="0" data-prefix="" data-suffix="" data-decimals="0">0</div>
             <div class="dash-stat-footer">
               <i class="fa-solid fa-bolt"></i> <span>100% Delivery rate</span>
             </div>
@@ -4955,7 +4955,7 @@
               </div>
               <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.85rem;">Earn 10% instant cash credits whenever friends join & rent numbers using your link.</p>
               <div style="background: rgba(0, 0, 0, 0.25); border: 1px dashed rgba(245, 158, 11, 0.4); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;">
-                <span style="font-family: var(--font-mono); font-weight: 700; color: #f59e0b; font-size: 0.85rem;" id="widget-ref-code">VNH-ALEX-8829</span>
+                <span style="font-family: var(--font-mono); font-weight: 700; color: #f59e0b; font-size: 0.85rem;" id="widget-ref-code">VNH-REFERRAL</span>
                 <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="copyReferralLink()">
                   <i class="fa-solid fa-copy"></i> Copy Link
                 </button>
@@ -5006,7 +5006,7 @@
                     <i class="fa-solid fa-heart" style="color: #ef4444;"></i> Saved Favorites <span class="badge badge-primary" id="favorites-count-badge" style="margin-left: 0.25rem; font-size: 0.65rem;">0</span>
                   </button>
                   <button class="btn btn-secondary btn-sm" id="dash-tab-referrals" onclick="switchDashboardTab('referrals')">
-                    <i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn <span class="badge badge-warning" id="referral-earnings-badge" style="margin-left: 0.25rem; font-size: 0.65rem; background: rgba(245, 158, 11, 0.2); color: #f59e0b;">₹175.00</span>
+                    <i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn <span class="badge badge-warning" id="referral-earnings-badge" style="margin-left: 0.25rem; font-size: 0.65rem; background: rgba(245, 158, 11, 0.2); color: #f59e0b;">₹0.00</span>
                   </button>
                   <button class="btn btn-secondary btn-sm" id="dash-tab-sms-logs" onclick="switchDashboardTab('sms-logs')">
                     <i class="fa-solid fa-receipt" style="color: #38bdf8;"></i> SMS Logs <span class="badge badge-primary" id="sms-logs-count-badge" style="margin-left: 0.25rem; font-size: 0.65rem;">0</span>
@@ -6352,7 +6352,7 @@
             <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Referral Code (Optional)</label>
             <div class="auth-input-wrapper">
               <i class="fa-solid fa-ticket auth-input-icon"></i>
-              <input type="text" id="signup-referral-code-input" class="search-input" placeholder="e.g. VNH-ALEX-8829" style="text-transform: uppercase; font-family: var(--font-mono);">
+              <input type="text" id="signup-referral-code-input" class="search-input" placeholder="e.g. VNH-981023" style="text-transform: uppercase; font-family: var(--font-mono);">
             </div>
             <div id="signup-ref-applied-badge" class="badge badge-warning" style="display: none; margin-top: 0.45rem; font-size: 0.75rem; padding: 0.35rem 0.65rem; border-radius: var(--radius-sm); font-weight: 700; width: 100%; text-align: center; box-sizing: border-box; background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b;">
               🎁 Bonus Applied
@@ -6784,141 +6784,70 @@
        DATA GENERATORS & APPLICATION STATE
        ========================================== */
     const seedNow = Date.now();
-    const defaultSeedPurchases = [
-      {
-        id: 'p_seed_1',
-        phone: '+1 415 892 3012',
-        country: 'United States',
-        flag: '🇺🇸',
-        platform: 'WhatsApp',
-        price: 189,
-        orderId: 'ORD-2026-881920',
-        latestOtp: '849201',
-        time: new Date(seedNow - 1 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        createdAt: seedNow - 1 * 60 * 1000,
-        expiresAt: seedNow + 4 * 60 * 1000
-      },
-      {
-        id: 'p_seed_2',
-        phone: '+44 7911 123456',
-        country: 'United Kingdom',
-        flag: '🇬🇧',
-        platform: 'Telegram',
-        price: 199,
-        orderId: 'ORD-2026-773109',
-        latestOtp: '391048',
-        time: new Date(seedNow - 3 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        createdAt: seedNow - 3 * 60 * 1000,
-        expiresAt: seedNow + 2 * 60 * 1000
-      },
-      {
-        id: 'p_seed_3',
-        phone: '+91 98765 43210',
-        country: 'India',
-        flag: '🇮🇳',
-        platform: 'OpenAI / ChatGPT',
-        price: 179,
-        orderId: 'ORD-2026-551029',
-        latestOtp: '109283',
-        time: new Date(seedNow - 6 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        createdAt: seedNow - 6 * 60 * 1000,
-        expiresAt: seedNow - 1 * 60 * 1000
-      }
-    ];
+    const defaultSeedPurchases = [];
+    const defaultSeedSmsLogs = [];
 
-    const defaultSeedSmsLogs = [
-      {
-        id: 'log_seed_1',
-        purchaseId: 'p_seed_1',
-        phone: '+1 415 892 3012',
-        country: 'United States',
-        flag: '🇺🇸',
-        platform: 'WhatsApp',
-        sender: 'WhatsApp-AUTH (US-East #402)',
-        timestamp: new Date(seedNow - 1 * 60 * 1000).toISOString(),
-        formattedTime: new Date(seedNow - 1 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        rawMessage: 'Your WhatsApp verification code is: 849201. Do not share this code with anyone.',
-        otpCode: '849201',
-        status: 'RECEIVED',
-        latency: '820ms',
-        carrierGateway: 'Bandwidth / Telnyx US'
-      },
-      {
-        id: 'log_seed_2',
-        purchaseId: 'p_seed_2',
-        phone: '+44 7911 123456',
-        country: 'United Kingdom',
-        flag: '🇬🇧',
-        platform: 'Telegram',
-        sender: 'Telegram-SMS (UK-London #108)',
-        timestamp: new Date(seedNow - 3 * 60 * 1000).toISOString(),
-        formattedTime: new Date(seedNow - 3 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        rawMessage: 'Telegram code: 391048. You can also tap here to log in: https://t.me/login/391048',
-        otpCode: '391048',
-        status: 'RECEIVED',
-        latency: '1.10s',
-        carrierGateway: 'BT Group / Vodafone UK'
-      },
-      {
-        id: 'log_seed_3',
-        purchaseId: 'p_seed_3',
-        phone: '+91 98765 43210',
-        country: 'India',
-        flag: '🇮🇳',
-        platform: 'OpenAI / ChatGPT',
-        sender: 'OpenAI-MSG (IN-Mumbai #992)',
-        timestamp: new Date(seedNow - 6 * 60 * 1000).toISOString(),
-        formattedTime: new Date(seedNow - 6 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        rawMessage: '109283 is your verification code for OpenAI.',
-        otpCode: '109283',
-        status: 'RECEIVED',
-        latency: '940ms',
-        carrierGateway: 'Airtel / Jio IN'
-      },
-      {
-        id: 'log_seed_4',
-        purchaseId: 'p_seed_1',
-        phone: '+1 415 892 3012',
-        country: 'United States',
-        flag: '🇺🇸',
-        platform: 'WhatsApp',
-        sender: 'WhatsApp-INIT (Ping check)',
-        timestamp: new Date(seedNow - 12 * 60 * 1000).toISOString(),
-        formattedTime: new Date(seedNow - 12 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        rawMessage: 'Virtual Number line initialized. Route active for incoming SMS.',
-        otpCode: null,
-        status: 'DELIVERED',
-        latency: '450ms',
-        carrierGateway: 'T-Mobile US Direct'
-      },
-      {
-        id: 'log_seed_5',
-        purchaseId: 'p_seed_3',
-        phone: '+33 6 12 34 56 78',
-        country: 'France',
-        flag: '🇫🇷',
-        platform: 'Instagram',
-        sender: 'Instagram-AUTH (EU-Paris #110)',
-        timestamp: new Date(seedNow - 18 * 60 * 1000).toISOString(),
-        formattedTime: new Date(seedNow - 18 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        rawMessage: 'Delivery attempt timed out at carrier gateway. Automated retry route scheduled.',
-        otpCode: null,
-        status: 'FAILED',
-        latency: '3.80s',
-        carrierGateway: 'Orange France Telecom'
-      }
-    ];
+    // Purge legacy demo data from user local storage so new/referral users get clean 0 states
+    try {
+      if (SafeStorage.getItem('vnh_clean_fresh_v2') !== 'true') {
+        SafeStorage.setItem('vnh_clean_fresh_v2', 'true');
 
-    let storedPurchases = safeParseJSON('vnh_purchases', null);
-    if (!storedPurchases || !Array.isArray(storedPurchases) || storedPurchases.length === 0) {
-      storedPurchases = defaultSeedPurchases;
-    } else {
-      storedPurchases.forEach(p => {
-        if (!p.createdAt) p.createdAt = Date.now() - 1 * 60 * 1000;
-        if (!p.expiresAt || p.expiresAt - p.createdAt > 5 * 60 * 1000) {
-          p.expiresAt = p.createdAt + 5 * 60 * 1000;
+        let rawPurchases = safeParseJSON('vnh_purchases', []);
+        if (Array.isArray(rawPurchases)) {
+          rawPurchases = rawPurchases.filter(p => p && p.id && !p.id.startsWith('p_seed_'));
+          SafeStorage.setItem('vnh_purchases', JSON.stringify(rawPurchases));
         }
-      });
+
+        if (SafeStorage.getItem('vnh_wallet') === '250.00' || SafeStorage.getItem('vnh_wallet') === '250') {
+          SafeStorage.setItem('vnh_wallet', '0.00');
+        }
+
+        if (SafeStorage.getItem('vnh_ref_earnings') === '175.00' || SafeStorage.getItem('vnh_ref_earnings') === '175') {
+          SafeStorage.setItem('vnh_ref_earnings', '0.00');
+        }
+
+        if (SafeStorage.getItem('vnh_ref_code') === 'VNH-ALEX-8829') {
+          SafeStorage.removeItem('vnh_ref_code');
+        }
+
+        let rawRefList = safeParseJSON('vnh_ref_list', []);
+        if (Array.isArray(rawRefList)) {
+          rawRefList = rawRefList.filter(r => r && r.id && !r.id.startsWith('ref_10'));
+          SafeStorage.setItem('vnh_ref_list', JSON.stringify(rawRefList));
+        }
+
+        let rawFavs = safeParseJSON('vnh_favorites', []);
+        if (Array.isArray(rawFavs)) {
+          rawFavs = rawFavs.filter(f => !['num_1', 'num_3', 'num_5'].includes(f));
+          SafeStorage.setItem('vnh_favorites', JSON.stringify(rawFavs));
+        }
+
+        let rawAlerts = safeParseJSON('vnh_price_alerts', []);
+        if (Array.isArray(rawAlerts)) {
+          rawAlerts = rawAlerts.filter(a => a && a.id && !a.id.startsWith('alert_default_'));
+          SafeStorage.setItem('vnh_price_alerts', JSON.stringify(rawAlerts));
+        }
+
+        let rawSms = safeParseJSON('vnh_sms_logs', []);
+        if (Array.isArray(rawSms)) {
+          rawSms = rawSms.filter(s => s && s.id && !s.id.startsWith('log_seed_'));
+          SafeStorage.setItem('vnh_sms_logs', JSON.stringify(rawSms));
+        }
+        let rawSmsDed = safeParseJSON('vnh_sms_logs_dedicated_v2', []);
+        if (Array.isArray(rawSmsDed)) {
+          rawSmsDed = rawSmsDed.filter(s => s && s.id && !s.id.startsWith('log_seed_'));
+          SafeStorage.setItem('vnh_sms_logs_dedicated_v2', JSON.stringify(rawSmsDed));
+        }
+      }
+    } catch (e) {
+      console.warn('Storage purge error:', e);
+    }
+
+    let storedPurchases = safeParseJSON('vnh_purchases', []);
+    if (!Array.isArray(storedPurchases)) {
+      storedPurchases = [];
+    } else {
+      storedPurchases = storedPurchases.filter(p => p && p.id && !p.id.startsWith('p_seed_'));
     }
 
     const AppState = {
@@ -6935,18 +6864,18 @@
       walletBalance: (() => {
         const saved = SafeStorage.getItem('vnh_wallet');
         if (saved === null) {
-          SafeStorage.setItem('vnh_wallet', '250.00');
-          return 250.00;
+          SafeStorage.setItem('vnh_wallet', '0.00');
+          return 0.00;
         }
         let val = parseFloat(saved);
         if (isNaN(val) || val < 0) {
-          val = 250.00;
-          SafeStorage.setItem('vnh_wallet', '250.00');
+          val = 0.00;
+          SafeStorage.setItem('vnh_wallet', '0.00');
         }
         return val;
       })(),
       purchases: storedPurchases,
-      smsLogs: safeParseJSON('vnh_sms_logs_dedicated_v2', safeParseJSON('vnh_sms_logs', defaultSeedSmsLogs)),
+      smsLogs: safeParseJSON('vnh_sms_logs_dedicated_v2', safeParseJSON('vnh_sms_logs', [])),
       smsLogsFilter: 'ALL',
       smsLogsSearch: '',
       smsLogsPage: 1,
@@ -6954,78 +6883,25 @@
       smsLogsViewMode: 'paginated',
       smsLogsVisibleCount: 10,
       autoDeleteOldSmsLogs: SafeStorage.getItem('vnh_auto_delete_sms_7d') === 'true',
-      favorites: safeParseJSON('vnh_favorites', ['num_1', 'num_3', 'num_5']),
+      favorites: safeParseJSON('vnh_favorites', []),
       favoritesFilter: 'ALL',
       favoritesSearch: '',
-      priceAlerts: safeParseJSON('vnh_price_alerts', [
-        {
-          id: 'alert_default_1',
-          targetType: 'country',
-          targetName: 'United States',
-          targetFlagOrIcon: '🇺🇸',
-          maxPrice: 99,
-          createdAt: new Date().toLocaleDateString(),
-          triggered: false
-        },
-        {
-          id: 'alert_default_2',
-          targetType: 'platform',
-          targetName: 'Telegram',
-          targetFlagOrIcon: 'fa-brands fa-telegram',
-          maxPrice: 89,
-          createdAt: new Date().toLocaleDateString(),
-          triggered: false
-        }
-      ]),
+      priceAlerts: safeParseJSON('vnh_price_alerts', []),
       pendingOrder: safeParseJSON('vnh_pending_order', null),
       isLoggedIn: safeParseJSON('vnh_is_logged_in', false),
       currentUser: safeParseJSON('vnh_user', null),
-      referralCode: SafeStorage.getItem('vnh_ref_code') || 'VNH-ALEX-8829',
-      hasPurchasedPremiumPlan: SafeStorage.getItem('vnh_premium_purchased') === 'true',
-      referralEarnings: parseFloat(SafeStorage.getItem('vnh_ref_earnings')) || 175.00,
-      referralFilter: 'ALL',
-      referralsList: safeParseJSON('vnh_ref_list', [
-        {
-          id: 'ref_101',
-          name: 'Rahul Sharma',
-          email: 'rahul.s@gmail.com',
-          date: '2026-07-22',
-          tier: 'Standard',
-          status: 'COMPLETED',
-          spent: 450.00,
-          reward: 45.00
-        },
-        {
-          id: 'ref_102',
-          name: 'Elena Rostova',
-          email: 'elena.r@tech.io',
-          date: '2026-07-20',
-          tier: 'Pro VIP',
-          status: 'COMPLETED',
-          spent: 800.00,
-          reward: 80.00
-        },
-        {
-          id: 'ref_103',
-          name: 'David Miller',
-          email: 'david.m@dev.co',
-          date: '2026-07-18',
-          tier: 'Standard',
-          status: 'COMPLETED',
-          spent: 500.00,
-          reward: 50.00
-        },
-        {
-          id: 'ref_104',
-          name: 'Priya Patel',
-          email: 'priya.p@outlook.com',
-          date: '2026-07-24',
-          tier: 'Pending',
-          status: 'PENDING',
-          spent: 0.00,
-          reward: 0.00
+      referralCode: (() => {
+        let code = SafeStorage.getItem('vnh_ref_code');
+        if (!code || code === 'VNH-ALEX-8829') {
+          code = `VNH-${Math.floor(100000 + Math.random() * 900000)}`;
+          SafeStorage.setItem('vnh_ref_code', code);
         }
-      ]),
+        return code;
+      })(),
+      hasPurchasedPremiumPlan: SafeStorage.getItem('vnh_premium_purchased') === 'true',
+      referralEarnings: parseFloat(SafeStorage.getItem('vnh_ref_earnings')) || 0.00,
+      referralFilter: 'ALL',
+      referralsList: safeParseJSON('vnh_ref_list', []),
       autoOtpEnabled: true,
       selectedNumberIds: [],
       countries: [],
@@ -15224,7 +15100,13 @@
       // Sync dynamic values into data attributes
       const numbersStat = document.getElementById('dash-stat-numbers-count');
       if (numbersStat) {
-        numbersStat.setAttribute('data-target', AppState.purchases ? AppState.purchases.length : 12);
+        numbersStat.setAttribute('data-target', AppState.purchases ? AppState.purchases.length : 0);
+      }
+
+      const otpStat = document.getElementById('dash-stat-otp-count');
+      if (otpStat) {
+        const otpCount = (AppState.smsLogs || []).filter(l => l.otpCode || l.status === 'RECEIVED').length;
+        otpStat.setAttribute('data-target', otpCount);
       }
 
       const walletStat = document.getElementById('dash-stat-wallet-val');
@@ -15294,8 +15176,8 @@
 
     function updateWalletUI(animate = true) {
       if (typeof AppState.walletBalance !== 'number' || isNaN(AppState.walletBalance) || AppState.walletBalance < 0) {
-        AppState.walletBalance = 250.00;
-        SafeStorage.setItem('vnh_wallet', '250.00');
+        AppState.walletBalance = 0.00;
+        SafeStorage.setItem('vnh_wallet', '0.00');
       }
       const targetBalance = Math.max(0, AppState.walletBalance);
       const formatted = `₹${targetBalance.toFixed(2)}`;
@@ -16146,7 +16028,7 @@
         setProgress(90, 'Restoring wallet & dashboard history...');
         try { renderPurchasesHistory(); } catch(e) { console.error('Purchases err:', e); }
         try {
-          SmsLogStorage.getAllLogs(defaultSeedSmsLogs).then(logs => {
+          SmsLogStorage.getAllLogs([]).then(logs => {
             if (Array.isArray(logs) && logs.length > 0) {
               AppState.smsLogs = logs;
             }
