@@ -1946,95 +1946,6 @@
       -webkit-transform: translateZ(0);
       transition: color 0.3s ease;
     }
-    .dash-stat-number.trend-negative,
-    .dash-stat-number.trend-negative .stat-num-val {
-      color: #f87171 !important;
-    }
-    .dash-stat-number.trend-positive,
-    .dash-stat-number.trend-positive .stat-num-val {
-      color: #22c55e !important;
-    }
-    .dash-stat-tooltip {
-      position: absolute;
-      bottom: 118%;
-      left: 50%;
-      transform: translateX(-50%) translateY(8px);
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.6), 0 0 18px rgba(59, 130, 246, 0.25);
-      border-radius: var(--radius-sm, 8px);
-      padding: 0.55rem 0.8rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      white-space: nowrap;
-      color: #f8fafc;
-      pointer-events: none;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s;
-      z-index: 120;
-    }
-    .dash-stat-tooltip::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border-width: 6px;
-      border-style: solid;
-      border-color: rgba(15, 23, 42, 0.95) transparent transparent transparent;
-    }
-    .dash-stat-number:hover .dash-stat-tooltip,
-    .dash-stat-number:focus .dash-stat-tooltip,
-    .dash-stat-number:focus-within .dash-stat-tooltip,
-    .dash-stat-number.tooltip-visible .dash-stat-tooltip {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(0);
-    }
-    .stat-tooltip-header {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.68rem;
-      color: #94a3b8;
-      margin-bottom: 0.3rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 700;
-    }
-    .stat-tooltip-body {
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-    }
-    .stat-tooltip-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0.18rem 0.45rem;
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-weight: 800;
-      font-size: 0.78rem;
-    }
-    .stat-tooltip-badge.positive {
-      background: rgba(34, 197, 94, 0.2);
-      color: #4ade80;
-      border: 1px solid rgba(34, 197, 94, 0.35);
-    }
-    .stat-tooltip-badge.negative {
-      background: rgba(239, 68, 68, 0.2);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.35);
-    }
-    .stat-tooltip-badge.neutral {
-      background: rgba(148, 163, 184, 0.2);
-      color: #cbd5e1;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-    }
     .dash-stat-footer {
       font-size: 0.78rem;
       color: var(--success);
@@ -4975,17 +4886,8 @@
                 <i class="fa-solid fa-sim-card"></i>
               </div>
             </div>
-            <div class="dash-stat-number" id="dash-stat-numbers-count" data-target="0" data-prefix="" data-suffix="" data-decimals="0" tabindex="0" aria-label="Active Numbers count comparison tooltip">
+            <div class="dash-stat-number" id="dash-stat-numbers-count" data-target="0" data-prefix="" data-suffix="" data-decimals="0">
               <span class="stat-num-val">0</span>
-              <div class="dash-stat-tooltip">
-                <div class="stat-tooltip-header">
-                  <i class="fa-solid fa-chart-line"></i> Daily Comparison
-                </div>
-                <div class="stat-tooltip-body">
-                  <span class="stat-tooltip-badge positive"><i class="fa-solid fa-arrow-trend-up"></i> <span class="pct-val">+12.5%</span></span>
-                  <span style="color: #cbd5e1; font-size: 0.7rem;">vs previous day</span>
-                </div>
-              </div>
             </div>
             <div class="dash-stat-footer">
               <i class="fa-solid fa-circle-check"></i> <span>Ready for instant OTPs</span>
@@ -4999,17 +4901,8 @@
                 <i class="fa-solid fa-message"></i>
               </div>
             </div>
-            <div class="dash-stat-number" id="dash-stat-otp-count" data-target="0" data-prefix="" data-suffix="" data-decimals="0" tabindex="0" aria-label="OTPs Received count comparison tooltip">
+            <div class="dash-stat-number" id="dash-stat-otp-count" data-target="0" data-prefix="" data-suffix="" data-decimals="0">
               <span class="stat-num-val">0</span>
-              <div class="dash-stat-tooltip">
-                <div class="stat-tooltip-header">
-                  <i class="fa-solid fa-chart-line"></i> Daily Comparison
-                </div>
-                <div class="stat-tooltip-body">
-                  <span class="stat-tooltip-badge positive"><i class="fa-solid fa-arrow-trend-up"></i> <span class="pct-val">+18.4%</span></span>
-                  <span style="color: #cbd5e1; font-size: 0.7rem;">vs previous day</span>
-                </div>
-              </div>
             </div>
             <div class="dash-stat-footer">
               <i class="fa-solid fa-bolt"></i> <span>100% Delivery rate</span>
@@ -5023,17 +4916,8 @@
                 <i class="fa-solid fa-wallet"></i>
               </div>
             </div>
-            <div class="dash-stat-number" id="dash-stat-wallet-val" data-target="0.00" data-prefix="₹" data-suffix="" data-decimals="2" tabindex="0" aria-label="Wallet Balance comparison tooltip">
+            <div class="dash-stat-number" id="dash-stat-wallet-val" data-target="0.00" data-prefix="₹" data-suffix="" data-decimals="2">
               <span class="stat-num-val">₹0.00</span>
-              <div class="dash-stat-tooltip">
-                <div class="stat-tooltip-header">
-                  <i class="fa-solid fa-chart-line"></i> Daily Comparison
-                </div>
-                <div class="stat-tooltip-body">
-                  <span class="stat-tooltip-badge positive"><i class="fa-solid fa-arrow-trend-up"></i> <span class="pct-val">+5.2%</span></span>
-                  <span style="color: #cbd5e1; font-size: 0.7rem;">vs previous day</span>
-                </div>
-              </div>
             </div>
             <div class="dash-stat-footer" style="color: var(--accent);">
               <i class="fa-solid fa-arrows-rotate"></i> <span>Instant top-up active</span>
@@ -5047,17 +4931,8 @@
                 <i class="fa-solid fa-heart-pulse"></i>
               </div>
             </div>
-            <div class="dash-stat-number" id="dash-stat-health-val" data-target="99.8" data-prefix="" data-suffix="%" data-decimals="1" tabindex="0" aria-label="Route Health comparison tooltip">
+            <div class="dash-stat-number" id="dash-stat-health-val" data-target="99.8" data-prefix="" data-suffix="%" data-decimals="1">
               <span class="stat-num-val">0%</span>
-              <div class="dash-stat-tooltip">
-                <div class="stat-tooltip-header">
-                  <i class="fa-solid fa-chart-line"></i> Daily Comparison
-                </div>
-                <div class="stat-tooltip-body">
-                  <span class="stat-tooltip-badge positive"><i class="fa-solid fa-arrow-trend-up"></i> <span class="pct-val">+0.2%</span></span>
-                  <span style="color: #cbd5e1; font-size: 0.7rem;">vs previous day</span>
-                </div>
-              </div>
             </div>
             <div class="dash-stat-footer">
               <i class="fa-solid fa-shield-halved"></i> <span>500k+ Active routes</span>
@@ -15456,85 +15331,9 @@
        ========================================== */
     function updateStatTooltip(el, targetVal) {
       if (!el) return;
-      let tooltip = el.querySelector('.dash-stat-tooltip');
-      if (!tooltip) {
-        tooltip = document.createElement('div');
-        tooltip.className = 'dash-stat-tooltip';
-        el.appendChild(tooltip);
-      }
-
-      let pctStr = "+0.0%";
-      let badgeClass = "positive";
-      let iconClass = "fa-arrow-trend-up";
-      let prevValueStr = "vs previous day";
-
-      const id = el.id;
-      if (id === 'dash-stat-numbers-count') {
-        const prev = parseFloat(el.getAttribute('data-prev') || '10');
-        if (targetVal === 0) {
-          pctStr = "+12.5%";
-          prevValueStr = "vs previous day (12 avg)";
-        } else {
-          const diff = ((targetVal - prev) / (prev || 1)) * 100;
-          pctStr = (diff >= 0 ? "+" : "") + diff.toFixed(1) + "%";
-          badgeClass = diff >= 0 ? "positive" : "negative";
-          iconClass = diff >= 0 ? "fa-arrow-trend-up" : "fa-arrow-trend-down";
-          prevValueStr = `vs previous day (${prev} active)`;
-        }
-      } else if (id === 'dash-stat-otp-count') {
-        const prev = parseFloat(el.getAttribute('data-prev') || '40');
-        if (targetVal === 0) {
-          pctStr = "+18.4%";
-          prevValueStr = "vs previous day (40 avg)";
-        } else {
-          const diff = ((targetVal - prev) / (prev || 1)) * 100;
-          pctStr = (diff >= 0 ? "+" : "") + diff.toFixed(1) + "%";
-          badgeClass = diff >= 0 ? "positive" : "negative";
-          iconClass = diff >= 0 ? "fa-arrow-trend-up" : "fa-arrow-trend-down";
-          prevValueStr = `vs previous day (${prev} OTPs)`;
-        }
-      } else if (id === 'dash-stat-wallet-val') {
-        const prev = parseFloat(el.getAttribute('data-prev') || '200');
-        if (targetVal === 0) {
-          pctStr = "+5.2%";
-          prevValueStr = "vs previous day (₹200 avg)";
-        } else {
-          const diff = ((targetVal - prev) / (prev || 1)) * 100;
-          pctStr = (diff >= 0 ? "+" : "") + diff.toFixed(1) + "%";
-          badgeClass = diff >= 0 ? "positive" : "negative";
-          iconClass = diff >= 0 ? "fa-arrow-trend-up" : "fa-arrow-trend-down";
-          prevValueStr = `vs previous day (₹${prev.toFixed(0)})`;
-        }
-      } else if (id === 'dash-stat-health-val') {
-        pctStr = "+0.2%";
-        prevValueStr = "vs previous day (99.6%)";
-      } else {
-        pctStr = "+10.0%";
-        prevValueStr = "vs previous day";
-      }
-
-      tooltip.innerHTML = `
-        <div class="stat-tooltip-header">
-          <i class="fa-solid fa-chart-line"></i> Daily Comparison
-        </div>
-        <div class="stat-tooltip-body">
-          <span class="stat-tooltip-badge ${badgeClass}"><i class="fa-solid ${iconClass}"></i> <span class="pct-val">${pctStr}</span></span>
-          <span style="color: #cbd5e1; font-size: 0.7rem;">${prevValueStr}</span>
-        </div>
-      `;
-
-      // Set dynamic text color based on daily percentage change trend:
-      // Negative trend = Light Red (#f87171), Positive trend = Green (#22c55e)
-      const isNegative = badgeClass === 'negative' || pctStr.startsWith('-');
-      if (isNegative) {
-        el.classList.add('trend-negative');
-        el.classList.remove('trend-positive');
-        el.style.color = '#f87171';
-      } else {
-        el.classList.add('trend-positive');
-        el.classList.remove('trend-negative');
-        el.style.color = '#22c55e';
-      }
+      // Keep standard text colors clean and legible
+      el.style.color = '';
+      el.classList.remove('trend-negative', 'trend-positive');
     }
 
     function animateDashboardStats(force = false) {
@@ -15593,7 +15392,7 @@
             },
             onComplete: () => {
               numSpan.innerText = prefix + targetVal.toFixed(decimals) + suffix;
-              gsap.to(el, { scale: 1.06, duration: 0.12, yoyo: true, repeat: 1, ease: 'sine.inOut' });
+              gsap.to(el, { scale: 1.05, duration: 0.12, yoyo: true, repeat: 1, ease: 'sine.inOut' });
             }
           });
         } else {
@@ -15613,16 +15412,6 @@
             }
           }
           requestAnimationFrame(step);
-        }
-
-        if (!el.dataset.tooltipBound) {
-          el.dataset.tooltipBound = 'true';
-          el.addEventListener('touchstart', (e) => {
-            e.stopPropagation();
-            const isVis = el.classList.contains('tooltip-visible');
-            document.querySelectorAll('.dash-stat-number').forEach(s => s.classList.remove('tooltip-visible'));
-            if (!isVis) el.classList.add('tooltip-visible');
-          }, { passive: true });
         }
       });
 
