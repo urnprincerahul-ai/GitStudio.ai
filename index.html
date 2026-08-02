@@ -648,6 +648,28 @@
     .logo:hover {
       transform: translateY(-1px);
     }
+    .header-live-indicator {
+      font-size: 0.6rem;
+      font-weight: 800;
+      color: #34d399;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      opacity: 0.92;
+    }
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+      animation: livePulse 1.8s infinite ease-in-out;
+    }
+    @keyframes livePulse {
+      0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 6px #10b981; }
+      50% { transform: scale(1.4); opacity: 0.6; box-shadow: 0 0 12px #34d399; }
+    }
     .logo-icon {
       width: 42px;
       height: 42px;
@@ -4308,22 +4330,22 @@
       left: 10px;
       right: 10px;
       z-index: 998;
-      height: 66px;
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(32px) saturate(200%);
-      -webkit-backdrop-filter: blur(32px) saturate(200%);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 24px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 0 20px rgba(56, 189, 248, 0.1);
+      height: 68px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.94) 0%, rgba(10, 15, 30, 0.96) 100%);
+      backdrop-filter: blur(36px) saturate(210%);
+      -webkit-backdrop-filter: blur(36px) saturate(210%);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 28px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.75), inset 0 1.5px 0 rgba(255, 255, 255, 0.28), 0 0 28px rgba(56, 189, 248, 0.22);
       padding: 0 0.35rem;
       justify-content: space-around;
       align-items: center;
     }
 
     [data-theme="light"] .mobile-bottom-nav {
-      background: rgba(255, 255, 255, 0.92);
-      border-color: rgba(203, 213, 225, 0.9);
-      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.15), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.96) 100%);
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.18), inset 0 1.5px 0 rgba(255, 255, 255, 0.95);
     }
 
     @media (max-width: 900px) {
@@ -4331,22 +4353,22 @@
         display: flex;
       }
       body {
-        padding-bottom: 96px !important;
+        padding-bottom: 98px !important;
       }
       main {
-        padding-bottom: 32px;
+        padding-bottom: 34px;
       }
       .floating-fab {
-        bottom: 5.8rem !important;
+        bottom: 6.0rem !important;
         right: 1.1rem !important;
         left: auto !important;
         z-index: 990;
       }
       #floating-bulk-bar {
-        bottom: 5.5rem !important;
+        bottom: 5.6rem !important;
       }
       #toast-container {
-        bottom: 5.8rem !important;
+        bottom: 6.0rem !important;
       }
     }
 
@@ -4355,15 +4377,15 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.22rem;
+      gap: 0.2rem;
       background: transparent;
       border: 1px solid transparent;
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.66rem;
+      font-size: 0.65rem;
       font-weight: 600;
-      padding: 0.4rem 0.25rem;
-      border-radius: 18px;
+      padding: 0.45rem 0.25rem;
+      border-radius: 20px;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       cursor: pointer;
       flex: 1;
@@ -4379,15 +4401,21 @@
 
     .mobile-bottom-nav-item:hover {
       color: var(--text-main);
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.08);
     }
 
     .mobile-bottom-nav-item.active {
-      color: #38bdf8;
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.24) 0%, rgba(99, 102, 241, 0.24) 100%);
-      border-color: rgba(56, 189, 248, 0.45);
-      box-shadow: 0 6px 18px rgba(56, 189, 248, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.35) 0%, rgba(56, 189, 248, 0.32) 100%);
+      border-color: rgba(56, 189, 248, 0.6);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.4);
       font-weight: 800;
+    }
+
+    .mobile-bottom-nav-item.active .mobile-bottom-nav-label {
+      color: #ffffff;
+      font-weight: 800;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
     }
 
     .mobile-bottom-nav-item::after {
@@ -4396,12 +4424,12 @@
       top: 3px;
       left: 50%;
       transform: translateX(-50%) scaleX(0);
-      width: 22px;
-      height: 3.5px;
-      background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%);
+      width: 26px;
+      height: 4px;
+      background: linear-gradient(90deg, #38bdf8 0%, #34d399 100%);
       border-radius: 6px;
       transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 0 12px #38bdf8;
+      box-shadow: 0 0 14px #38bdf8;
     }
 
     .mobile-bottom-nav-item.active::after {
@@ -4409,7 +4437,7 @@
     }
 
     .mobile-bottom-nav-icon {
-      font-size: 1.25rem;
+      font-size: 1.28rem;
       line-height: 1;
       position: relative;
       display: inline-flex;
@@ -4419,24 +4447,25 @@
     }
 
     .mobile-bottom-nav-item.active .mobile-bottom-nav-icon {
-      transform: translateY(-2.5px) scale(1.18);
-      filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.75));
+      transform: translateY(-3px) scale(1.2);
+      color: #38bdf8;
+      filter: drop-shadow(0 2px 10px rgba(56, 189, 248, 0.85));
     }
 
     .mobile-nav-badge {
       position: absolute;
-      top: -6px;
-      right: -12px;
+      top: -7px;
+      right: -13px;
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: #ffffff;
-      font-size: 0.6rem;
+      font-size: 0.62rem;
       font-weight: 900;
-      padding: 0.12rem 0.38rem;
-      border-radius: 10px;
-      min-width: 16px;
+      padding: 0.12rem 0.4rem;
+      border-radius: 12px;
+      min-width: 18px;
       text-align: center;
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+      border: 1.5px solid #ffffff;
     }
 
     /* PLATFORM QUICK-LINKS SECTION WITH CIRCULAR BADGES */
@@ -4650,7 +4679,10 @@
         <div class="logo-icon">
           <i class="fa-solid fa-sim-card"></i>
         </div>
-        <span>Virtual Hub</span>
+        <div style="display: flex; flex-direction: column; line-height: 1.1;">
+          <span style="font-weight: 800; letter-spacing: -0.3px;">Virtual Hub</span>
+          <span class="header-live-indicator"><span class="live-dot"></span> LIVE PLATFORM</span>
+        </div>
       </a>
 
       <ul class="nav-menu">
