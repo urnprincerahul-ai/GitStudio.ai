@@ -5934,9 +5934,6 @@
         </div>
         <div style="display: flex; align-items: center; justify-content: center; gap: 0.35rem; margin-top: 0.45rem; flex-wrap: wrap;">
           <span style="font-size: 0.8rem; color: var(--text-muted);">UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong></span>
-          <button class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.45rem; font-size: 0.7rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.2rem;" onclick="copyText('urn.princerahul-1@oksbi', 'UPI ID copied!')" title="Copy UPI ID">
-            <i class="fa-solid fa-copy"></i> Copy
-          </button>
         </div>
       </div>
 
@@ -6036,9 +6033,6 @@
         </div>
         <div style="display: flex; align-items: center; justify-content: center; gap: 0.35rem; margin-top: 0.45rem; flex-wrap: wrap;">
           <span style="font-size: 0.8rem; color: var(--text-muted);">UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong></span>
-          <button class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.45rem; font-size: 0.7rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.2rem;" onclick="copyText('urn.princerahul-1@oksbi', 'UPI ID copied!')" title="Copy UPI ID">
-            <i class="fa-solid fa-copy"></i> Copy
-          </button>
         </div>
       </div>
 
@@ -6099,7 +6093,7 @@
       <!-- Mandatory Launch UPI Notice Banner -->
       <div id="upi-launch-required-msg" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.78rem; font-weight: 700; color: #fbbf24; margin-bottom: 0.75rem; align-items: center; gap: 0.5rem;">
         <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.1rem; color: #f59e0b; flex-shrink: 0;"></i>
-        <span>⚠️ <strong>Payment Required:</strong> Click <strong>"Launch UPI"</strong> to make payment before verifying UTR!</span>
+        <span>⚠️ <strong>Payment Required:</strong> Only click <strong>"Launch UPI"</strong> to Make Payment before Verifying UTR!</span>
       </div>
 
       <div style="display: flex; gap: 0.65rem;">
@@ -6172,9 +6166,6 @@
           </div>
           <div style="display: flex; align-items: center; justify-content: center; gap: 0.35rem; margin-top: 0.45rem; flex-wrap: wrap;">
             <span style="font-size: 0.8rem; color: var(--text-muted);">UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong></span>
-            <button class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.45rem; font-size: 0.7rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.2rem;" onclick="copyText('urn.princerahul-1@oksbi', 'UPI ID copied!')" title="Copy UPI ID">
-              <i class="fa-solid fa-copy"></i> Copy
-            </button>
           </div>
         </div>
 
@@ -15804,7 +15795,7 @@
             gsap.fromTo(launchBtn, { scale: 1 }, { scale: 1.08, yoyo: true, repeat: 3, duration: 0.12 });
           }
         }
-        showToast('⚠️ Please click "Launch UPI" to complete payment before verifying UTR!', 'warning');
+        showToast('⚠️ Payment Required: Only click "Launch UPI" to Make Payment before Verifying UTR!', 'warning');
         return;
       }
 
