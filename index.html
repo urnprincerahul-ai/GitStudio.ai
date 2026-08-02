@@ -8084,7 +8084,7 @@
       closeModal('bulk-purchase-modal');
 
       // Update UI & Animations
-      triggerConfetti();
+      triggerPurchaseCelebration();
       playOtpSoundNotification();
       updateWalletUI();
       renderMarketplace();
@@ -12571,7 +12571,7 @@
       const valMsg = document.getElementById('utr-validation-msg');
       if (valMsg) valMsg.style.display = 'none';
 
-      triggerConfetti();
+      triggerPurchaseCelebration();
       if (typeof playOtpSoundNotification === 'function') playOtpSoundNotification();
       speakPaymentSuccessVoice();
 
@@ -14728,6 +14728,24 @@
       render();
     }
 
+    function triggerPurchaseCelebration() {
+      const isFirstPurchase = (AppState.purchases && AppState.purchases.length === 1) || (SafeStorage.getItem('vnh_first_purchase_celebrated') !== 'true' && AppState.purchases && AppState.purchases.length >= 1);
+
+      if (isFirstPurchase) {
+        SafeStorage.setItem('vnh_first_purchase_celebrated', 'true');
+        // Grand multi-stage celebratory confetti explosion for first purchase
+        triggerEnhancedBurstConfetti();
+        setTimeout(() => triggerEnhancedBurstConfetti(), 450);
+        setTimeout(() => triggerEnhancedBurstConfetti(), 900);
+
+        setTimeout(() => {
+          showToast('🏆 <strong>FIRST PURCHASE CELEBRATION!</strong><br><span style="font-size: 0.82rem; color: #f59e0b; font-weight: 600;">Welcome! You have activated your first line successfully! 🎉</span>', 'success');
+        }, 350);
+      } else {
+        triggerEnhancedBurstConfetti();
+      }
+    }
+
     function triggerFullScreenReferralCelebration(claimedAmt) {
       const amtEl = document.getElementById('ref-claim-celebration-amount');
       const balEl = document.getElementById('ref-claim-celebration-new-balance');
@@ -16664,7 +16682,9 @@
         receivedAt: purchaseRecord.time
       });
 
-      // Update UI
+      // Update UI & Animations
+      triggerPurchaseCelebration();
+      if (typeof playOtpSoundNotification === 'function') playOtpSoundNotification();
       updateWalletUI();
       renderMarketplace();
       renderPurchasesHistory();
