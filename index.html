@@ -1507,6 +1507,23 @@
       animation: claimScalePulseWarning 1.8s infinite ease-in-out !important;
     }
 
+    @keyframes claimBreathingAnimation {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.35);
+        filter: brightness(1);
+      }
+      50% {
+        transform: scale(1.06);
+        box-shadow: 0 0 18px 4px rgba(16, 185, 129, 0.65);
+        filter: brightness(1.15);
+      }
+    }
+
+    #referral-tab-content .claim-btn-breathing {
+      animation: claimBreathingAnimation 2.2s infinite ease-in-out !important;
+    }
+
     .count-pop {
       display: inline-block;
       animation: countPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -9048,6 +9065,9 @@
       
       let pendingValue = 0;
       pendingList.forEach(p => pendingValue += (p.reward || 25.00));
+      const totalPendingRewardAmount = totalEarned + pendingValue;
+      const PENDING_REWARD_THRESHOLD = 0; // Breathing threshold
+      const exceedsPendingThreshold = totalPendingRewardAmount > PENDING_REWARD_THRESHOLD;
       const hasPendingRewards = totalEarned > 0 || pendingValue > 0;
 
       // Dynamic Cash Reward Milestone Calculation
@@ -9174,11 +9194,11 @@
           <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid ${AppState.hasPurchasedPremiumPlan ? (hasPendingRewards ? 'rgba(16, 185, 129, 0.5)' : 'var(--border-color)') : 'rgba(245, 158, 11, 0.35)'}; border-radius: var(--radius-md); padding: 0.85rem; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 0;">
             <span style="font-size: 0.72rem; color: ${AppState.hasPurchasedPremiumPlan ? (hasPendingRewards ? '#34d399' : 'var(--text-muted)') : '#f59e0b'}; font-weight: 600; display: block;">Claim Rewards</span>
             ${AppState.hasPurchasedPremiumPlan ? `
-              <button class="btn btn-success btn-sm ${hasPendingRewards ? 'claim-btn-pulse-success' : ''}" onclick="claimReferralRewardsToWallet()" style="padding: 0.25rem 0.65rem; font-size: 0.72rem; margin-top: 0.25rem; font-weight: 800; transition: all 0.3s ease;">
+              <button class="btn btn-success btn-sm ${exceedsPendingThreshold ? 'claim-btn-breathing' : (hasPendingRewards ? 'claim-btn-pulse-success' : '')}" onclick="claimReferralRewardsToWallet()" style="padding: 0.25rem 0.65rem; font-size: 0.72rem; margin-top: 0.25rem; font-weight: 800; transition: all 0.3s ease;">
                 <i class="fa-solid fa-wallet"></i> Claim
               </button>
             ` : `
-              <button class="btn btn-warning btn-sm ${hasPendingRewards ? 'claim-btn-pulse-warning' : ''}" onclick="claimReferralRewardsToWallet()" style="padding: 0.25rem 0.55rem; font-size: 0.72rem; margin-top: 0.25rem; font-weight: 800; background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.5); color: #f59e0b;" title="Premium Plan (₹999) Required">
+              <button class="btn btn-warning btn-sm ${exceedsPendingThreshold ? 'claim-btn-breathing' : (hasPendingRewards ? 'claim-btn-pulse-warning' : '')}" onclick="claimReferralRewardsToWallet()" style="padding: 0.25rem 0.55rem; font-size: 0.72rem; margin-top: 0.25rem; font-weight: 800; background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.5); color: #f59e0b;" title="Premium Plan (₹999) Required">
                 <i class="fa-solid fa-lock"></i> Locked
               </button>
             `}
