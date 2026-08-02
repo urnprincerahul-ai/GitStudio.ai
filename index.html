@@ -809,12 +809,18 @@
       background: #FFFFFF;
     }
 
-    .mobile-nav-item:hover, .mobile-nav-item:focus {
+    .mobile-nav-item:hover, .mobile-nav-item:focus, .mobile-nav-item.active {
       transform: translateX(4px);
       background: linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(168, 85, 247, 0.18));
       border-color: var(--accent);
       color: var(--accent);
       box-shadow: 0 4px 14px rgba(59, 130, 246, 0.15);
+    }
+
+    .mobile-nav-item.active .mobile-nav-arrow {
+      transform: translateX(3px);
+      opacity: 1;
+      color: var(--accent);
     }
 
     .mobile-nav-icon-badge {
@@ -4306,17 +4312,14 @@
 
     .mobile-bottom-nav-item:hover,
     .mobile-bottom-nav-item.active {
-      color: var(--accent);
+      color: #60a5fa;
+      background: rgba(59, 130, 246, 0.15);
+      border-radius: var(--radius-md);
+      font-weight: 700;
     }
 
     .mobile-bottom-nav-item.mob-nav-active-numbers-btn {
       color: var(--accent-light, #3b82f6);
-    }
-
-    .mobile-bottom-nav-item.mob-nav-active-numbers-btn.active {
-      background: rgba(59, 130, 246, 0.15);
-      color: #60a5fa;
-      border-radius: var(--radius-md);
     }
 
     .mobile-bottom-nav-icon {
@@ -5725,7 +5728,7 @@
       <span class="mobile-bottom-nav-label">Wallet</span>
     </button>
 
-    <button type="button" class="mobile-bottom-nav-item" id="mob-nav-menu" onclick="document.getElementById('mobile-sidebar')?.classList.add('open'); document.getElementById('sidebar-backdrop')?.classList.add('open');">
+    <button type="button" class="mobile-bottom-nav-item" id="mob-nav-menu" onclick="openMobileSidebar();">
       <div class="mobile-bottom-nav-icon">
         <i class="fa-solid fa-bars"></i>
       </div>
@@ -9965,6 +9968,7 @@
     function openRecentActivityModal() {
       renderRecentActivityList();
       openModal('recent-activity-modal');
+      setActiveMobileBottomNav('mob-nav-recent-activity');
     }
 
     function renderRecentActivityList() {
@@ -11577,9 +11581,19 @@
       }
     }
 
+    function openMobileSidebar() {
+      const sidebar = document.getElementById('mobile-sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      if (sidebar) sidebar.classList.add('open');
+      if (backdrop) backdrop.classList.add('open');
+      setActiveMobileBottomNav('mob-nav-menu');
+    }
+
     function closeMobileSidebar() {
-      document.getElementById('mobile-sidebar')?.classList.remove('open');
-      document.getElementById('sidebar-backdrop')?.classList.remove('open');
+      const sidebar = document.getElementById('mobile-sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      if (sidebar) sidebar.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('open');
     }
 
     function populateAuthCountrySelects() {
@@ -15325,6 +15339,7 @@
       }
 
       if (id === 'topup-modal') {
+        setActiveMobileBottomNav('mob-nav-topup');
         AppState.hasLaunchedUpiTopup = false;
         const launchBtn = document.getElementById('launch-upi-btn');
         if (launchBtn) {
@@ -15370,7 +15385,7 @@
 
     function updateActiveNavLinks(targetId) {
       if (!targetId) return;
-      document.querySelectorAll('.nav-menu .nav-link').forEach(link => {
+      document.querySelectorAll('.nav-menu .nav-link, .mobile-sidebar-nav-container .nav-link').forEach(link => {
         const href = link.getAttribute('href');
         if (href === `#${targetId}`) {
           link.classList.add('active');
@@ -15379,16 +15394,35 @@
         }
       });
 
-      if (targetId === 'numbers' || targetId === 'hero') {
+      if (targetId === 'numbers' || targetId === 'hero' || targetId === 'countries' || targetId === 'platforms' || targetId === 'pricing' || targetId === 'faq') {
         setActiveMobileBottomNav('mob-nav-marketplace');
       } else if (targetId === 'dashboard') {
-        const activeTabBtn = document.getElementById('dash-tab-favorites');
-        if (activeTabBtn && activeTabBtn.classList.contains('btn-primary')) {
+        const favoritesList = document.getElementById('favorites-tab-list');
+        if (favoritesList && favoritesList.style.display !== 'none') {
           setActiveMobileBottomNav('mob-nav-favorites');
         } else {
           setActiveMobileBottomNav('mob-nav-active-numbers');
         }
       }
+    }
+
+    function initScrollSpy() {
+      const sections = document.querySelectorAll('section[id], header[id]');
+      if (!sections.length || !('IntersectionObserver' in window)) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            updateActiveNavLinks(entry.target.id);
+          }
+        });
+      }, {
+        root: null,
+        rootMargin: '-25% 0px -55% 0px',
+        threshold: 0
+      });
+
+      sections.forEach(s => observer.observe(s));
     }
 
     function scrollToSection(id, event) {
@@ -16729,21 +16763,13 @@
       // Theme Switcher with Smooth Cross-Fade
       document.getElementById('theme-toggle-btn')?.addEventListener('click', toggleThemeWithCrossFade);
 
+      // Setup Live Navigation Scroll Spy
+      initScrollSpy();
+
       // Mobile Menu Toggle
-      const sidebar = document.getElementById('mobile-sidebar');
-      const backdrop = document.getElementById('sidebar-backdrop');
-      document.getElementById('hamburger-btn')?.addEventListener('click', () => {
-        sidebar?.classList.add('open');
-        backdrop?.classList.add('open');
-      });
-      document.getElementById('close-sidebar-btn')?.addEventListener('click', () => {
-        sidebar?.classList.remove('open');
-        backdrop?.classList.remove('open');
-      });
-      backdrop?.addEventListener('click', () => {
-        sidebar?.classList.remove('open');
-        backdrop?.classList.remove('open');
-      });
+      document.getElementById('hamburger-btn')?.addEventListener('click', openMobileSidebar);
+      document.getElementById('close-sidebar-btn')?.addEventListener('click', closeMobileSidebar);
+      document.getElementById('sidebar-backdrop')?.addEventListener('click', closeMobileSidebar);
 
       // UTR Real-Time Input Validation Listeners
       const mainUtrInput = document.getElementById('utr-input');
