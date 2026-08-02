@@ -2510,6 +2510,11 @@
       border-color: var(--accent);
       background: var(--bg-card);
     }
+    .faq-item-jump-active {
+      border-color: #a855f7 !important;
+      box-shadow: 0 0 22px rgba(168, 85, 247, 0.55) !important;
+      transition: all 0.3s ease;
+    }
 
     /* ==========================================
        MODALS & TOASTS
@@ -5323,9 +5328,14 @@
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
-        <div class="faq-sub-info">
+        <div class="faq-sub-info" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
           <span id="faq-search-count" style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Showing all questions</span>
-          <span style="font-size: 0.75rem; color: var(--text-muted);"><i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> Type keywords to instantly filter questions</span>
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <button id="faq-next-match-btn" onclick="navigateToNextFaqMatch()" style="display: none; align-items: center; gap: 0.4rem; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700; color: #ffffff; background: linear-gradient(135deg, var(--accent), #a855f7); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 20px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);" title="Auto-scroll & expand next matching FAQ question">
+              <i class="fa-solid fa-arrow-down-short-wide"></i> Next Match <span id="faq-match-badge" style="background: rgba(0,0,0,0.3); padding: 0.1rem 0.45rem; border-radius: 10px; font-size: 0.7rem;">1/1</span>
+            </button>
+            <span style="font-size: 0.75rem; color: var(--text-muted);"><i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> Type keywords to instantly filter questions</span>
+          </div>
         </div>
       </div>
 
@@ -13754,11 +13764,16 @@
       }
     }
 
+    let faqMatchingItems = [];
+    let currentFaqMatchIndex = 0;
+
     function filterFaqs() {
       const input = document.getElementById('faq-search-input');
       const clearBtn = document.getElementById('faq-search-clear-btn');
       const countSpan = document.getElementById('faq-search-count');
       const emptyState = document.getElementById('faq-empty-state');
+      const nextMatchBtn = document.getElementById('faq-next-match-btn');
+      const matchBadge = document.getElementById('faq-match-badge');
 
       if (!input) return;
       const query = input.value.trim().toLowerCase();
@@ -13766,6 +13781,8 @@
       if (clearBtn) {
         clearBtn.style.display = (query.length > 0 || currentFaqCategory !== 'all') ? 'inline-block' : 'none';
       }
+
+      faqMatchingItems = [];
 
       const categoryBlocks = document.querySelectorAll('.faq-category-block');
       let totalMatchingQuestions = 0;
@@ -13789,11 +13806,14 @@
           const qText = item.querySelector('.faq-question')?.innerText.toLowerCase() || '';
           const aText = item.querySelector('.faq-answer')?.innerText.toLowerCase() || '';
 
-          if (query.length === 0 || categoryMatchesQuery || qText.includes(query) || aText.includes(query)) {
+          const isMatch = (query.length === 0 || categoryMatchesQuery || qText.includes(query) || aText.includes(query));
+
+          if (isMatch) {
             item.style.display = 'block';
             blockMatchingCount++;
             if (query.length > 0) {
               item.classList.add('open');
+              faqMatchingItems.push({ itemEl: item, blockEl: block });
             } else {
               item.classList.remove('open');
             }
@@ -13812,6 +13832,20 @@
           block.classList.remove('open');
         }
       });
+
+      // Show/Hide Next Match Navigation Button if multiple search matches exist
+      if (query.length > 0 && faqMatchingItems.length > 1) {
+        if (nextMatchBtn) nextMatchBtn.style.display = 'inline-flex';
+        if (currentFaqMatchIndex >= faqMatchingItems.length) {
+          currentFaqMatchIndex = 0;
+        }
+        if (matchBadge) {
+          matchBadge.innerText = `${currentFaqMatchIndex + 1}/${faqMatchingItems.length}`;
+        }
+      } else {
+        if (nextMatchBtn) nextMatchBtn.style.display = 'none';
+        currentFaqMatchIndex = 0;
+      }
 
       if (countSpan) {
         if (query.length === 0 && currentFaqCategory === 'all') {
@@ -13867,10 +13901,55 @@
       }
     }
 
+    function navigateToNextFaqMatch() {
+      if (!faqMatchingItems || faqMatchingItems.length < 2) return;
+
+      currentFaqMatchIndex = (currentFaqMatchIndex + 1) % faqMatchingItems.length;
+      const match = faqMatchingItems[currentFaqMatchIndex];
+      if (!match) return;
+
+      // Ensure category block is open
+      if (match.blockEl) {
+        match.blockEl.style.display = 'block';
+        match.blockEl.classList.add('open');
+      }
+
+      // Ensure FAQ item is open and visible
+      if (match.itemEl) {
+        match.itemEl.style.display = 'block';
+        match.itemEl.classList.add('open');
+
+        // Smoothly scroll target match into view
+        match.itemEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Apply glowing pulse highlight ring
+        document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('faq-item-jump-active'));
+        match.itemEl.classList.add('faq-item-jump-active');
+
+        if (window.gsap) {
+          gsap.fromTo(match.itemEl, 
+            { scale: 0.97 }, 
+            { scale: 1.02, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.out', clearProps: 'transform' }
+          );
+        }
+
+        setTimeout(() => {
+          match.itemEl.classList.remove('faq-item-jump-active');
+        }, 2200);
+      }
+
+      const matchBadge = document.getElementById('faq-match-badge');
+      if (matchBadge) {
+        matchBadge.innerText = `${currentFaqMatchIndex + 1}/${faqMatchingItems.length}`;
+      }
+    }
+
     function clearFaqSearch() {
       const input = document.getElementById('faq-search-input');
       if (input) input.value = '';
       currentFaqCategory = 'all';
+      faqMatchingItems = [];
+      currentFaqMatchIndex = 0;
 
       const catBtns = document.querySelectorAll('.faq-cat-btn');
       catBtns.forEach(btn => {
