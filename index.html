@@ -16631,17 +16631,6 @@
       const loadMoreBtn = document.getElementById('load-more-btn');
       if (loadMoreBtn) {
         loadMoreBtn.addEventListener('click', handleLoadMoreAction);
-
-        if ('IntersectionObserver' in window) {
-          const loadMoreObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting && !loadMoreBtn.disabled && loadMoreBtn.style.display !== 'none') {
-                handleLoadMoreAction();
-              }
-            });
-          }, { rootMargin: '250px' });
-          loadMoreObserver.observe(loadMoreBtn);
-        }
       }
 
       // Hero Demo OTP Refresh
