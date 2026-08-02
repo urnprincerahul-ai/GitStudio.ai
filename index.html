@@ -2516,6 +2516,81 @@
       transition: all 0.3s ease;
     }
 
+    /* FAQ Quick Jump Breadcrumb Bar */
+    .faq-quick-jump-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      margin: 0 auto 1.5rem auto;
+      max-width: 850px;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: thin;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    .faq-quick-jump-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #38bdf8;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+      padding-right: 0.25rem;
+    }
+    .faq-quick-jump-chips-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex-wrap: nowrap;
+    }
+    .faq-quick-jump-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.28rem 0.65rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .faq-quick-jump-chip:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      transform: translateY(-1px);
+    }
+    .faq-quick-jump-chip.active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2));
+      border-color: #a855f7;
+      color: #f8fafc;
+      font-weight: 700;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.25);
+    }
+    .faq-quick-jump-separator {
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      opacity: 0.5;
+      user-select: none;
+    }
+    .faq-category-block-jump-active {
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.45) !important;
+      transition: all 0.3s ease;
+    }
+
     /* ==========================================
        MODALS & TOASTS
        ========================================== */
@@ -5356,6 +5431,32 @@
         <button class="faq-cat-btn" data-category="technical" onclick="selectFaqCategory('technical')">
           <i class="fa-solid fa-sliders"></i> Technical & Tools <span class="faq-cat-badge" id="faq-cat-count-technical">3</span>
         </button>
+      </div>
+
+      <!-- FAQ Quick Jump Breadcrumb Bar -->
+      <div class="faq-quick-jump-bar" id="faq-quick-jump-bar" title="Instantly navigate and auto-expand specific FAQ category sections">
+        <span class="faq-quick-jump-label"><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Quick Jump:</span>
+        <div class="faq-quick-jump-chips-wrapper">
+          <button class="faq-quick-jump-chip active" data-jump-category="all" onclick="quickJumpToFaqCategory('all')">
+            <i class="fa-solid fa-layer-group"></i> All
+          </button>
+          <span class="faq-quick-jump-separator"><i class="fa-solid fa-chevron-right"></i></span>
+          <button class="faq-quick-jump-chip" data-jump-category="sms" onclick="quickJumpToFaqCategory('sms')">
+            <i class="fa-solid fa-comment-sms" style="color: #38bdf8;"></i> SMS Verification
+          </button>
+          <span class="faq-quick-jump-separator"><i class="fa-solid fa-chevron-right"></i></span>
+          <button class="faq-quick-jump-chip" data-jump-category="payments" onclick="quickJumpToFaqCategory('payments')">
+            <i class="fa-solid fa-credit-card" style="color: #4ade80;"></i> Payments & Top-Up
+          </button>
+          <span class="faq-quick-jump-separator"><i class="fa-solid fa-chevron-right"></i></span>
+          <button class="faq-quick-jump-chip" data-jump-category="account" onclick="quickJumpToFaqCategory('account')">
+            <i class="fa-solid fa-users" style="color: #f59e0b;"></i> Account & Rewards
+          </button>
+          <span class="faq-quick-jump-separator"><i class="fa-solid fa-chevron-right"></i></span>
+          <button class="faq-quick-jump-chip" data-jump-category="technical" onclick="quickJumpToFaqCategory('technical')">
+            <i class="fa-solid fa-sliders" style="color: #a855f7;"></i> Technical Tools
+          </button>
+        </div>
       </div>
 
       <!-- No Matching Results Empty State -->
@@ -13754,7 +13855,71 @@
         }
       });
 
+      // Update Quick Jump breadcrumb chips active state
+      document.querySelectorAll('.faq-quick-jump-chip').forEach(chip => {
+        if (chip.dataset.jumpCategory === category) {
+          chip.classList.add('active');
+        } else {
+          chip.classList.remove('active');
+        }
+      });
+
       filterFaqs();
+    }
+
+    function quickJumpToFaqCategory(categoryKey) {
+      // If currently filtered by another specific category, reset filter to 'all' so target block is visible
+      if (currentFaqCategory !== 'all' && currentFaqCategory !== categoryKey && categoryKey !== 'all') {
+        selectFaqCategory('all');
+      } else {
+        document.querySelectorAll('.faq-quick-jump-chip').forEach(chip => {
+          chip.classList.toggle('active', chip.dataset.jumpCategory === categoryKey);
+        });
+      }
+
+      if (categoryKey === 'all') {
+        const firstBlock = document.querySelector('.faq-category-block');
+        if (firstBlock) {
+          document.querySelectorAll('.faq-category-block').forEach((b, idx) => {
+            b.classList.toggle('open', idx === 0);
+          });
+          firstBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+      }
+
+      // Find specific FAQ category block
+      const targetBlock = document.querySelector(`.faq-category-block[data-category="${categoryKey}"]`);
+      if (targetBlock) {
+        targetBlock.style.display = 'block';
+
+        // Auto-expand target category block and collapse all others
+        document.querySelectorAll('.faq-category-block').forEach(block => {
+          if (block === targetBlock) {
+            block.classList.add('open');
+          } else {
+            block.classList.remove('open');
+          }
+        });
+
+        // Smooth scroll directly to target block
+        targetBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Glowing pulse highlight effect on target category block
+        document.querySelectorAll('.faq-category-block').forEach(b => b.classList.remove('faq-category-block-jump-active'));
+        targetBlock.classList.add('faq-category-block-jump-active');
+
+        if (window.gsap) {
+          gsap.fromTo(targetBlock, 
+            { scale: 0.98 }, 
+            { scale: 1.015, duration: 0.25, yoyo: true, repeat: 1, ease: 'power2.out', clearProps: 'transform' }
+          );
+        }
+
+        setTimeout(() => {
+          targetBlock.classList.remove('faq-category-block-jump-active');
+        }, 2200);
+      }
     }
 
     function toggleFaqCategoryBlock(headerEl) {
