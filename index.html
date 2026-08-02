@@ -7490,13 +7490,14 @@
       AppState.numbers = [];
       PairCreatedCounts.clear();
 
-      // Round-robin generation across ALL platforms and top countries so every platform is seeded evenly
-      const topCountries = AppState.countries.slice(0, 10);
-      const topPlatforms = AppState.platforms; // ALL platforms
+      // Round-robin generation across ALL platforms and countries so every platform is seeded with a different starting country
+      const allCountries = AppState.countries;
+      const allPlatforms = AppState.platforms; // ALL platforms
 
-      for (let numIdx = 0; numIdx < 15; numIdx++) {
-        topCountries.forEach(c => {
-          topPlatforms.forEach(p => {
+      for (let numIdx = 0; numIdx < 10; numIdx++) {
+        allPlatforms.forEach((p, pIdx) => {
+          allCountries.forEach((_, cIdx) => {
+            const c = allCountries[(cIdx + pIdx + numIdx) % allCountries.length];
             createPairNumberPool(c, p, numIdx + 1);
           });
         });
