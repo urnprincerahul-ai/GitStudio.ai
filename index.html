@@ -6891,6 +6891,41 @@
     </div>
   </div>
 
+  <!-- Top 10 Referrers Leaderboard Modal -->
+  <div class="modal-backdrop" id="top-referrers-modal">
+    <div class="modal-box" style="max-width: 680px; width: 95%;">
+      <button class="modal-close" onclick="closeModal('top-referrers-modal')"><i class="fa-solid fa-xmark"></i></button>
+      
+      <!-- Modal Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.35rem; padding-right: 2.2rem;">
+        <h3 style="font-size: 1.2rem; font-weight: 800; margin: 0; display: flex; align-items: center; gap: 0.5rem; color: #ffffff;">
+          <i class="fa-solid fa-trophy" style="color: #f59e0b; font-size: 1.25rem;"></i> Top 10 Referrers Hall of Fame
+        </h3>
+        <span class="badge badge-warning" style="font-size: 0.7rem; white-space: nowrap; font-weight: 800; padding: 0.28rem 0.6rem; background: rgba(245, 158, 11, 0.18); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4);">
+          <i class="fa-solid fa-crown"></i> Live Gamified Standings
+        </span>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 1.1rem; line-height: 1.4;">
+        Top community ambassadors earning passive cash credits by inviting active users. Share your link to climb the ranks!
+      </p>
+
+      <!-- Dynamic Content Box -->
+      <div id="top-referrers-modal-content" style="display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Rendered dynamically via renderTopReferrersModalContent() -->
+      </div>
+
+      <!-- Action Footer -->
+      <div style="display: flex; gap: 0.6rem; justify-content: space-between; align-items: center; margin-top: 1.25rem; border-top: 1px solid var(--border-color); padding-top: 1rem; flex-wrap: wrap;">
+        <button class="btn btn-secondary btn-sm" onclick="simulateNewReferral();" style="font-size: 0.78rem; font-weight: 700;">
+          <i class="fa-solid fa-user-plus" style="color: #f59e0b;"></i> Simulate Friend Joining (+10%)
+        </button>
+        <button class="btn btn-warning btn-sm" onclick="copyReferralLink();" style="font-size: 0.8rem; font-weight: 800; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; color: white;">
+          <i class="fa-solid fa-share-nodes"></i> Share Link & Climb Leaderboard
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Area -->
   <div id="toast-container"></div>
 
@@ -8356,10 +8391,15 @@
       const baseLeaderboard = [
         { name: 'Priya Sharma', country: '🇮🇳', invites: 154, totalEarned: 4850.00, badge: 'Pro VIP', photo: '', avatarIcon: 'fa-solid fa-user-astronaut', isCurrentUser: false },
         { name: 'David Miller', country: '🇺🇸', invites: 112, totalEarned: 3420.00, badge: 'Pro VIP', photo: '', avatarIcon: 'fa-solid fa-user-ninja', isCurrentUser: false },
-        { name: 'Vikram Malhotra', country: '🇮🇳', invites: 86, totalEarned: 2680.00, badge: 'Standard', photo: '', avatarIcon: 'fa-solid fa-user-tie', isCurrentUser: false },
-        { name: 'Marcus Vance', country: '🇬🇧', invites: 45, totalEarned: 1350.00, badge: 'Standard', photo: '', avatarIcon: 'fa-solid fa-user-gear', isCurrentUser: false },
+        { name: 'Vikram Malhotra', country: '🇮🇳', invites: 86, totalEarned: 2680.00, badge: 'Gold VIP', photo: '', avatarIcon: 'fa-solid fa-user-tie', isCurrentUser: false },
+        { name: 'Marcus Vance', country: '🇬🇧', invites: 45, totalEarned: 1350.00, badge: 'Growth', photo: '', avatarIcon: 'fa-solid fa-user-gear', isCurrentUser: false },
         { name: 'Elena Rostova', country: '🇩🇪', invites: 34, totalEarned: 1020.00, badge: 'Pro VIP', photo: '', avatarIcon: 'fa-solid fa-user-graduate', isCurrentUser: false },
         { name: 'Ananya Gupta', country: '🇮🇳', invites: 28, totalEarned: 840.00, badge: 'Pro VIP', photo: '', avatarIcon: 'fa-solid fa-user-check', isCurrentUser: false },
+        { name: 'Carlos Mendez', country: '🇲🇽', invites: 22, totalEarned: 660.00, badge: 'Silver VIP', photo: '', avatarIcon: 'fa-solid fa-user-shield', isCurrentUser: false },
+        { name: 'Kenji Sato', country: '🇯🇵', invites: 18, totalEarned: 540.00, badge: 'Silver VIP', photo: '', avatarIcon: 'fa-solid fa-user-pen', isCurrentUser: false },
+        { name: 'Sophie Laurent', country: '🇫🇷', invites: 14, totalEarned: 420.00, badge: 'Standard', photo: '', avatarIcon: 'fa-solid fa-user-clock', isCurrentUser: false },
+        { name: 'Rahul Kapoor', country: '🇮🇳', invites: 11, totalEarned: 330.00, badge: 'Standard', photo: '', avatarIcon: 'fa-solid fa-user-large', isCurrentUser: false },
+        { name: 'Maya Patel', country: '🇨🇦', invites: 9, totalEarned: 270.00, badge: 'Standard', photo: '', avatarIcon: 'fa-solid fa-user-secret', isCurrentUser: false },
         { 
           name: `${userName}`, 
           country: '👑', 
@@ -8380,6 +8420,196 @@
         ...item,
         rank: idx + 1
       }));
+    }
+
+    function openTopReferrersModal() {
+      renderTopReferrersModalContent();
+      openModal('top-referrers-modal');
+    }
+
+    function renderTopReferrersModalContent() {
+      const container = document.getElementById('top-referrers-modal-content');
+      if (!container) return;
+
+      const fullLeaderboard = getReferralLeaderboardData();
+      const top10 = fullLeaderboard.slice(0, 10);
+      const currentUserRecord = fullLeaderboard.find(x => x.isCurrentUser);
+      const userRank = currentUserRecord ? currentUserRecord.rank : null;
+
+      // Identify top 3 champions
+      const first = top10[0];
+      const second = top10[1];
+      const third = top10[2];
+
+      // Calculate progress needed for user to overtake the person directly above them
+      let progressCardHtml = '';
+      if (currentUserRecord) {
+        if (userRank === 1) {
+          progressCardHtml = `
+            <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.18) 0%, rgba(16, 185, 129, 0.18) 100%); border: 1px solid rgba(245, 158, 11, 0.45); border-radius: 14px; padding: 0.85rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <span style="font-size: 1.4rem;">👑</span>
+                <div>
+                  <div style="font-weight: 800; font-size: 0.9rem; color: #f59e0b;">You are the #1 Referral Champion!</div>
+                  <div style="font-size: 0.76rem; color: var(--text-muted);">Total Earned: <strong style="color: #34d399;">₹${currentUserRecord.totalEarned.toFixed(2)}</strong> (${currentUserRecord.invites} invites)</div>
+                </div>
+              </div>
+              <span class="badge badge-warning" style="font-weight: 800; font-size: 0.7rem;"><i class="fa-solid fa-fire"></i> LEADERBOARD KING</span>
+            </div>
+          `;
+        } else {
+          const personAbove = fullLeaderboard.find(x => x.rank === userRank - 1);
+          const gapAmt = personAbove ? Math.max(10, personAbove.totalEarned - currentUserRecord.totalEarned + 10) : 50;
+          const pct = personAbove ? Math.min(95, Math.max(10, Math.round((currentUserRecord.totalEarned / personAbove.totalEarned) * 100))) : 50;
+
+          progressCardHtml = `
+            <div style="background: rgba(30, 41, 59, 0.75); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 14px; padding: 0.85rem 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.35rem;">
+                <div style="font-size: 0.82rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 0.4rem;">
+                  <i class="fa-solid fa-ranking-star" style="color: #38bdf8;"></i> Your Position: <span style="color: #38bdf8; font-weight: 900; font-family: var(--font-mono);">#${userRank}</span>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                  Earned: <strong style="color: #34d399; font-family: var(--font-mono);">₹${currentUserRecord.totalEarned.toFixed(2)}</strong> (${currentUserRecord.invites} invites)
+                </div>
+              </div>
+
+              <!-- Progress bar to next rank -->
+              <div style="width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; margin-bottom: 0.4rem;">
+                <div style="width: ${pct}%; height: 100%; background: linear-gradient(90deg, #38bdf8 0%, #f59e0b 100%); border-radius: 10px; transition: width 0.5s ease;"></div>
+              </div>
+              <div style="font-size: 0.73rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
+                <span>Need <strong style="color: #f59e0b;">+₹${gapAmt.toFixed(2)}</strong> rewards to climb to <strong style="color: #ffffff;">#${userRank - 1} (${personAbove ? personAbove.name : ''})</strong></span>
+                <span style="font-weight: 700; color: #38bdf8;">${pct}%</span>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Podium HTML
+      let podiumHtml = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.75rem; width: 100%;">
+      `;
+
+      if (first) {
+        podiumHtml += `
+          <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(30, 41, 59, 0.85) 100%); border: 1.5px solid rgba(245, 158, 11, 0.65); border-radius: 16px; padding: 0.85rem; text-align: center; position: relative; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.18);">
+            <div style="position: absolute; top: -10px; right: 10px; background: #f59e0b; color: #0f172a; font-weight: 900; font-size: 0.62rem; padding: 0.15rem 0.5rem; border-radius: 10px; text-transform: uppercase;">1st Champion</div>
+            <div style="font-size: 1.8rem; margin-bottom: 0.2rem;">🥇</div>
+            <div style="font-weight: 800; font-size: 0.88rem; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${first.name} ${first.country}</div>
+            <div style="font-size: 0.7rem; color: #f59e0b; font-weight: 700; margin-bottom: 0.4rem;">${first.badge}</div>
+            <div style="background: rgba(0,0,0,0.25); border-radius: 8px; padding: 0.35rem 0.5rem; font-size: 0.78rem;">
+              <div style="color: #34d399; font-weight: 900; font-family: var(--font-mono);">₹${first.totalEarned.toFixed(2)}</div>
+              <div style="color: var(--text-muted); font-size: 0.68rem;">${first.invites} Friends Invited</div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (second) {
+        podiumHtml += `
+          <div style="background: linear-gradient(135deg, rgba(148, 163, 184, 0.18) 0%, rgba(30, 41, 59, 0.85) 100%); border: 1.5px solid rgba(148, 163, 184, 0.5); border-radius: 16px; padding: 0.85rem; text-align: center; position: relative;">
+            <div style="position: absolute; top: -10px; right: 10px; background: #94a3b8; color: #0f172a; font-weight: 900; font-size: 0.62rem; padding: 0.15rem 0.5rem; border-radius: 10px; text-transform: uppercase;">2nd Place</div>
+            <div style="font-size: 1.8rem; margin-bottom: 0.2rem;">🥈</div>
+            <div style="font-weight: 800; font-size: 0.88rem; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${second.name} ${second.country}</div>
+            <div style="font-size: 0.7rem; color: #cbd5e1; font-weight: 700; margin-bottom: 0.4rem;">${second.badge}</div>
+            <div style="background: rgba(0,0,0,0.25); border-radius: 8px; padding: 0.35rem 0.5rem; font-size: 0.78rem;">
+              <div style="color: #34d399; font-weight: 900; font-family: var(--font-mono);">₹${second.totalEarned.toFixed(2)}</div>
+              <div style="color: var(--text-muted); font-size: 0.68rem;">${second.invites} Friends Invited</div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (third) {
+        podiumHtml += `
+          <div style="background: linear-gradient(135deg, rgba(217, 119, 6, 0.18) 0%, rgba(30, 41, 59, 0.85) 100%); border: 1.5px solid rgba(217, 119, 6, 0.5); border-radius: 16px; padding: 0.85rem; text-align: center; position: relative;">
+            <div style="position: absolute; top: -10px; right: 10px; background: #d97706; color: #ffffff; font-weight: 900; font-size: 0.62rem; padding: 0.15rem 0.5rem; border-radius: 10px; text-transform: uppercase;">3rd Place</div>
+            <div style="font-size: 1.8rem; margin-bottom: 0.2rem;">🥉</div>
+            <div style="font-weight: 800; font-size: 0.88rem; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${third.name} ${third.country}</div>
+            <div style="font-size: 0.7rem; color: #f59e0b; font-weight: 700; margin-bottom: 0.4rem;">${third.badge}</div>
+            <div style="background: rgba(0,0,0,0.25); border-radius: 8px; padding: 0.35rem 0.5rem; font-size: 0.78rem;">
+              <div style="color: #34d399; font-weight: 900; font-family: var(--font-mono);">₹${third.totalEarned.toFixed(2)}</div>
+              <div style="color: var(--text-muted); font-size: 0.68rem;">${third.invites} Friends Invited</div>
+            </div>
+          </div>
+        `;
+      }
+
+      podiumHtml += `</div>`;
+
+      // Full Top 10 List Table
+      let listRowsHtml = top10.map((item) => {
+        let rankBadge = `<span style="font-weight: 800; font-family: var(--font-mono); color: var(--text-muted); font-size: 0.85rem;">#${item.rank}</span>`;
+        if (item.rank === 1) rankBadge = `<span style="font-size: 1.1rem;">🥇</span>`;
+        if (item.rank === 2) rankBadge = `<span style="font-size: 1.1rem;">🥈</span>`;
+        if (item.rank === 3) rankBadge = `<span style="font-size: 1.1rem;">🥉</span>`;
+
+        const rowBg = item.isCurrentUser 
+          ? 'background: rgba(56, 189, 248, 0.15); border-left: 3.5px solid #38bdf8;' 
+          : 'border-bottom: 1px solid rgba(255, 255, 255, 0.05);';
+
+        return `
+          <tr style="${rowBg}">
+            <td style="padding: 0.6rem 0.75rem; text-align: center; width: 50px;">
+              ${rankBadge}
+            </td>
+            <td style="padding: 0.6rem 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">
+                  ${item.photo ? `<img src="${item.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />` : `<i class="${item.avatarIcon}" style="color: #38bdf8;"></i>`}
+                </div>
+                <div>
+                  <div style="font-weight: 700; color: #ffffff; font-size: 0.84rem; display: flex; align-items: center; gap: 0.35rem;">
+                    ${item.name} <span>${item.country}</span>
+                    ${item.isCurrentUser ? '<span class="badge badge-primary" style="font-size: 0.58rem; padding: 0.08rem 0.35rem; background: #38bdf8; color: #0f172a; font-weight: 900;">YOU</span>' : ''}
+                  </div>
+                  <span style="font-size: 0.68rem; color: var(--text-muted);">${item.badge}</span>
+                </div>
+              </div>
+            </td>
+            <td style="padding: 0.6rem 0.75rem; text-align: center; font-size: 0.82rem; font-weight: 700; color: #cbd5e1;">
+              <span style="background: rgba(255,255,255,0.06); padding: 0.2rem 0.55rem; border-radius: 6px;">${item.invites} invites</span>
+            </td>
+            <td style="padding: 0.6rem 0.75rem; text-align: right; font-family: var(--font-mono); font-weight: 900; color: #34d399; font-size: 0.88rem;">
+              ₹${item.totalEarned.toFixed(2)}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <!-- Top 3 Podium Cards -->
+        ${podiumHtml}
+
+        <!-- User Progress Card -->
+        ${progressCardHtml}
+
+        <!-- Top 10 Table Wrapper -->
+        <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; overflow: hidden;">
+          <div style="padding: 0.65rem 0.85rem; background: rgba(255, 255, 255, 0.03); border-bottom: 1px solid rgba(255, 255, 255, 0.06); display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.78rem; font-weight: 800; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.35rem;">
+              <i class="fa-solid fa-list-ol" style="color: #f59e0b;"></i> Top 10 Community Referrers
+            </span>
+            <span style="font-size: 0.7rem; color: var(--text-muted);"><i class="fa-solid fa-bolt" style="color: #38bdf8;"></i> Live Rewards</span>
+          </div>
+          <div class="responsive-table-wrapper" style="max-height: 260px; overflow-y: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
+              <thead>
+                <tr style="background: rgba(0, 0, 0, 0.2); color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase;">
+                  <th style="padding: 0.5rem 0.75rem; text-align: center;">Rank</th>
+                  <th style="padding: 0.5rem 0.75rem;">Referrer</th>
+                  <th style="padding: 0.5rem 0.75rem; text-align: center;">Invites</th>
+                  <th style="padding: 0.5rem 0.75rem; text-align: right;">Total Cash</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${listRowsHtml}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
     }
 
     /* ==========================================
@@ -8837,9 +9067,14 @@
               <span class="badge badge-warning" style="font-size: 0.72rem; padding: 0.28rem 0.65rem; white-space: nowrap !important; max-width: 100%; display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 800; flex-shrink: 0;">
                 <i class="fa-solid fa-crown" style="color: #f59e0b;"></i> 10% LIFETIME REWARDS PROGRAM
               </span>
-              <button class="btn btn-warning btn-sm" onclick="simulateNewReferral()" style="font-weight: 700; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; color: white; white-space: nowrap; flex-shrink: 0;">
-                <i class="fa-solid fa-user-plus"></i> Simulate Friend Joining
-              </button>
+              <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+                <button class="btn btn-warning btn-sm" onclick="openTopReferrersModal()" style="font-weight: 800; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; color: white; white-space: nowrap; flex-shrink: 0;">
+                  <i class="fa-solid fa-trophy"></i> Top 10 Leaderboard
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="simulateNewReferral()" style="font-weight: 700; white-space: nowrap; flex-shrink: 0;">
+                  <i class="fa-solid fa-user-plus"></i> Simulate Friend Joining
+                </button>
+              </div>
             </div>
             <div>
               <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem; word-break: break-word;">Invite Friends, Earn Cash Credits!</h3>
@@ -9220,9 +9455,12 @@
                   Cash rewards distributed to top performing community members
                 </p>
               </div>
-              <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                <button class="btn btn-warning btn-sm" onclick="openTopReferrersModal()" style="font-size: 0.72rem; padding: 0.22rem 0.6rem; font-weight: 800; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; color: white;">
+                  <i class="fa-solid fa-trophy"></i> Top 10 Hall of Fame
+                </button>
                 <span class="badge badge-warning" style="font-size: 0.68rem; padding: 0.2rem 0.55rem; font-weight: 700; background: rgba(245, 158, 11, 0.18); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35);">
-                  <i class="fa-solid fa-ranking-star" style="font-size: 0.65rem;"></i> Top 7 Performers
+                  <i class="fa-solid fa-ranking-star" style="font-size: 0.65rem;"></i> Top Performers
                 </span>
               </div>
             </div>
@@ -9594,6 +9832,9 @@
       SafeStorage.setItem('vnh_ref_earnings', AppState.referralEarnings);
 
       renderReferralTab();
+      if (typeof renderTopReferrersModalContent === 'function') {
+        renderTopReferrersModalContent();
+      }
       triggerConfetti();
       showToast(`🎁 ${chosenName} joined using your link & topped up ₹${spent}! Earned +₹${reward.toFixed(2)} reward credit!`, 'success');
     }
