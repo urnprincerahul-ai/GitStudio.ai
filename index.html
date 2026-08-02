@@ -5423,7 +5423,7 @@
         </div>
 
         <!-- CATEGORY 2: PAYMENTS & BILLING -->
-        <div class="faq-category-block open" data-category="payments">
+        <div class="faq-category-block" data-category="payments">
           <div class="faq-category-header" onclick="toggleFaqCategoryBlock(this)">
             <div class="faq-category-title">
               <div class="faq-category-icon"><i class="fa-solid fa-credit-card"></i></div>
@@ -5466,7 +5466,7 @@
         </div>
 
         <!-- CATEGORY 3: ACCOUNT & REFERRALS -->
-        <div class="faq-category-block open" data-category="account">
+        <div class="faq-category-block" data-category="account">
           <div class="faq-category-header" onclick="toggleFaqCategoryBlock(this)">
             <div class="faq-category-title">
               <div class="faq-category-icon"><i class="fa-solid fa-users"></i></div>
@@ -5509,7 +5509,7 @@
         </div>
 
         <!-- CATEGORY 4: TECHNICAL & TOOLS -->
-        <div class="faq-category-block open" data-category="technical">
+        <div class="faq-category-block" data-category="technical">
           <div class="faq-category-header" onclick="toggleFaqCategoryBlock(this)">
             <div class="faq-category-title">
               <div class="faq-category-icon"><i class="fa-solid fa-sliders"></i></div>
@@ -13758,10 +13758,22 @@
     }
 
     function toggleFaqCategoryBlock(headerEl) {
-      const block = headerEl.parentElement;
-      if (block) {
-        block.classList.toggle('open');
-      }
+      const targetBlock = headerEl.parentElement;
+      if (!targetBlock) return;
+
+      const isOpening = !targetBlock.classList.contains('open');
+
+      document.querySelectorAll('.faq-category-block').forEach(block => {
+        if (block === targetBlock) {
+          if (isOpening) {
+            block.classList.add('open');
+          } else {
+            block.classList.remove('open');
+          }
+        } else {
+          block.classList.remove('open');
+        }
+      });
     }
 
     let faqMatchingItems = [];
