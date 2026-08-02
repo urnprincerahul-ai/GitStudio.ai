@@ -5151,24 +5151,32 @@
                     <i class="fa-solid fa-receipt" style="color: #38bdf8;"></i> SMS Logs <span class="badge badge-primary" id="sms-logs-count-badge" style="margin-left: 0.25rem; font-size: 0.65rem;">0</span>
                   </button>
                 </div>
-                <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
-                  <div style="display: flex; align-items: center; gap: 0.25rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.15rem 0.4rem;" title="Select incoming OTP notification sound alert style">
-                    <i class="fa-solid fa-music" style="color: #38bdf8; font-size: 0.75rem;"></i>
-                    <select id="dash-otp-sound-style-select" onchange="changeOtpSoundStyle(this.value)" style="background: transparent; border: none; color: var(--text-main); font-size: 0.75rem; font-weight: 600; cursor: pointer; padding: 0.2rem 0.1rem; outline: none;">
-                      <option value="classic" style="background: #0f172a; color: #fff;">🔔 Sound: Classic Chime</option>
-                      <option value="digital" style="background: #0f172a; color: #fff;">📟 Sound: Digital Beep</option>
-                      <option value="marimba" style="background: #0f172a; color: #fff;">🪵 Sound: Marimba Drop</option>
-                      <option value="futuristic" style="background: #0f172a; color: #fff;">🚀 Sound: Sci-Fi Pulse</option>
-                      <option value="bell" style="background: #0f172a; color: #fff;">🛎️ Sound: Bell Resonance</option>
-                    </select>
-                    <button class="btn btn-secondary btn-sm" onclick="testOtpSoundStyle()" style="padding: 0.15rem 0.4rem; font-size: 0.7rem; border: none; background: rgba(255,255,255,0.08);" title="Play preview sound">
-                      <i class="fa-solid fa-play" style="color: var(--accent);"></i>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%; margin-top: 0.35rem;">
+                  <!-- Sound Alert Selector & Unique Play Button -->
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.35rem 0.65rem; box-sizing: border-box;" title="Select incoming OTP notification sound alert style">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0;">
+                      <i class="fa-solid fa-music" style="color: #38bdf8; font-size: 0.85rem;"></i>
+                      <select id="dash-otp-sound-style-select" onchange="changeOtpSoundStyle(this.value)" style="background: transparent; border: none; color: var(--text-main); font-size: 0.8rem; font-weight: 600; cursor: pointer; padding: 0.2rem 0; outline: none; width: 100%; min-width: 0;">
+                        <option value="classic" style="background: #0f172a; color: #fff;">🔔 Sound: Classic Chime</option>
+                        <option value="digital" style="background: #0f172a; color: #fff;">📟 Sound: Digital Beep</option>
+                        <option value="marimba" style="background: #0f172a; color: #fff;">🪵 Sound: Marimba Drop</option>
+                        <option value="futuristic" style="background: #0f172a; color: #fff;">🚀 Sound: Sci-Fi Pulse</option>
+                        <option value="bell" style="background: #0f172a; color: #fff;">🛎️ Sound: Bell Resonance</option>
+                        <option value="laser" style="background: #0f172a; color: #fff;">⚡ Sound: Cosmic Laser</option>
+                        <option value="glass" style="background: #0f172a; color: #fff;">🍷 Sound: Crystal Glass</option>
+                        <option value="cyber" style="background: #0f172a; color: #fff;">🤖 Sound: Cyber Matrix</option>
+                        <option value="arcade" style="background: #0f172a; color: #fff;">🕹️ Sound: Retro Arcade</option>
+                        <option value="zen" style="background: #0f172a; color: #fff;">🧘 Sound: Tibetan Zen</option>
+                      </select>
+                    </div>
+                    <button class="btn btn-sm otp-play-preview-btn" id="otp-play-sound-preview-btn" onclick="testOtpSoundStyle()" style="padding: 0.3rem 0.75rem; font-size: 0.75rem; border: 1px solid rgba(168, 85, 247, 0.5); background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(56, 189, 248, 0.25)); color: #f8fafc; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.2s ease; cursor: pointer; box-shadow: 0 0 12px rgba(168, 85, 247, 0.3); flex-shrink: 0;" title="Play preview sound">
+                      <i class="fa-solid fa-circle-play" style="font-size: 0.85rem; color: #a855f7;"></i> Preview
                     </button>
                   </div>
-                  <button class="btn btn-secondary btn-sm auto-speak-toggle-btn" onclick="toggleAutoSpeakOtp()" title="Toggle automatic Speech Synthesis readout when new OTPs arrive" style="font-size: 0.75rem; border: 1px solid var(--border-color);">
+                  <!-- Full-Width Auto Voice Readout Button -->
+                  <button class="btn btn-secondary btn-sm auto-speak-toggle-btn" onclick="toggleAutoSpeakOtp()" title="Toggle automatic Speech Synthesis readout when new OTPs arrive" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.825rem; font-weight: 700; padding: 0.55rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); box-sizing: border-box; text-align: center; transition: all 0.2s ease;">
                     <i class="fa-solid fa-square" style="color: var(--text-muted);"></i> Auto Voice Readout: OFF
                   </button>
-                  <button class="btn btn-secondary btn-sm" id="refresh-history-btn"><i class="fa-solid fa-rotate"></i> Sync</button>
                 </div>
               </div>
 
@@ -12937,6 +12945,98 @@
             osc.start(now);
             osc.stop(now + 0.72);
           });
+        } else if (style === 'laser') {
+          // Cosmic Laser - sharp pitch down sweep
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(2200, now);
+          osc.frequency.exponentialRampToValueAtTime(180, now + 0.16);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.19);
+        } else if (style === 'glass') {
+          // Crystal Glass - high pure tone chime with long decay
+          const baseFreq = 1567.98;
+          const osc1 = ctx.createOscillator();
+          const gain1 = ctx.createGain();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(baseFreq, now);
+          gain1.gain.setValueAtTime(0.2, now);
+          gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.75);
+          osc1.connect(gain1);
+          gain1.connect(ctx.destination);
+          osc1.start(now);
+          osc1.stop(now + 0.76);
+
+          const osc2 = ctx.createOscillator();
+          const gain2 = ctx.createGain();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(baseFreq * 2.01, now);
+          gain2.gain.setValueAtTime(0.08, now);
+          gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+          osc2.connect(gain2);
+          gain2.connect(ctx.destination);
+          osc2.start(now);
+          osc2.stop(now + 0.51);
+        } else if (style === 'cyber') {
+          // Cyber Matrix Arp - fast 4-step synth arpeggio
+          const notes = [659.25, 830.61, 987.77, 1318.51];
+          notes.forEach((freq, idx) => {
+            const t = now + idx * 0.05;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.18, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.13);
+          });
+        } else if (style === 'arcade') {
+          // Retro Arcade - classic 8-bit level up chirp
+          const notes = [440, 880, 1320];
+          notes.forEach((freq, idx) => {
+            const t = now + idx * 0.06;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.12, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.09);
+          });
+        } else if (style === 'zen') {
+          // Tibetan Zen - deep resonant bowl chime
+          const osc1 = ctx.createOscillator();
+          const gain1 = ctx.createGain();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(216, now);
+          gain1.gain.setValueAtTime(0.25, now);
+          gain1.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
+          osc1.connect(gain1);
+          gain1.connect(ctx.destination);
+          osc1.start(now);
+          osc1.stop(now + 1.12);
+
+          const osc2 = ctx.createOscillator();
+          const gain2 = ctx.createGain();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(432, now);
+          gain2.gain.setValueAtTime(0.1, now);
+          gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+          osc2.connect(gain2);
+          gain2.connect(ctx.destination);
+          osc2.start(now);
+          osc2.stop(now + 0.92);
         } else {
           // Default 'classic' dual chime
           const filter = ctx.createBiquadFilter();
@@ -12987,7 +13087,12 @@
         digital: 'Digital Beep 📟',
         marimba: 'Marimba Drop 🪵',
         futuristic: 'Sci-Fi Pulse 🚀',
-        bell: 'Bell Resonance 🛎️'
+        bell: 'Bell Resonance 🛎️',
+        laser: 'Cosmic Laser ⚡',
+        glass: 'Crystal Glass 🍷',
+        cyber: 'Cyber Matrix 🤖',
+        arcade: 'Retro Arcade 🕹️',
+        zen: 'Tibetan Zen 🧘'
       };
       showToast(`🔊 Alert Sound set to ${styleNames[AppState.otpSoundStyle] || 'Classic Chime'}`, 'info');
     }
@@ -12995,6 +13100,10 @@
     function testOtpSoundStyle() {
       isOtpAudioMuted = false;
       playOtpSoundNotification();
+      const btn = document.getElementById('otp-play-sound-preview-btn');
+      if (btn && typeof gsap !== 'undefined') {
+        gsap.fromTo(btn, { scale: 0.9 }, { scale: 1.08, duration: 0.15, yoyo: true, repeat: 1, ease: 'back.out(2)' });
+      }
     }
 
     function toggleOtpAudioMute() {
@@ -13112,13 +13221,17 @@
       const btns = document.querySelectorAll('.auto-speak-toggle-btn');
       btns.forEach(btn => {
         if (AppState.autoSpeakOtp) {
-          btn.innerHTML = `<i class="fa-solid fa-square-check" style="color: #a855f7;"></i> Auto Voice Readout: ON`;
+          btn.innerHTML = `<i class="fa-solid fa-square-check" style="color: #a855f7; font-size: 0.95rem;"></i> Auto Voice Readout: ON`;
           btn.style.borderColor = '#a855f7';
-          btn.style.background = 'rgba(168, 85, 247, 0.15)';
+          btn.style.background = 'rgba(168, 85, 247, 0.18)';
+          btn.style.color = '#f8fafc';
+          btn.style.boxShadow = '0 0 14px rgba(168, 85, 247, 0.3)';
         } else {
-          btn.innerHTML = `<i class="fa-solid fa-square" style="color: var(--text-muted);"></i> Auto Voice Readout: OFF`;
+          btn.innerHTML = `<i class="fa-solid fa-square" style="color: var(--text-muted); font-size: 0.95rem;"></i> Auto Voice Readout: OFF`;
           btn.style.borderColor = 'var(--border-color)';
           btn.style.background = 'transparent';
+          btn.style.color = 'var(--text-main)';
+          btn.style.boxShadow = 'none';
         }
       });
     }
