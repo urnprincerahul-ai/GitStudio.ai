@@ -4592,8 +4592,8 @@
         <li><a href="#countries" class="nav-link" onclick="scrollToSection('countries', event)"><i class="fa-solid fa-globe"></i> Countries</a></li>
         <li><a href="#platforms" class="nav-link" onclick="scrollToSection('platforms', event)"><i class="fa-solid fa-layer-group"></i> Platforms</a></li>
         <li><a href="#pricing" class="nav-link" onclick="scrollToSection('pricing', event)"><i class="fa-solid fa-tags"></i> Pricing</a></li>
-        <li><a href="#dashboard" class="nav-link" onclick="scrollToSection('dashboard', event); switchDashboardTab('purchases');"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
-        <li><a href="#dashboard" onclick="scrollToSection('dashboard', event); switchDashboardTab('referrals');" class="nav-link"><i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn</a></li>
+        <li><a href="#dashboard" class="nav-link" data-dash-tab="purchases" onclick="scrollToSection('dashboard', event); switchDashboardTab('purchases');"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+        <li><a href="#dashboard" data-dash-tab="referrals" onclick="scrollToSection('dashboard', event); switchDashboardTab('referrals');" class="nav-link"><i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn</a></li>
         <li><a href="#faq" class="nav-link" onclick="scrollToSection('faq', event)"><i class="fa-solid fa-circle-question"></i> FAQ</a></li>
       </ul>
 
@@ -4698,21 +4698,21 @@
         </a>
       </li>
       <li>
-        <a href="#dashboard" class="nav-link mobile-nav-item" onclick="scrollToSection('dashboard', event); switchDashboardTab('purchases'); closeMobileSidebar();">
+        <a href="#dashboard" class="nav-link mobile-nav-item" data-dash-tab="purchases" onclick="scrollToSection('dashboard', event); switchDashboardTab('purchases'); closeMobileSidebar();">
           <div class="mobile-nav-icon-badge"><i class="fa-solid fa-chart-line"></i></div>
           <span>Dashboard</span>
           <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
         </a>
       </li>
       <li>
-        <a href="#dashboard" class="nav-link mobile-nav-item" onclick="scrollToSection('dashboard', event); switchDashboardTab('favorites'); closeMobileSidebar();">
+        <a href="#dashboard" class="nav-link mobile-nav-item" data-dash-tab="favorites" onclick="scrollToSection('dashboard', event); switchDashboardTab('favorites'); closeMobileSidebar();">
           <div class="mobile-nav-icon-badge" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;"><i class="fa-solid fa-heart"></i></div>
           <span>Saved Favorites</span>
           <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
         </a>
       </li>
       <li>
-        <a href="#dashboard" onclick="scrollToSection('dashboard', event); switchDashboardTab('referrals'); closeMobileSidebar();" class="nav-link mobile-nav-item">
+        <a href="#dashboard" class="nav-link mobile-nav-item" data-dash-tab="referrals" onclick="scrollToSection('dashboard', event); switchDashboardTab('referrals'); closeMobileSidebar();">
           <div class="mobile-nav-icon-badge" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.3); color: #f59e0b;"><i class="fa-solid fa-gift"></i></div>
           <span>Refer & Earn</span>
           <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
@@ -8209,6 +8209,8 @@
       if (typeof animateDashboardStats === 'function') {
         animateDashboardStats(true);
       }
+
+      updateActiveNavLinks('dashboard');
     }
 
     /* ==========================================
@@ -15410,10 +15412,29 @@
 
     function updateActiveNavLinks(targetId) {
       if (!targetId) return;
+
+      const favoritesList = document.getElementById('favorites-tab-list');
+      const referralContent = document.getElementById('referral-tab-content');
+      let currentDashTab = 'purchases';
+      if (favoritesList && favoritesList.style.display !== 'none') {
+        currentDashTab = 'favorites';
+      } else if (referralContent && referralContent.style.display !== 'none') {
+        currentDashTab = 'referrals';
+      }
+
       document.querySelectorAll('.nav-menu .nav-link, .mobile-sidebar-nav-container .nav-link').forEach(link => {
         const href = link.getAttribute('href');
         if (href === `#${targetId}`) {
-          link.classList.add('active');
+          if (targetId === 'dashboard') {
+            const linkDashTab = link.getAttribute('data-dash-tab') || 'purchases';
+            if (linkDashTab === currentDashTab) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
+          } else {
+            link.classList.add('active');
+          }
         } else {
           link.classList.remove('active');
         }
@@ -15422,8 +15443,7 @@
       if (targetId === 'numbers' || targetId === 'hero' || targetId === 'countries' || targetId === 'platforms' || targetId === 'pricing' || targetId === 'faq') {
         setActiveMobileBottomNav('mob-nav-marketplace');
       } else if (targetId === 'dashboard') {
-        const favoritesList = document.getElementById('favorites-tab-list');
-        if (favoritesList && favoritesList.style.display !== 'none') {
+        if (currentDashTab === 'favorites') {
           setActiveMobileBottomNav('mob-nav-favorites');
         } else {
           setActiveMobileBottomNav('mob-nav-active-numbers');
