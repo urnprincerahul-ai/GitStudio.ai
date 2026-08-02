@@ -13779,6 +13779,9 @@
           return;
         }
 
+        const catTitleText = block.querySelector('.faq-category-title')?.innerText.toLowerCase() || '';
+        const categoryMatchesQuery = query.length > 0 && catTitleText.includes(query);
+
         const items = block.querySelectorAll('.faq-item');
         let blockMatchingCount = 0;
 
@@ -13786,7 +13789,7 @@
           const qText = item.querySelector('.faq-question')?.innerText.toLowerCase() || '';
           const aText = item.querySelector('.faq-answer')?.innerText.toLowerCase() || '';
 
-          if (query.length === 0 || qText.includes(query) || aText.includes(query)) {
+          if (query.length === 0 || categoryMatchesQuery || qText.includes(query) || aText.includes(query)) {
             item.style.display = 'block';
             blockMatchingCount++;
             if (query.length > 0) {
@@ -13802,10 +13805,11 @@
 
         if (blockMatchingCount > 0) {
           block.style.display = 'block';
-          block.classList.add('open');
+          block.classList.add('open'); // Auto-expand category block on matching query
           totalMatchingQuestions += blockMatchingCount;
         } else {
           block.style.display = 'none';
+          block.classList.remove('open');
         }
       });
 
