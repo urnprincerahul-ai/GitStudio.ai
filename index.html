@@ -7161,7 +7161,7 @@
       platforms: [],
       numbers: [],
       filteredNumbers: [],
-      visibleCount: 12
+      visibleCount: 10
     };
 
     const RawCountries = [
@@ -13694,7 +13694,14 @@
 
       AppState.filteredNumbers = results;
       if (resetVisibleCount) {
-        AppState.visibleCount = 12;
+        const isFilteredOrSearched = (
+          searchQuery !== '' ||
+          countryCode !== 'ALL' ||
+          countryName !== 'ALL' ||
+          platformName !== 'ALL' ||
+          status !== 'ALL'
+        );
+        AppState.visibleCount = isFilteredOrSearched ? 15 : 10;
       }
       renderMarketplace();
       try { syncPlatformBadgeActiveState(); } catch(e) {}
@@ -16604,12 +16611,12 @@
         if (isScrollLoading) return;
         isScrollLoading = true;
 
-        AppState.visibleCount += 24;
+        AppState.visibleCount += 10;
         const cName = document.getElementById('filter-country-select')?.value || 'ALL';
         const cCode = document.getElementById('filter-country-code-select')?.value || 'ALL';
         const pName = document.getElementById('filter-platform-select')?.value || 'ALL';
 
-        if (AppState.visibleCount + 12 >= AppState.filteredNumbers.length) {
+        if (AppState.visibleCount + 10 >= AppState.filteredNumbers.length) {
           ensureNumbersExistForFilter(cName, cCode, pName, 50);
           applyMarketplaceFilters(false);
         } else {
