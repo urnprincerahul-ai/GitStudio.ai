@@ -637,14 +637,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 66px;
+      height: 72px;
       gap: 1rem;
       box-sizing: border-box;
     }
     .logo {
       display: inline-flex;
       align-items: center;
-      gap: 0.65rem;
+      gap: 0.75rem;
       text-decoration: none;
       color: var(--text-main);
       transition: transform 0.2s ease, opacity 0.2s ease;
@@ -659,45 +659,22 @@
     }
     .logo-title {
       font-weight: 800;
-      font-size: 1.15rem;
+      font-size: 1.25rem;
       letter-spacing: -0.3px;
       color: var(--text-main);
       white-space: nowrap;
     }
-    .header-live-indicator {
-      font-size: 0.58rem;
-      font-weight: 800;
-      color: #38bdf8;
-      letter-spacing: 0.6px;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      margin-top: 1px;
-      opacity: 0.95;
-    }
-    .live-dot {
-      width: 6px;
-      height: 6px;
-      background: #38bdf8;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #38bdf8;
-      animation: pulseLiveDot 2s infinite ease-in-out;
-    }
-    @keyframes pulseLiveDot {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.3); opacity: 0.6; }
-    }
     .logo-icon {
-      width: 38px;
-      height: 38px;
+      width: 42px;
+      height: 42px;
       background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
-      border-radius: 10px;
+      border-radius: 12px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       color: #FFFFFF;
-      font-size: 1.12rem;
-      box-shadow: 0 0 16px rgba(56, 189, 248, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      font-size: 1.25rem;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.45), inset 0 1.5px 0 rgba(255, 255, 255, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.25);
       transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
       flex-shrink: 0;
@@ -705,32 +682,31 @@
     .nav-menu {
       display: flex;
       align-items: center;
-      gap: 0.25rem;
+      gap: 0.35rem;
       list-style: none;
-      background: rgba(255, 255, 255, 0.04);
-      padding: 0.25rem;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.35rem 0.45rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
       margin: 0;
       box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
     }
     [data-theme="light"] .nav-menu {
-      background: rgba(15, 23, 42, 0.04);
-      border-color: rgba(15, 23, 42, 0.08);
+      background: rgba(15, 23, 42, 0.05);
+      border-color: rgba(15, 23, 42, 0.12);
       box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
     }
     .nav-link {
       color: var(--text-muted);
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.84rem;
+      font-size: 0.88rem;
       transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
-      padding: 0 0.85rem;
-      height: 36px;
-      border-radius: 8px;
+      padding: 0.48rem 0.9rem;
+      border-radius: 12px;
       border: 1px solid transparent;
       white-space: nowrap;
       box-sizing: border-box;
@@ -749,22 +725,21 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.65rem;
       flex-shrink: 0;
     }
     .wallet-chip {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.45rem;
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.12) 100%);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
-      padding: 0 0.85rem;
-      height: 36px;
-      border-radius: 10px;
-      font-size: 0.82rem;
-      font-weight: 700;
+      gap: 0.55rem;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(5, 150, 105, 0.15) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.25);
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.88rem;
+      font-weight: 800;
       color: #34d399;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -786,9 +761,8 @@
       gap: 0.45rem;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 0 0.85rem;
-      height: 36px;
-      border-radius: 10px;
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-full);
       font-size: 0.82rem;
       font-weight: 700;
       color: var(--text-main);
@@ -810,9 +784,8 @@
       gap: 0.45rem;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 0 0.85rem;
-      height: 36px;
-      border-radius: 10px;
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-full);
       font-size: 0.82rem;
       font-weight: 700;
       color: var(--text-main);
@@ -829,20 +802,14 @@
 
     .hamburger-btn {
       display: none;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
       color: var(--text-main);
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       cursor: pointer;
-      width: 36px;
-      height: 36px;
-      padding: 0 !important;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-      box-sizing: border-box;
-      flex-shrink: 0;
+      padding: 0.45rem 0.65rem;
+      transition: all 0.25s ease;
     }
     .hamburger-btn:hover {
       background: rgba(56, 189, 248, 0.15);
@@ -3843,7 +3810,6 @@
       }
 
       .server-time-chip,
-      .user-chip,
       #admin-panel-btn,
       #notification-bell-btn,
       #price-alert-bell-btn {
@@ -3851,19 +3817,19 @@
       }
 
       .app-header {
-        height: 58px;
+        height: 66px;
         width: 100%;
         max-width: 100%;
       }
       .header-inner {
-        height: 58px;
-        padding: 0 0.85rem;
-        gap: 0.5rem;
+        height: 66px;
+        padding: 0 1rem;
+        gap: 0.65rem;
         max-width: 100%;
       }
       .logo {
-        font-size: 0.98rem;
-        gap: 0.45rem;
+        font-size: 1.12rem;
+        gap: 0.65rem;
         min-width: 0;
       }
       .logo span {
@@ -3872,30 +3838,38 @@
         text-overflow: ellipsis;
       }
       .logo-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 0.95rem;
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
         border-radius: 10px;
         flex-shrink: 0;
       }
 
       .header-actions {
-        gap: 0.4rem;
+        gap: 0.5rem;
         flex-shrink: 0;
         align-items: center;
       }
       .wallet-chip {
-        padding: 0.3rem 0.65rem;
-        font-size: 0.78rem;
-        gap: 0.35rem;
-        border-radius: 20px;
+        padding: 0.4rem 0.85rem;
+        font-size: 0.82rem;
+        gap: 0.4rem;
+        border-radius: var(--radius-full);
+      }
+      .user-chip, #user-auth-header-btn {
+        display: inline-flex !important;
+        align-items: center;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.82rem;
+        gap: 0.4rem;
+        border-radius: var(--radius-full);
       }
       #theme-toggle-btn, #hamburger-btn {
-        width: 32px;
-        height: 32px;
+        width: 38px;
+        height: 38px;
         padding: 0 !important;
-        font-size: 0.9rem;
-        border-radius: 8px;
+        font-size: 1.1rem;
+        border-radius: 10px;
         display: inline-flex !important;
         align-items: center;
         justify-content: center;
