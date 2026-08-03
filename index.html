@@ -454,6 +454,110 @@
       transform: translateY(-3px);
     }
 
+    /* ==========================================
+       GLOBAL MULTI-COLOR GRADIENT ACCENT LINES
+       ========================================== */
+    section, .app-section, .hero-section {
+      position: relative;
+    }
+
+    section::before, .app-section::before, .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 5%;
+      right: 5%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #38bdf8, #10b981, #ec4899, #f59e0b, transparent);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5), 0 0 14px rgba(236, 72, 153, 0.3);
+      border-radius: 2px;
+      opacity: 0.85;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .app-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #38bdf8, #10b981, #ec4899, #f59e0b, transparent);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+      pointer-events: none;
+      z-index: 1001;
+    }
+
+    .section-header::after {
+      content: '';
+      display: block;
+      width: 140px;
+      height: 3px;
+      margin: 0.9rem auto 0 auto;
+      background: linear-gradient(90deg, #38bdf8, #10b981, #ec4899, #f59e0b);
+      border-radius: 3px;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.7);
+    }
+
+    .glass-card::before,
+    .modal-box::before,
+    .pricing-card::before,
+    .feature-card::before,
+    .footer-top-banner::before,
+    .footer-stat-card::before,
+    .faq-category-block::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 8%;
+      right: 8%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #38bdf8, #10b981, #ec4899, #f59e0b, transparent);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+      border-radius: 2px;
+      opacity: 0.85;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .modal-box,
+    .pricing-card,
+    .feature-card,
+    .footer-top-banner,
+    .footer-stat-card,
+    .faq-category-block {
+      position: relative !important;
+      overflow: hidden !important;
+    }
+
+    .mobile-bottom-nav,
+    .mobile-sidebar {
+      position: fixed;
+    }
+    .mobile-bottom-nav::before,
+    .mobile-sidebar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 5%;
+      right: 5%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #38bdf8, #10b981, #ec4899, #f59e0b, transparent);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+      pointer-events: none;
+      z-index: 1002;
+    }
+
+    .gradient-accent-divider {
+      width: 100%;
+      height: 2px;
+      margin: 1.5rem 0;
+      background: linear-gradient(90deg, transparent, #38bdf8, #10b981, #ec4899, #f59e0b, transparent);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+      border-radius: 2px;
+    }
+
     /* Scroll performance GPU optimizations */
     html {
       scroll-behavior: smooth;
@@ -3663,10 +3767,12 @@
       content: '';
       position: absolute;
       top: 0;
-      left: 10%;
-      right: 10%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), var(--success), transparent);
+      left: 5%;
+      right: 5%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #38bdf8, #10b981, #ec4899, #f59e0b, transparent);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+      border-radius: 2px;
     }
 
     .footer-stats-strip {
