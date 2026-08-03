@@ -7802,17 +7802,17 @@
       AppState.numbers = [];
       PairCreatedCounts.clear();
 
-      // Round-robin generation across ALL platforms and countries so every platform is seeded with a different starting country
+      // Interleave generation across countries AND platforms so that consecutive numbers in AppState.numbers have DIFFERENT countries AND DIFFERENT platforms
       const allCountries = AppState.countries;
-      const allPlatforms = AppState.platforms; // ALL platforms
+      const allPlatforms = AppState.platforms;
+      const totalPairs = allCountries.length * allPlatforms.length;
 
-      for (let numIdx = 0; numIdx < 10; numIdx++) {
-        allPlatforms.forEach((p, pIdx) => {
-          allCountries.forEach((_, cIdx) => {
-            const c = allCountries[(cIdx + pIdx + numIdx) % allCountries.length];
-            createPairNumberPool(c, p, numIdx + 1);
-          });
-        });
+      for (let numIdx = 0; numIdx < 3; numIdx++) {
+        for (let i = 0; i < totalPairs; i++) {
+          const c = allCountries[i % allCountries.length];
+          const p = allPlatforms[(i + numIdx) % allPlatforms.length];
+          createPairNumberPool(c, p, numIdx + 1);
+        }
       }
 
       AppState.filteredNumbers = [...AppState.numbers];
@@ -14336,6 +14336,33 @@
         }
       } else if (sortBy === 'PRICE_LOW') {
         results.sort((a, b) => a.price - b.price);
+        if (platformName === 'ALL') {
+          // Interleave within price buckets so identical/similar prices have diverse platforms
+          const buckets = new Map();
+          results.forEach(n => {
+            const bucketKey = Math.floor(n.price / 15);
+            if (!buckets.has(bucketKey)) buckets.set(bucketKey, []);
+            buckets.get(bucketKey).push(n);
+          });
+          const reordered = [];
+          buckets.forEach(bucket => {
+            const pMap = new Map();
+            bucket.forEach(n => {
+              if (!pMap.has(n.platformName)) pMap.set(n.platformName, []);
+              pMap.get(n.platformName).push(n);
+            });
+            let bMax = 0;
+            pMap.forEach(arr => { if (arr.length > bMax) bMax = arr.length; });
+            const pKeys = Array.from(pMap.keys());
+            for (let i = 0; i < bMax; i++) {
+              pKeys.forEach(pk => {
+                const arr = pMap.get(pk);
+                if (i < arr.length) reordered.push(arr[i]);
+              });
+            }
+          });
+          results = reordered;
+        }
       } else if (sortBy === 'PRICE_HIGH') {
         results.sort((a, b) => b.price - a.price);
       } else if (sortBy === 'NEWEST') {
@@ -14370,7 +14397,7 @@
       if (countrySelect) countrySelect.value = 'ALL';
       if (platformSelect) platformSelect.value = 'ALL';
       if (statusSelect) statusSelect.value = 'ALL';
-      if (sortSelect) sortSelect.value = 'PRICE_LOW';
+      if (sortSelect) sortSelect.value = 'RECOMMENDED';
 
       syncCountryAutocompleteDisplay('ALL');
       applyMarketplaceFilters();
