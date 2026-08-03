@@ -2946,7 +2946,18 @@
       word-break: break-word;
       line-height: 1.35;
     }
-    @media (max-width: 520px) {
+    @media (max-width: 600px) {
+      .modal-backdrop {
+        padding: 0.4rem !important;
+        align-items: center !important;
+      }
+      .modal-box {
+        padding: 1rem 0.85rem !important;
+        max-height: calc(100dvh - 1rem) !important;
+        border-radius: 16px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
       .bulk-modal-actions-wrapper {
         flex-direction: column-reverse;
         gap: 0.5rem;
@@ -7923,74 +7934,74 @@
 
   <!-- Price Alerts Modal -->
   <div class="modal-backdrop" id="price-alerts-modal">
-    <div class="modal-box" style="max-width: 620px;">
-      <button class="modal-close" onclick="closeModal('price-alerts-modal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+    <div class="modal-box" style="max-width: 580px; width: 94vw; padding: clamp(0.9rem, 3vw, 1.25rem); box-sizing: border-box;">
+      <button class="modal-close" onclick="closeModal('price-alerts-modal')" style="top: 0.75rem; right: 0.75rem;"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="font-size: clamp(1.1rem, 4.2vw, 1.28rem); font-weight: 800; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.45rem; padding-right: 1.8rem;">
         <i class="fa-solid fa-bell-concierge" style="color: var(--accent);"></i> Price Alert & Threshold Manager
       </h3>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem;">
+      <p style="color: var(--text-muted); font-size: clamp(0.76rem, 3.2vw, 0.82rem); margin-bottom: 0.75rem; line-height: 1.35;">
         Set price alert thresholds for countries or platforms. Receive a prominent <strong>"Deal Available"</strong> notification whenever prices drop below your target threshold.
       </p>
 
       <!-- New Alert Form -->
-      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
-        <h4 style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-main); display: flex; align-items: center; gap: 0.4rem;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 0.9rem; margin-bottom: 0.85rem;">
+        <h4 style="font-weight: 700; font-size: clamp(0.82rem, 3.5vw, 0.9rem); margin-bottom: 0.55rem; color: var(--text-main); display: flex; align-items: center; gap: 0.4rem;">
           <i class="fa-solid fa-plus-circle" style="color: var(--success);"></i> Set Price Alert Threshold
         </h4>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 0.75rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.55rem; margin-bottom: 0.55rem;">
           <div>
-            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.3rem;">Target Category:</label>
-            <select class="select-input" id="alert-target-type-select" style="width: 100%;" onchange="onAlertCategoryChange()">
+            <label style="display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Target Category:</label>
+            <select class="select-input" id="alert-target-type-select" style="width: 100%; padding: 0.4rem 0.55rem; font-size: 0.82rem; height: 38px;" onchange="onAlertCategoryChange()">
               <option value="country">Country</option>
               <option value="platform">Platform</option>
             </select>
           </div>
 
           <div>
-            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.3rem;">Select Target Item:</label>
-            <select class="select-input" id="alert-target-item-select" style="width: 100%;">
+            <label style="display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">Select Target Item:</label>
+            <select class="select-input" id="alert-target-item-select" style="width: 100%; padding: 0.4rem 0.55rem; font-size: 0.82rem; height: 38px;">
               <!-- Populated dynamically -->
             </select>
           </div>
         </div>
 
-        <div style="margin-bottom: 0.85rem;">
-          <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.3rem;">
+        <div style="margin-bottom: 0.65rem;">
+          <label style="display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.2rem;">
             Alert Price Threshold (₹):
           </label>
-          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
-            <input type="number" id="alert-max-price-input" class="search-input" placeholder="Enter threshold e.g. 179" min="149" max="1000" style="padding: 0.65rem 1rem; flex: 1; min-width: 140px;">
-            <div style="display: flex; gap: 0.3rem; flex-wrap: wrap;">
-              <button class="btn btn-secondary btn-sm" onclick="setQuickThreshold(149)">₹149</button>
-              <button class="btn btn-secondary btn-sm" onclick="setQuickThreshold(179)">₹179</button>
-              <button class="btn btn-secondary btn-sm" onclick="setQuickThreshold(199)">₹199</button>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;">
+            <input type="number" id="alert-max-price-input" class="search-input" placeholder="e.g. 179" min="149" max="1000" style="padding: 0.4rem 0.65rem; height: 38px; font-size: 0.85rem; flex: 1; min-width: 110px;">
+            <div style="display: flex; gap: 0.25rem; flex-wrap: wrap;">
+              <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.3rem 0.55rem; height: 38px;" onclick="setQuickThreshold(149)">₹149</button>
+              <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.3rem 0.55rem; height: 38px;" onclick="setQuickThreshold(179)">₹179</button>
+              <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.3rem 0.55rem; height: 38px;" onclick="setQuickThreshold(199)">₹199</button>
             </div>
           </div>
-          <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.3rem;">
+          <span style="font-size: 0.7rem; color: var(--text-muted); display: block; margin-top: 0.25rem; line-height: 1.3;">
             <i class="fa-solid fa-circle-info"></i> Prominent notification triggers automatically when item price ≤ threshold.
           </span>
         </div>
 
-        <button class="btn btn-primary" id="save-price-alert-btn" style="width: 100%; height: 42px;" onclick="savePriceAlertFromUI()">
+        <button class="btn btn-primary" id="save-price-alert-btn" style="width: 100%; height: 38px; font-size: 0.85rem; font-weight: 800;" onclick="savePriceAlertFromUI()">
           <i class="fa-solid fa-bell"></i> Create Price Alert Threshold
         </button>
       </div>
 
       <!-- Active Alerts List -->
-      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem;">
-        <h4 style="font-weight: 700; font-size: 0.95rem;">Active Monitored Thresholds</h4>
-        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
-          <button class="btn btn-outline btn-sm" onclick="triggerSimulatedPriceDrop()" style="font-size: 0.75rem; padding: 0.25rem 0.6rem; border-color: var(--warning); color: var(--warning);" title="Simulate a price drop below threshold to test deal notification">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.4rem; margin-bottom: 0.55rem;">
+        <h4 style="font-weight: 700; font-size: clamp(0.82rem, 3.5vw, 0.9rem); margin: 0;">Active Monitored Thresholds</h4>
+        <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+          <button class="btn btn-outline btn-sm" onclick="triggerSimulatedPriceDrop()" style="font-size: 0.72rem; padding: 0.2rem 0.5rem; border-color: var(--warning); color: var(--warning);" title="Simulate a price drop below threshold to test deal notification">
             <i class="fa-solid fa-bolt"></i> Test Price Drop
           </button>
-          <button class="btn btn-secondary btn-sm" onclick="clearAllPriceAlerts()" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">
+          <button class="btn btn-secondary btn-sm" onclick="clearAllPriceAlerts()" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">
             <i class="fa-solid fa-trash-can"></i> Clear All
           </button>
         </div>
       </div>
 
-      <div id="active-price-alerts-container" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 260px; overflow-y: auto; padding-right: 0.25rem;">
+      <div id="active-price-alerts-container" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 180px; overflow-y: auto; padding-right: 0.25rem;">
         <!-- Rendered dynamically -->
       </div>
     </div>
