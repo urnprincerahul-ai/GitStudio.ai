@@ -4119,33 +4119,35 @@
     }
 
     .footer-payments-title {
-      font-size: clamp(0.55rem, 2.5vw, 0.82rem);
-      font-weight: 800;
-      color: #f1f5f9;
-      text-transform: uppercase;
-      letter-spacing: clamp(0px, 0.1vw, 0.6px);
-      margin-bottom: 0.85rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-      white-space: nowrap;
-      flex-wrap: nowrap;
-      max-width: 100%;
-      box-sizing: border-box;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: clamp(0.48rem, 2.3vw, 0.82rem) !important;
+      font-weight: 800 !important;
+      color: #f1f5f9 !important;
+      text-transform: uppercase !important;
+      letter-spacing: clamp(-0.2px, 0.05vw, 0.5px) !important;
+      margin-bottom: 0.85rem !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 0.3rem !important;
+      white-space: nowrap !important;
+      flex-wrap: nowrap !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
     }
 
     .footer-payments-title .title-text-gradient {
-      background: linear-gradient(90deg, #38bdf8, #10b981, #f59e0b);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 800;
-      white-space: nowrap;
-      word-break: keep-all;
-      overflow-wrap: normal;
-      display: inline-block;
+      background: linear-gradient(90deg, #38bdf8, #10b981, #f59e0b) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      font-weight: 800 !important;
+      white-space: nowrap !important;
+      word-break: keep-all !important;
+      overflow-wrap: normal !important;
+      display: inline-block !important;
+      font-size: inherit !important;
+      letter-spacing: inherit !important;
     }
 
     .payment-badges-flex {
@@ -4544,25 +4546,28 @@
         max-width: 100% !important;
       }
       .footer-payments-title {
-        font-size: clamp(0.48rem, 2.5vw, 0.76rem) !important;
-        letter-spacing: -0.1px !important;
-        gap: 0.28rem !important;
+        font-size: clamp(0.44rem, 2.3vw, 0.75rem) !important;
+        letter-spacing: -0.2px !important;
+        gap: 0.25rem !important;
         white-space: nowrap !important;
         flex-wrap: nowrap !important;
         max-width: 100% !important;
         justify-content: center !important;
+        width: 100% !important;
       }
       .footer-payments-title .title-text-gradient {
         white-space: nowrap !important;
         word-break: keep-all !important;
         overflow-wrap: normal !important;
         display: inline-block !important;
+        font-size: inherit !important;
+        letter-spacing: inherit !important;
       }
       @media (max-width: 380px) {
         .footer-payments-title {
-          font-size: clamp(0.42rem, 2.4vw, 0.62rem) !important;
-          letter-spacing: -0.2px !important;
-          gap: 0.2rem !important;
+          font-size: clamp(0.4rem, 2.2vw, 0.6rem) !important;
+          letter-spacing: -0.3px !important;
+          gap: 0.18rem !important;
         }
       }
       .payment-badges-flex {
@@ -6895,9 +6900,9 @@
 
       <!-- Trust Badges & Payment Gateways Bar -->
       <div class="footer-payments-bar">
-        <div class="footer-payments-title">
-          <i class="fa-solid fa-shield-cat" style="color: #10b981; filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));"></i>
-          <span class="title-text-gradient">Encrypted Payment Gateways & Banking Partners</span>
+        <div class="footer-payments-title" style="white-space: nowrap !important; flex-wrap: nowrap !important; display: flex !important; align-items: center !important; justify-content: center !important; width: 100% !important; overflow: hidden !important;">
+          <i class="fa-solid fa-shield-cat" style="color: #10b981; filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6)); flex-shrink: 0;"></i>
+          <span class="title-text-gradient" style="white-space: nowrap !important; word-break: keep-all !important; overflow-wrap: normal !important; display: inline-block !important; text-transform: uppercase;">Encrypted Payment Gateways & Banking Partners</span>
         </div>
         <div class="payment-badges-flex">
           <span class="pay-chip"><i class="fa-solid fa-qrcode" style="color:#38bdf8;"></i> Instant UPI</span>
