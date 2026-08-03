@@ -4403,10 +4403,18 @@
       }
 
       .app-footer {
-        padding: 2.25rem 0 75px 0 !important;
+        padding: 2.25rem 0 calc(105px + env(safe-area-inset-bottom, 0px)) 0 !important;
         margin-top: 2rem !important;
         overflow-x: hidden !important;
         max-width: 100vw !important;
+        box-sizing: border-box !important;
+      }
+      .app-footer .container {
+        width: 100% !important;
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
         box-sizing: border-box !important;
       }
       .footer-stats-strip {
