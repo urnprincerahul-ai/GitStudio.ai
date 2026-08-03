@@ -3647,6 +3647,269 @@
       }
     }
 
+    /* Enterprise Professional Footer Styles */
+    .app-footer {
+      background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(15, 23, 42, 0.98) 100%);
+      border-top: 1px solid var(--border-color);
+      margin-top: 4.5rem;
+      padding: 3.5rem 0 2.5rem 0;
+      color: var(--text-main);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer-top-banner {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 2rem;
+      align-items: center;
+      background: rgba(30, 41, 59, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 2rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    .footer-brand-info .logo {
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-brand-desc {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.55;
+      margin: 0.5rem 0 1rem 0;
+    }
+
+    .footer-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--text-main);
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+
+    .status-dot-green {
+      width: 8px;
+      height: 8px;
+      background-color: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--success);
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+
+    .pill-divider {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .footer-newsletter-card {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .newsletter-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 800;
+      font-size: 0.98rem;
+      margin-bottom: 0.35rem;
+      color: var(--text-main);
+    }
+
+    .newsletter-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .newsletter-form {
+      margin: 0;
+    }
+
+    .newsletter-input-wrap {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.25rem 0.35rem 0.25rem 0.75rem;
+      gap: 0.5rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .newsletter-input-wrap:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .newsletter-icon {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .newsletter-input-wrap input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      font-size: 0.85rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .newsletter-btn {
+      font-size: 0.78rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .footer-main-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-col-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .footer-links li a {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-links li a:hover {
+      color: var(--accent);
+      transform: translateX(3px);
+    }
+
+    .footer-payments-bar {
+      background: rgba(30, 41, 59, 0.4);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1.25rem 1rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      border-radius: var(--radius-md);
+    }
+
+    .footer-payments-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .payment-badges-flex {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+
+    .pay-chip {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .footer-bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-top: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-social-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .social-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .social-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.35);
+    }
+
     /* Tablet & Mobile Screens (Max 900px) */
     @media (max-width: 900px) {
       .container {
@@ -3792,17 +4055,27 @@
       }
 
       .app-footer {
-        padding: 2rem 0 4.25rem 0 !important;
-        margin-top: 1.5rem !important;
+        padding: 2.5rem 0 95px 0 !important;
+        margin-top: 2rem !important;
       }
-      .footer-grid-container {
+      .footer-top-banner {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+        padding: 1.25rem !important;
+        margin-bottom: 2rem !important;
+      }
+      .footer-main-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
         gap: 1.5rem !important;
-        margin-bottom: 1.25rem !important;
+        margin-bottom: 2rem !important;
       }
-      .footer-copyright-container {
-        padding-top: 1rem !important;
-        padding-bottom: 0.25rem !important;
-        font-size: 0.8rem !important;
+      .footer-bottom-bar {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 1rem !important;
+      }
+      .footer-social-links {
+        justify-content: center !important;
       }
 
       .floating-fab {
@@ -5932,37 +6205,155 @@
     </section>
   </main>
 
-  <!-- FOOTER -->
-  <footer class="app-footer" style="background: var(--bg-surface); border-top: 1px solid var(--border-color); margin-top: 4rem;">
-    <div class="container footer-grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2.5rem; margin-bottom: 3rem;">
-      <div>
-        <div class="logo" style="margin-bottom: 1rem;">
-          <div class="logo-icon"><i class="fa-solid fa-sim-card"></i></div>
-          <span>Virtual Hub</span>
+  <!-- ENTERPRISE HIGH-END FOOTER -->
+  <footer class="app-footer">
+    <div class="container">
+      
+      <!-- Top Brand Showcase & Newsletter Banner -->
+      <div class="footer-top-banner">
+        <div class="footer-brand-info">
+          <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-sim-card"></i></div>
+            <span>Virtual Hub</span>
+          </div>
+          <p class="footer-brand-desc">
+            Next-Generation SaaS Virtual SIM Telecom Engine & Real-Time Automated OTP Verification Infrastructure. Empowering instant activations across 200+ services & 120+ global carrier networks.
+          </p>
+          <div class="footer-status-pill">
+            <span class="status-dot-green"></span>
+            <span>Gateways: <strong>100% Operational</strong></span>
+            <span class="pill-divider">•</span>
+            <span>Avg Latency: <strong>1.8s</strong></span>
+          </div>
         </div>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">
-          Premium SaaS Virtual Phone Number & Automated SMS Activation Engine.
-        </p>
+
+        <div class="footer-newsletter-card">
+          <div class="newsletter-title">
+            <i class="fa-solid fa-bell" style="color: var(--accent);"></i>
+            <span>Price Drop & Stock Alerts</span>
+          </div>
+          <p class="newsletter-desc">
+            Subscribe to receive real-time notifications on new country SIM drops, discount rates, and stock refills.
+          </p>
+          <form class="newsletter-form" onsubmit="footerSubscribeNewsletter(event)">
+            <div class="newsletter-input-wrap">
+              <i class="fa-regular fa-envelope newsletter-icon"></i>
+              <input type="email" id="footer-newsletter-email" placeholder="Enter your email address..." required>
+              <button type="submit" class="btn btn-primary btn-sm newsletter-btn">
+                <span>Subscribe</span> <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
 
-      <div>
-        <h4 style="font-weight: 700; margin-bottom: 1rem;">Quick Links</h4>
-        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">
-          <li><a href="#numbers" style="color: inherit; text-decoration: none;">Marketplace</a></li>
-          <li><a href="#pricing" style="color: inherit; text-decoration: none;">Pricing Plans</a></li>
-          <li><a href="#dashboard" style="color: inherit; text-decoration: none;">Live Receiver</a></li>
-        </ul>
+      <!-- Main Footer Multi-Column Grid -->
+      <div class="footer-main-grid">
+        <!-- Col 1: Core Navigation -->
+        <div class="footer-col">
+          <h4 class="footer-col-title"><i class="fa-solid fa-compass" style="color:var(--accent);"></i> Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="#numbers" onclick="scrollToSection('numbers', event)"><i class="fa-solid fa-store"></i> Marketplace</a></li>
+            <li><a href="#pricing" onclick="scrollToSection('pricing', event)"><i class="fa-solid fa-tags"></i> Pricing Plans</a></li>
+            <li><a href="#dashboard" onclick="scrollToSection('dashboard', event); switchDashboardTab('purchases');"><i class="fa-solid fa-bolt"></i> Live Receiver</a></li>
+            <li><a href="#dashboard" onclick="scrollToSection('dashboard', event); switchDashboardTab('favorites');"><i class="fa-solid fa-heart"></i> Saved Favorites</a></li>
+            <li><a href="javascript:void(0)" onclick="openModal('price-alerts-modal')"><i class="fa-solid fa-bell-concierge"></i> Price Alerts</a></li>
+            <li><a href="javascript:void(0)" onclick="openModal('bulk-purchase-modal')"><i class="fa-solid fa-layer-group"></i> Bulk Orders</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 2: Popular Platforms -->
+        <div class="footer-col">
+          <h4 class="footer-col-title"><i class="fa-solid fa-mobile-screen-button" style="color:#10b981;"></i> Top Platforms</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)" onclick="footerFilterPlatform('Telegram')"><i class="fa-brands fa-telegram" style="color:#229ED9;"></i> Telegram Virtual SIM</a></li>
+            <li><a href="javascript:void(0)" onclick="footerFilterPlatform('WhatsApp')"><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> WhatsApp OTP</a></li>
+            <li><a href="javascript:void(0)" onclick="footerFilterPlatform('Google / Gmail')"><i class="fa-brands fa-google" style="color:#EA4335;"></i> Google & Gmail</a></li>
+            <li><a href="javascript:void(0)" onclick="footerFilterPlatform('OpenAI / ChatGPT')"><i class="fa-solid fa-robot" style="color:#10A37F;"></i> OpenAI / ChatGPT</a></li>
+            <li><a href="javascript:void(0)" onclick="footerFilterPlatform('Tinder')"><i class="fa-solid fa-fire" style="color:#FD3A73;"></i> Tinder & Dating</a></li>
+            <li><a href="javascript:void(0)" onclick="footerFilterPlatform('TikTok')"><i class="fa-brands fa-tiktok" style="color:#ff0050;"></i> TikTok & Social</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Popular Countries -->
+        <div class="footer-col">
+          <h4 class="footer-col-title"><i class="fa-solid fa-globe" style="color:#38bdf8;"></i> Top Countries</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)" onclick="footerFilterCountry('United States')">🇺🇸 United States (+1)</a></li>
+            <li><a href="javascript:void(0)" onclick="footerFilterCountry('United Kingdom')">🇬🇧 United Kingdom (+44)</a></li>
+            <li><a href="javascript:void(0)" onclick="footerFilterCountry('India')">🇮🇳 India (+91)</a></li>
+            <li><a href="javascript:void(0)" onclick="footerFilterCountry('Canada')">🇨🇦 Canada (+1)</a></li>
+            <li><a href="javascript:void(0)" onclick="footerFilterCountry('Brazil')">🇧🇷 Brazil (+55)</a></li>
+            <li><a href="javascript:void(0)" onclick="footerFilterCountry('Netherlands')">🇳🇱 Netherlands (+31)</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Platform Tools -->
+        <div class="footer-col">
+          <h4 class="footer-col-title"><i class="fa-solid fa-screwdriver-wrench" style="color:#f59e0b;"></i> Features & Tools</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)" onclick="openModal('topup-modal')"><i class="fa-solid fa-wallet" style="color:var(--success);"></i> Instant UPI Top Up</a></li>
+            <li><a href="javascript:void(0)" onclick="openModal('referral-claim-celebration-modal')"><i class="fa-solid fa-gift" style="color:#f59e0b;"></i> Refer & Earn (10% Bonus)</a></li>
+            <li><a href="javascript:void(0)" onclick="openModal('top-referrers-modal')"><i class="fa-solid fa-trophy" style="color:#f59e0b;"></i> Top Affiliates Board</a></li>
+            <li><a href="javascript:void(0)" onclick="openModal('server-time-modal')"><i class="fa-solid fa-clock" style="color:var(--accent);"></i> Global Server Clock</a></li>
+            <li><a href="javascript:void(0)" onclick="openModal('recent-activity-modal')"><i class="fa-solid fa-clock-rotate-left"></i> Recent Activity Logs</a></li>
+            <li><a href="javascript:void(0)" onclick="openModal('user-modal')"><i class="fa-solid fa-user-gear"></i> Account Settings</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 5: Security & Support -->
+        <div class="footer-col">
+          <h4 class="footer-col-title"><i class="fa-solid fa-shield-halved" style="color:#ec4899;"></i> Security & Policy</h4>
+          <ul class="footer-links">
+            <li><a href="https://t.me/VirtualHubSupport" target="_blank" rel="noopener"><i class="fa-brands fa-telegram" style="color:#38bdf8;"></i> 24/7 Telegram Support</a></li>
+            <li><a href="mailto:support@virtualhub.io"><i class="fa-solid fa-envelope" style="color:var(--accent);"></i> support@virtualhub.io</a></li>
+            <li><a href="javascript:void(0)" onclick="footerShowPolicyModal('Terms of Service', 'TermsContent')"><i class="fa-solid fa-file-contract"></i> Terms of Service</a></li>
+            <li><a href="javascript:void(0)" onclick="footerShowPolicyModal('Privacy Policy', 'PrivacyContent')"><i class="fa-solid fa-user-lock"></i> Privacy Policy</a></li>
+            <li><a href="javascript:void(0)" onclick="footerShowPolicyModal('Anti-Fraud Policy', 'AntiFraudContent')"><i class="fa-solid fa-user-shield"></i> Anti-Fraud Policy</a></li>
+            <li><a href="javascript:void(0)" onclick="footerShowPolicyModal('Refund Guarantee', 'RefundContent')"><i class="fa-solid fa-hand-holding-dollar"></i> 100% Refund Policy</a></li>
+          </ul>
+        </div>
       </div>
 
-      <div>
-        <h4 style="font-weight: 700; margin-bottom: 1rem;">Support</h4>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-envelope"></i> support@virtualhub.io</p>
-        <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fa-brands fa-telegram"></i> @VirtualHubSupport</p>
+      <!-- Trust Badges & Payment Gateways Bar -->
+      <div class="footer-payments-bar">
+        <div class="footer-payments-title">
+          <i class="fa-solid fa-lock" style="color: var(--success);"></i>
+          <span>Encrypted Payment Gateways & Banking Partners</span>
+        </div>
+        <div class="payment-badges-flex">
+          <span class="pay-chip"><i class="fa-solid fa-qrcode" style="color:#38bdf8;"></i> Instant UPI</span>
+          <span class="pay-chip"><i class="fa-brands fa-google-pay" style="color:#ea4335;"></i> Google Pay</span>
+          <span class="pay-chip"><i class="fa-solid fa-mobile-screen-button" style="color:#5f259f;"></i> PhonePe</span>
+          <span class="pay-chip"><i class="fa-solid fa-wallet" style="color:#00baf2;"></i> Paytm</span>
+          <span class="pay-chip"><i class="fa-solid fa-building-columns" style="color:#f59e0b;"></i> BHIM / NetBanking</span>
+          <span class="pay-chip"><i class="fa-brands fa-cc-visa" style="color:#1a1f71;"></i> Visa</span>
+          <span class="pay-chip"><i class="fa-brands fa-cc-mastercard" style="color:#eb001b;"></i> Mastercard</span>
+          <span class="pay-chip"><i class="fa-brands fa-bitcoin" style="color:#f7931a;"></i> Crypto / USDT</span>
+        </div>
       </div>
-    </div>
 
-    <div class="container footer-copyright-container" style="text-align: center; border-top: 1px solid var(--border-color); padding-top: 1.5rem; color: var(--text-muted); font-size: 0.85rem;">
-      &copy; 2026 Virtual Number Hub. All rights reserved. Designed for Portfolio Showcase.
+      <!-- Bottom Copyright & Social Bar -->
+      <div class="footer-bottom-bar">
+        <div class="footer-copyright-text">
+          &copy; 2026 <strong>Virtual Number Hub</strong>. All rights reserved. Enterprise Virtual Telecom Infrastructure.
+        </div>
+        <div class="footer-social-links">
+          <a href="https://t.me/VirtualHubSupport" target="_blank" rel="noopener" class="social-btn" title="Telegram Community">
+            <i class="fa-brands fa-telegram"></i>
+          </a>
+          <a href="mailto:support@virtualhub.io" class="social-btn" title="Email Support">
+            <i class="fa-solid fa-envelope"></i>
+          </a>
+          <a href="javascript:void(0)" onclick="openModal('server-time-modal')" class="social-btn" title="Server Status & Clock">
+            <i class="fa-solid fa-server"></i>
+          </a>
+          <a href="#hero" onclick="scrollToSection('hero', event)" class="social-btn" title="Back to Top">
+            <i class="fa-solid fa-arrow-up"></i>
+          </a>
+        </div>
+      </div>
+
     </div>
   </footer>
 
@@ -6599,6 +6990,30 @@
           <span style="color: var(--success); font-weight: 700;">● Online</span>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Policy / Terms / Guarantee Legal Modal -->
+  <div class="modal-backdrop" id="policy-modal">
+    <div class="modal-box" style="max-width: 540px; width: 92vw; padding: 1.5rem; border-radius: var(--radius-lg); background: var(--bg-surface); border: 1px solid var(--border-color); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+      <button class="modal-close" onclick="closeModal('policy-modal')"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+        <div style="width: 42px; height: 42px; border-radius: 12px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+          <h3 id="policy-modal-title" style="font-size: 1.2rem; font-weight: 800; margin: 0; color: var(--text-main);">Terms & Policy</h3>
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Virtual Hub Trust & Security Framework</span>
+        </div>
+      </div>
+
+      <div id="policy-modal-body" style="color: var(--text-main); font-size: 0.88rem; line-height: 1.6; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.1rem; margin-bottom: 1.25rem; max-height: 55vh; overflow-y: auto;">
+      </div>
+
+      <button class="btn btn-secondary" style="width: 100%; font-weight: 800; padding: 0.65rem;" onclick="closeModal('policy-modal')">
+        <i class="fa-solid fa-check"></i> Close Policy Window
+      </button>
     </div>
   </div>
 
@@ -17470,6 +17885,93 @@
           setTimeout(() => animateDashboardStats(true), 250);
         });
       });
+    }
+
+    // Footer Navigation & Policy Action Handlers
+    function footerFilterPlatform(platformName) {
+      const select = document.getElementById('filter-platform-select');
+      if (select) {
+        select.value = platformName;
+        applyMarketplaceFilters();
+      }
+      scrollToSection('numbers');
+      showToast(`Filtered Marketplace for ${platformName}`, 'info');
+    }
+
+    function footerFilterCountry(countryName) {
+      const select = document.getElementById('filter-country-select');
+      if (select) {
+        select.value = countryName;
+        if (typeof syncCountryAutocompleteDisplay === 'function') {
+          syncCountryAutocompleteDisplay(countryName);
+        }
+        applyMarketplaceFilters();
+      }
+      scrollToSection('numbers');
+      showToast(`Filtered Marketplace for ${countryName}`, 'info');
+    }
+
+    function footerSubscribeNewsletter(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('footer-newsletter-email');
+      const email = input ? input.value.trim() : '';
+      if (!email) return;
+      showToast('🎉 Thank you! You have subscribed to Virtual Hub price drop & stock alerts.', 'success');
+      if (input) input.value = '';
+    }
+
+    function footerShowPolicyModal(title, contentType) {
+      let contentHtml = '';
+      if (contentType === 'TermsContent') {
+        contentHtml = `
+          <p style="margin-bottom: 0.8rem; font-weight: 700; color: var(--accent);">Virtual Number Hub Terms of Service</p>
+          <p style="margin-bottom: 0.8rem; line-height: 1.5;">By accessing or using our SaaS virtual SIM telecom engine, you agree to comply with our fair-use and automated activation guidelines:</p>
+          <ul style="margin-left: 1.2rem; line-height: 1.6; color: var(--text-muted); font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem;">
+            <li>Virtual SIM lines are dedicated strictly to SMS verification, testing, and individual privacy preservation.</li>
+            <li>If an incoming SMS OTP code is not received within 20 minutes, your wallet is automatically refunded 100%.</li>
+            <li>Re-use of numbers for unauthorized bulk messaging or fraudulent activities is prohibited.</li>
+            <li>All wallet top-ups remain active and never expire.</li>
+          </ul>
+        `;
+      } else if (contentType === 'PrivacyContent') {
+        contentHtml = `
+          <p style="margin-bottom: 0.8rem; font-weight: 700; color: #10b981;">Zero-Log Identity & Data Privacy Guarantee</p>
+          <p style="margin-bottom: 0.8rem; line-height: 1.5;">We prioritize maximum user anonymity and privacy protection across all 120+ global carrier gateways:</p>
+          <ul style="margin-left: 1.2rem; line-height: 1.6; color: var(--text-muted); font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem;">
+            <li>No personal identification documents (KYC) or phone number verification is required to use temporary SIMs.</li>
+            <li>Received SMS verification messages are automatically purged from our real-time stream servers after 24 hours.</li>
+            <li>All payment transactions utilize 256-bit banking-grade SSL encryption for absolute security.</li>
+          </ul>
+        `;
+      } else if (contentType === 'AntiFraudContent') {
+        contentHtml = `
+          <p style="margin-bottom: 0.8rem; font-weight: 700; color: #f59e0b;">Automated Network Anti-Fraud Policy</p>
+          <p style="margin-bottom: 0.8rem; line-height: 1.5;">To maintain carrier routing integrity, our background engine continuously monitors for suspicious traffic:</p>
+          <ul style="margin-left: 1.2rem; line-height: 1.6; color: var(--text-muted); font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem;">
+            <li>Automated rate-limiting detects and halts suspicious automated bot attacks.</li>
+            <li>Numbers associated with illegal phishing or spam distribution are immediately blacklisted across all gateways.</li>
+          </ul>
+        `;
+      } else if (contentType === 'RefundContent') {
+        contentHtml = `
+          <p style="margin-bottom: 0.8rem; font-weight: 700; color: var(--success);">100% Risk-Free Refund Guarantee</p>
+          <p style="margin-bottom: 0.8rem; line-height: 1.5;">Our automated engine guarantees zero financial risk when activating virtual phone lines:</p>
+          <ul style="margin-left: 1.2rem; line-height: 1.6; color: var(--text-muted); font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem;">
+            <li>If an SMS OTP is not delivered to your live receiver within 20 minutes, your funds are automatically restored to your wallet.</li>
+            <li>Manual cancellation before OTP arrival triggers an instant 100% wallet balance refund.</li>
+          </ul>
+        `;
+      }
+
+      const modalTitle = document.getElementById('policy-modal-title');
+      const modalBody = document.getElementById('policy-modal-body');
+      if (modalTitle && modalBody) {
+        modalTitle.innerText = title;
+        modalBody.innerHTML = contentHtml;
+        openModal('policy-modal');
+      } else {
+        showToast(`📜 ${title}: ${contentType}`, 'info');
+      }
     }
 
     // Immediate Execution Safety Check for DOM State
