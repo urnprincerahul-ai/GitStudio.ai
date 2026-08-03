@@ -9919,32 +9919,31 @@
       const linkInput = document.getElementById('referral-link-input');
       const baseUrl = getReferralBaseUrl();
       const textToCopy = linkInput ? linkInput.value : `${baseUrl}?ref=${AppState.referralCode}`;
-      
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(textToCopy).then(() => {
-          showToast('Referral link copied to clipboard! 🎁', 'success');
-        }).catch(() => {
-          fallbackCopyText(textToCopy);
-        });
-      } else {
-        fallbackCopyText(textToCopy);
-      }
+      copyText(textToCopy, 'Referral link copied to clipboard! 🎁');
     }
 
-    function fallbackCopyText(text) {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      textArea.style.position = "fixed";
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
+    function fallbackCopyText(text, toastMsg) {
+      const msg = toastMsg || 'Copied to Clipboard!';
       try {
-        document.execCommand('copy');
-        showToast('Referral link copied to clipboard! 🎁', 'success');
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        if (successful) {
+          showToast(msg, 'success');
+        } else {
+          showToast(`Copied: ${text.length > 25 ? text.substring(0, 22) + '...' : text}`, 'info');
+        }
       } catch (err) {
-        showToast('Failed to copy link', 'error');
+        showToast(`Copied: ${text.length > 25 ? text.substring(0, 22) + '...' : text}`, 'info');
       }
-      document.body.removeChild(textArea);
     }
 
     function regenerateReferralCode() {
@@ -10488,7 +10487,7 @@
                   <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--success); padding: 0.15rem 0.45rem; border-radius: 4px; font-family: var(--font-mono); font-weight: 700; font-size: 0.72rem;">
                     OTP: ${p.latestOtp}
                   </span>
-                  <button class="btn btn-secondary btn-sm" style="font-size: 0.65rem; padding: 0.15rem 0.45rem;" onclick="navigator.clipboard.writeText('${p.latestOtp}'); showToast('OTP ${p.latestOtp} Copied!', 'success');">
+                  <button class="btn btn-secondary btn-sm" style="font-size: 0.65rem; padding: 0.15rem 0.45rem;" onclick="copyText('${p.latestOtp}', 'OTP ${p.latestOtp} Copied!')">
                     <i class="fa-solid fa-copy"></i>
                   </button>
                 ` : `
@@ -11392,7 +11391,7 @@
                     <span style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">
                       <i class="fa-regular fa-envelope" style="color: var(--accent);"></i> Message Content
                     </span>
-                    <button class="btn btn-secondary btn-sm" style="font-size: 0.68rem; padding: 0.2rem 0.55rem; line-height: 1.2; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem;" onclick="navigator.clipboard.writeText(\`${log.rawMessage.replace(/`/g, '\\`')}\`); showToast('Full SMS content copied to clipboard!', 'info');">
+                    <button class="btn btn-secondary btn-sm" style="font-size: 0.68rem; padding: 0.2rem 0.55rem; line-height: 1.2; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem;" onclick="copyText(\`${log.rawMessage.replace(/`/g, '\\`')}\`, 'Full SMS content copied to clipboard!');">
                       <i class="fa-regular fa-copy"></i> Copy Content
                     </button>
                   </div>
@@ -11407,7 +11406,7 @@
                       <span style="background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.4); color: var(--success); padding: 0.2rem 0.6rem; border-radius: 6px; font-family: var(--font-mono); font-weight: 800; font-size: 0.95rem; letter-spacing: 0.05em;">
                         ${log.otpCode}
                       </span>
-                      <button class="btn btn-success btn-sm" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;" onclick="navigator.clipboard.writeText('${log.otpCode}'); showToast('OTP Code ${log.otpCode} copied!', 'success');">
+                      <button class="btn btn-success btn-sm" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;" onclick="copyText('${log.otpCode}', 'OTP Code ${log.otpCode} copied!');">
                         <i class="fa-solid fa-copy"></i> Copy OTP
                       </button>
                       <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;" onclick="speakIncomingSms(\`${log.rawMessage.replace(/`/g, '\\`')}\`, '${log.platform}', '${log.phone}', '${log.otpCode || ''}', this)" title="Voice readout SMS">
@@ -13154,11 +13153,7 @@
         showToast('⚠️ No FCM Token available to copy yet.', 'warning');
         return;
       }
-      navigator.clipboard.writeText(tokenText).then(() => {
-        showToast('📋 FCM Token copied to clipboard!', 'success');
-      }).catch(() => {
-        showToast(`Token: ${tokenText.substring(0, 20)}...`, 'info');
-      });
+      copyText(tokenText, '📋 FCM Token copied to clipboard!');
     }
 
     function testFcmPushNotification() {
@@ -14857,15 +14852,7 @@
                          `• Gateway & Tax (8%): ₹${gatewayFee}\n` +
                          `• Total Guaranteed Price: ₹${totalFormatted}`;
 
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(feeSummary).then(() => {
-          showToast(`Copied fee breakdown for ${num.phone}!`, 'success');
-        }).catch(() => {
-          copyText(feeSummary, `Copied fee breakdown for ${num.phone}!`);
-        });
-      } else {
-        copyText(feeSummary, `Copied fee breakdown for ${num.phone}!`);
-      }
+      copyText(feeSummary, `Copied fee breakdown for ${num.phone}!`);
     }
 
     function togglePriceTooltip(event, el) {
@@ -15358,13 +15345,26 @@
 
     function copyUtcIsoString() {
       const isoStr = new Date().toISOString();
-      navigator.clipboard.writeText(isoStr);
-      showToast(`Copied ISO Timestamp: ${isoStr}`, 'success');
+      copyText(isoStr, `Copied ISO Timestamp: ${isoStr}`);
     }
 
     function copyText(txt, toastMsg) {
-      navigator.clipboard.writeText(txt);
-      showToast(toastMsg || 'Copied to Clipboard!');
+      if (!txt) return;
+      const msg = toastMsg || 'Copied to Clipboard!';
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          navigator.clipboard.writeText(txt).then(() => {
+            showToast(msg, 'success');
+          }).catch(() => {
+            fallbackCopyText(txt, msg);
+          });
+        } catch (e) {
+          fallbackCopyText(txt, msg);
+        }
+      } else {
+        fallbackCopyText(txt, msg);
+      }
+
       if (txt && (txt.includes('oksbi') || txt.includes('urn.princerahul'))) {
         AppState.hasLaunchedUpiTopup = true;
         const upiNotice = document.getElementById('upi-launch-required-msg');
