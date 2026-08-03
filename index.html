@@ -2925,6 +2925,44 @@
       transform: scale(1);
     }
 
+    /* Bulk Purchase Modal Responsive Actions Layout */
+    .bulk-modal-actions-wrapper {
+      display: flex;
+      gap: 0.65rem;
+      align-items: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .bulk-modal-btn-cancel {
+      flex: 1 1 90px;
+      min-width: 80px;
+    }
+    .bulk-modal-btn-pay {
+      flex: 2 1 180px;
+      font-weight: 800;
+      font-size: 0.92rem;
+      white-space: normal !important;
+      text-align: center;
+      word-break: break-word;
+      line-height: 1.35;
+    }
+    @media (max-width: 520px) {
+      .bulk-modal-actions-wrapper {
+        flex-direction: column-reverse;
+        gap: 0.5rem;
+        width: 100%;
+      }
+      .bulk-modal-btn-cancel,
+      .bulk-modal-btn-pay {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        font-size: 0.88rem !important;
+        padding: 0.65rem 0.75rem !important;
+        justify-content: center !important;
+        text-align: center !important;
+      }
+    }
+
     /* Dedicated Payment, Plan Purchase & Wallet Topup Modals Entry Transition, Responsive Max-Width & Adaptive Padding */
     #payment-modal, #plan-purchase-modal, #topup-modal {
       background: var(--glass-bg);
@@ -4354,7 +4392,7 @@
       }
 
       .app-footer {
-        padding: 2.25rem 0 135px 0 !important;
+        padding: 2.25rem 0 75px 0 !important;
         margin-top: 2rem !important;
         overflow-x: hidden !important;
         max-width: 100vw !important;
@@ -7004,50 +7042,50 @@
 
   <!-- Bulk Purchase Modal -->
   <div class="modal-backdrop" id="bulk-purchase-modal">
-    <div class="modal-box" style="max-width: 620px;">
+    <div class="modal-box" style="max-width: 600px; width: 94vw;">
       <button class="modal-close" onclick="closeModal('bulk-purchase-modal')"><i class="fa-solid fa-xmark"></i></button>
-      <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.25rem;">
-        <span class="badge badge-primary" style="font-size: 0.75rem;"><i class="fa-solid fa-layer-group"></i> Bulk Checkout</span>
-        <h3 style="font-size: 1.35rem; font-weight: 800; margin: 0;">Bulk Number Order</h3>
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; flex-wrap: wrap; padding-right: 1.8rem;">
+        <span class="badge badge-primary" style="font-size: 0.72rem; flex-shrink: 0;"><i class="fa-solid fa-layer-group"></i> BULK CHECKOUT</span>
+        <h3 style="font-size: clamp(1.1rem, 4.2vw, 1.35rem); font-weight: 800; margin: 0; line-height: 1.25;">Bulk Number Order</h3>
       </div>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Review selected numbers and complete single-click batch purchase</p>
+      <p style="color: var(--text-muted); font-size: clamp(0.78rem, 3.2vw, 0.85rem); margin-bottom: 0.85rem; line-height: 1.4;">Review selected numbers and complete single-click batch purchase</p>
 
       <!-- Selected Numbers Itemized List -->
-      <div style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: var(--radius-md); max-height: 220px; overflow-y: auto; padding: 0.75rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem;" id="bulk-items-list-container">
+      <div style="background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-radius: var(--radius-md); max-height: 180px; overflow-y: auto; padding: 0.65rem; margin-bottom: 0.85rem; display: flex; flex-direction: column; gap: 0.45rem;" id="bulk-items-list-container">
         <!-- Dynamically populated selected items list -->
       </div>
 
       <!-- Price Breakdown & Discounts -->
-      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 1.25rem;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.88rem;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem; font-size: clamp(0.78rem, 3.2vw, 0.88rem);">
           <span style="color: var(--text-muted);">Total Selected Items:</span>
           <strong id="bulk-modal-count-text">0 Numbers</strong>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.88rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem; font-size: clamp(0.78rem, 3.2vw, 0.88rem);">
           <span style="color: var(--text-muted);">Subtotal Price:</span>
           <span style="font-family: var(--font-mono); font-weight: 700;" id="bulk-modal-subtotal-text">₹0.00</span>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.88rem; color: #f59e0b;" id="bulk-modal-discount-row">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.45rem; font-size: clamp(0.78rem, 3.2vw, 0.88rem); color: #f59e0b;" id="bulk-modal-discount-row">
           <span><i class="fa-solid fa-gift"></i> Bulk Tier Discount:</span>
           <strong style="font-family: var(--font-mono);" id="bulk-modal-discount-text">-₹0.00</strong>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.88rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.65rem; font-size: clamp(0.78rem, 3.2vw, 0.88rem);">
           <span style="color: var(--text-muted);">Your Wallet Balance:</span>
           <strong style="font-family: var(--font-mono); color: var(--accent);" id="bulk-modal-wallet-balance">₹0.00</strong>
         </div>
-        <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 0.75rem; font-size: 1.05rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 0.65rem; font-size: clamp(0.88rem, 3.8vw, 1.05rem);">
           <span style="font-weight: 700;">Final Payable Amount:</span>
-          <strong style="font-size: 1.3rem; color: var(--success); font-family: var(--font-mono);" id="bulk-modal-final-total">₹0.00</strong>
+          <strong style="font-size: clamp(1.1rem, 4.8vw, 1.35rem); color: var(--success); font-family: var(--font-mono);" id="bulk-modal-final-total">₹0.00</strong>
         </div>
       </div>
 
       <!-- Action Buttons -->
-      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-        <button class="btn btn-secondary" style="flex: 1; min-width: 80px;" onclick="closeModal('bulk-purchase-modal')">Cancel</button>
-        <button class="btn btn-primary" style="flex: 2; min-width: 110px; font-weight: 800;" id="bulk-pay-wallet-btn" onclick="executeBulkPurchaseFromWallet()">
+      <div class="bulk-modal-actions-wrapper">
+        <button class="btn btn-secondary bulk-modal-btn-cancel" onclick="closeModal('bulk-purchase-modal')">Cancel</button>
+        <button class="btn btn-primary bulk-modal-btn-pay" id="bulk-pay-wallet-btn" onclick="executeBulkPurchaseFromWallet()">
           <i class="fa-solid fa-wallet"></i> Pay from Wallet & Activate All
         </button>
-        <button class="btn btn-warning" style="flex: 2; min-width: 110px; font-weight: 800; display: none;" id="bulk-pay-upi-btn" onclick="executeBulkPurchaseViaUPI()">
+        <button class="btn btn-warning bulk-modal-btn-pay" id="bulk-pay-upi-btn" onclick="executeBulkPurchaseViaUPI()" style="display: none;">
           <i class="fa-solid fa-qrcode"></i> Pay via UPI QR / UTR
         </button>
       </div>
