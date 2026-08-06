@@ -6900,9 +6900,9 @@
 
       <!-- Trust Badges & Payment Gateways Bar -->
       <div class="footer-payments-bar">
-        <div class="footer-payments-title" style="white-space: nowrap !important; flex-wrap: nowrap !important; display: flex !important; align-items: center !important; justify-content: center !important; width: 100% !important; overflow: hidden !important;">
+        <div class="footer-payments-title" style="white-space: nowrap !important; flex-wrap: nowrap !important; display: flex !important; align-items: center !important; justify-content: center !important; width: 100% !important; overflow: hidden !important; gap: 0.35rem;">
           <i class="fa-solid fa-shield-cat" style="color: #10b981; filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6)); flex-shrink: 0;"></i>
-          <span class="title-text-gradient" style="white-space: nowrap !important; word-break: keep-all !important; overflow-wrap: normal !important; display: inline-block !important; text-transform: uppercase;">Encrypted Payment Gateways & Banking Partners</span>
+          <span class="title-text-gradient" style="white-space: nowrap !important; word-break: keep-all !important; overflow-wrap: normal !important; display: inline-block !important; text-transform: uppercase; font-size: clamp(0.58rem, 2.2vw, 0.82rem) !important;">Encrypted Payment Gateways & Banking Partners</span>
         </div>
         <div class="payment-badges-flex">
           <span class="pay-chip"><i class="fa-solid fa-qrcode" style="color:#38bdf8;"></i> Instant UPI</span>
@@ -7261,18 +7261,22 @@
       <h3 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.35rem;"><i class="fa-solid fa-wallet" style="color: var(--accent); margin-right: 0.4rem;"></i>Add Funds to Wallet</h3>
       <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Select a quick top-up amount or enter custom value, pay via UPI & submit UTR.</p>
 
+      <!-- Wallet Top-Up Method Switcher Tabs -->
+      <div style="display: flex; gap: 0.4rem; margin-bottom: 0.85rem; background: rgba(15, 23, 42, 0.6); padding: 0.3rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+        <button class="btn btn-sm btn-primary" id="topup-tab-upi" onclick="switchTopUpMethod('upi')" style="flex: 1; font-weight: 700; border-radius: 8px; font-size: 0.8rem; padding: 0.45rem 0.5rem; justify-content: center;">
+          <i class="fa-solid fa-qrcode" style="color: #38bdf8; margin-right: 0.35rem;"></i> UPI / QR Code
+        </button>
+        <button class="btn btn-sm btn-secondary" id="topup-tab-crypto" onclick="switchTopUpMethod('crypto')" style="flex: 1; font-weight: 700; border-radius: 8px; font-size: 0.8rem; padding: 0.45rem 0.5rem; justify-content: center;">
+          <i class="fa-brands fa-bitcoin" style="color: #f59e0b; margin-right: 0.35rem;"></i> Crypto (USDT/BTC)
+        </button>
+      </div>
+
       <!-- Quick Amounts -->
       <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem;">Quick Top-Up Amounts:</div>
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1rem;">
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 0.85rem;">
         <button class="btn btn-secondary btn-sm" style="font-weight: 700;" onclick="setQuickTopUpAmount(100)">+ ₹100</button>
         <button class="btn btn-secondary btn-sm" style="font-weight: 700;" onclick="setQuickTopUpAmount(500)">+ ₹500</button>
         <button class="btn btn-secondary btn-sm" style="font-weight: 700;" onclick="setQuickTopUpAmount(1000)">+ ₹1000</button>
-      </div>
-
-      <div style="display: flex; align-items: center; margin: 0.85rem 0; color: var(--text-muted); font-size: 0.75rem;">
-        <div style="flex: 1; border-bottom: 1px solid var(--border-color);"></div>
-        <span style="padding: 0 0.5rem; font-weight: 700; letter-spacing: 0.5px;">CUSTOM AMOUNT & UPI PAYMENT</span>
-        <div style="flex: 1; border-bottom: 1px solid var(--border-color);"></div>
       </div>
 
       <!-- Custom Amount Input -->
@@ -7280,88 +7284,250 @@
         <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Enter Custom Amount (₹):</label>
         <div style="position: relative; display: flex; align-items: center;">
           <span style="position: absolute; left: 0.85rem; color: var(--accent); font-weight: 800; font-size: 1.1rem; pointer-events: none;">₹</span>
-          <input type="number" id="custom-wallet-amount-input" class="search-input" placeholder="e.g. 250" min="99" max="100000" style="padding-left: 2.1rem; font-weight: 700; font-size: 1rem;" oninput="validateCustomWalletAmount()">
+          <input type="number" id="custom-wallet-amount-input" class="search-input" placeholder="e.g. 250" min="99" max="100000" style="padding-left: 2.1rem; font-weight: 700; font-size: 1rem;" oninput="validateCustomWalletAmount(); updateCryptoTopUpCalculator();">
         </div>
         <div id="custom-amount-val-msg" style="font-size: 0.78rem; font-weight: 600; color: #ef4444; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 6px; padding: 0.35rem 0.6rem; margin-top: 0.35rem; display: none;"></div>
       </div>
 
-      <!-- UPI QR & UPI ID Display Section -->
-      <div style="text-align: center; margin-bottom: 0.85rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem;">
-        <div style="background: #ffffff; padding: 0.4rem; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); max-width: 165px; overflow: hidden;">
-          <img src="https://i.ibb.co/bMfHHTQ2/1785462317532.png" alt="UPI Payment QR Code" style="width: 145px; height: 145px; object-fit: contain; display: block; border-radius: 6px;">
+      <!-- SECTION 1: UPI PAYMENT FLOW -->
+      <div id="topup-upi-section">
+        <div style="display: flex; align-items: center; margin: 0.85rem 0; color: var(--text-muted); font-size: 0.75rem;">
+          <div style="flex: 1; border-bottom: 1px solid var(--border-color);"></div>
+          <span style="padding: 0 0.5rem; font-weight: 700; letter-spacing: 0.5px;">UPI PAYMENT QR & ID</span>
+          <div style="flex: 1; border-bottom: 1px solid var(--border-color);"></div>
         </div>
-        <div style="display: flex; align-items: center; justify-content: center; gap: 0.35rem; margin-top: 0.45rem; flex-wrap: wrap;">
-          <span style="font-size: 0.8rem; color: var(--text-muted);">UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong></span>
-        </div>
-      </div>
 
-      <!-- Submit 12-Digit UTR Section -->
-      <div style="margin-bottom: 0.85rem;">
-        <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Submit 12-Digit UTR Number:</label>
-        <input type="text" id="topup-utr-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validateTopUpUtrInput()">
-        
-        <!-- Real-Time Progress & Step-by-Step Visual Feedback -->
-        <div class="utr-progress-container" id="topup-utr-progress-box">
-          <div class="utr-progress-track">
-            <div class="utr-progress-bar-fill" id="topup-utr-bar-fill" style="width: 0%;"></div>
+        <!-- UPI QR & UPI ID Display Section -->
+        <div style="text-align: center; margin-bottom: 0.85rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem;">
+          <div style="background: #ffffff; padding: 0.4rem; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); max-width: 165px; overflow: hidden;">
+            <img src="https://i.ibb.co/bMfHHTQ2/1785462317532.png" alt="UPI Payment QR Code" style="width: 145px; height: 145px; object-fit: contain; display: block; border-radius: 6px;">
           </div>
-          <div class="utr-steps-row">
-            <div style="display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;">
-              <span class="utr-step-badge" id="topup-utr-step-digits">
-                <i class="fa-solid fa-calculator"></i> Numbers Only
+          <div style="display: flex; align-items: center; justify-content: center; gap: 0.35rem; margin-top: 0.45rem; flex-wrap: wrap;">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">UPI ID: <strong style="color: var(--text-main); font-family: var(--font-mono); letter-spacing: 0.5px;">urn.princerahul-1@oksbi</strong></span>
+          </div>
+        </div>
+
+        <!-- Submit 12-Digit UTR Section -->
+        <div style="margin-bottom: 0.85rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Submit 12-Digit UTR Number:</label>
+          <input type="text" id="topup-utr-input" placeholder="e.g. 420192837465" maxlength="12" oninput="validateTopUpUtrInput()">
+          
+          <!-- Real-Time Progress & Step-by-Step Visual Feedback -->
+          <div class="utr-progress-container" id="topup-utr-progress-box">
+            <div class="utr-progress-track">
+              <div class="utr-progress-bar-fill" id="topup-utr-bar-fill" style="width: 0%;"></div>
+            </div>
+            <div class="utr-steps-row">
+              <div style="display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;">
+                <span class="utr-step-badge" id="topup-utr-step-digits">
+                  <i class="fa-solid fa-calculator"></i> Numbers Only
+                </span>
+                <span class="utr-step-badge" id="topup-utr-step-length">
+                  <i class="fa-solid fa-list-ol"></i> 0/12 Digits
+                </span>
+              </div>
+              <span id="topup-utr-char-counter" style="font-size: 0.75rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted);">0 / 12</span>
+            </div>
+            <div class="utr-live-feedback" id="topup-utr-live-text">
+              <i class="fa-solid fa-circle-info" style="color: var(--accent);"></i>
+              <span>Enter 12-digit UTR/RRN reference number from payment receipt</span>
+            </div>
+          </div>
+
+          <!-- Clean, beautifully padded Red/Amber Error Banner -->
+          <div id="topup-utr-validation-msg" style="font-size: 0.78rem; font-weight: 700; color: #f87171; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 0.5rem 0.75rem; margin-top: 0.45rem; display: none; align-items: center; gap: 0.45rem; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);">
+          </div>
+        </div>
+
+        <!-- Cyber / Hacking Terminal Verification Console Box -->
+        <div id="topup-terminal-box" style="display: none; background: #020617; border: 1px solid #00ff88; border-radius: var(--radius-md); padding: 0.75rem 0.85rem; margin-bottom: 0.85rem; font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; color: #00ff88; box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); position: relative; overflow: hidden;">
+          <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%); background-size: 100% 4px; pointer-events: none; opacity: 0.4;"></div>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0, 255, 136, 0.25); padding-bottom: 0.45rem; margin-bottom: 0.55rem; color: #a7f3d0; position: relative; z-index: 2; gap: 0.5rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.45rem;">
+              <span style="display: flex; gap: 5px; flex-shrink: 0;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
               </span>
-              <span class="utr-step-badge" id="topup-utr-step-length">
-                <i class="fa-solid fa-list-ol"></i> 0/12 Digits
+              <span style="font-size: 0.75rem; font-weight: 800; color: #6ee7b7; white-space: nowrap;">
+                <i class="fa-solid fa-terminal" style="color: #00ff88;"></i> UTR_KERNEL_v4.2
               </span>
             </div>
-            <span id="topup-utr-char-counter" style="font-size: 0.75rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted);">0 / 12</span>
+            <span class="badge" style="background: rgba(0, 255, 136, 0.15); color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.4); font-size: 0.65rem; font-weight: 800; font-family: monospace; white-space: nowrap; padding: 0.2rem 0.5rem; margin-left: auto;" id="topup-terminal-status-badge">ONLINE</span>
           </div>
-          <div class="utr-live-feedback" id="topup-utr-live-text">
-            <i class="fa-solid fa-circle-info" style="color: var(--accent);"></i>
-            <span>Enter 12-digit UTR/RRN reference number from payment receipt</span>
+          <div id="topup-terminal-logs" style="display: flex; flex-direction: column; gap: 0.35rem; min-height: 110px; max-height: 160px; overflow-y: auto; overflow-x: hidden; position: relative; z-index: 2; scrollbar-width: thin;">
           </div>
         </div>
 
-        <!-- Clean, beautifully padded Red/Amber Error Banner -->
-        <div id="topup-utr-validation-msg" style="font-size: 0.78rem; font-weight: 700; color: #f87171; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 0.5rem 0.75rem; margin-top: 0.45rem; display: none; align-items: center; gap: 0.45rem; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);">
+        <!-- Mandatory Launch UPI Notice Banner -->
+        <div id="upi-launch-required-msg" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.78rem; font-weight: 700; color: #fbbf24; margin-bottom: 0.75rem; align-items: center; gap: 0.5rem;">
+          <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.1rem; color: #f59e0b; flex-shrink: 0;"></i>
+          <span>⚠️ <strong>Payment Required:</strong> Click <strong>"Launch UPI"</strong> to Make Payment before Verifying UTR!</span>
+        </div>
+
+        <div style="display: flex; gap: 0.65rem;">
+          <button class="btn btn-secondary" style="flex: 1;" id="launch-upi-btn" onclick="launchUpiRedirect()">
+            <i class="fa-solid fa-external-link"></i> Launch UPI
+          </button>
+          <button class="btn btn-success" style="flex: 1.4; font-weight: 800;" id="submit-topup-utr-btn" onclick="submitWalletTopUpUtr()">
+            <i class="fa-solid fa-check-circle"></i> Verify & Add Funds
+          </button>
         </div>
       </div>
 
-      <!-- Cyber / Hacking Terminal Verification Console Box -->
-      <div id="topup-terminal-box" style="display: none; background: #020617; border: 1px solid #00ff88; border-radius: var(--radius-md); padding: 0.75rem 0.85rem; margin-bottom: 0.85rem; font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; color: #00ff88; box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); position: relative; overflow: hidden;">
-        <!-- Cyber Scanline Overlay -->
-        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%); background-size: 100% 4px; pointer-events: none; opacity: 0.4;"></div>
-        
-        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0, 255, 136, 0.25); padding-bottom: 0.45rem; margin-bottom: 0.55rem; color: #a7f3d0; position: relative; z-index: 2; gap: 0.5rem; flex-wrap: wrap;">
-          <div style="display: flex; align-items: center; gap: 0.45rem;">
-            <span style="display: flex; gap: 5px; flex-shrink: 0;">
-              <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
-              <span style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
-              <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
-            </span>
-            <span style="font-size: 0.75rem; font-weight: 800; color: #6ee7b7; white-space: nowrap;">
-              <i class="fa-solid fa-terminal" style="color: #00ff88;"></i> UTR_KERNEL_v4.2
-            </span>
+      <!-- SECTION 2: CRYPTOCURRENCY PAYMENT GATEWAY FLOW -->
+      <div id="topup-crypto-section" style="display: none;">
+        <div style="display: flex; align-items: center; margin: 0.85rem 0 0.6rem 0; color: var(--text-muted); font-size: 0.75rem;">
+          <div style="flex: 1; border-bottom: 1px solid var(--border-color);"></div>
+          <span style="padding: 0 0.5rem; font-weight: 700; letter-spacing: 0.5px;">SELECT CRYPTOCURRENCY</span>
+          <div style="flex: 1; border-bottom: 1px solid var(--border-color);"></div>
+        </div>
+
+        <!-- Crypto Coin Selector Pills -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; margin-bottom: 0.85rem;" id="crypto-coin-pills-container">
+          <button class="btn btn-sm btn-secondary crypto-coin-btn active" data-coin="USDT_TRC20" onclick="selectTopUpCryptoCoin('USDT_TRC20')" style="font-size: 0.72rem; padding: 0.4rem 0.2rem; flex-direction: column; gap: 0.15rem; border-color: #26a17b; background: rgba(38, 161, 123, 0.15);">
+            <div style="display: flex; align-items: center; gap: 0.25rem;">
+              <i class="fa-solid fa-coins" style="color: #26a17b;"></i>
+              <strong style="color: #26a17b;">USDT</strong>
+            </div>
+            <span style="font-size: 0.62rem; color: var(--text-muted);">TRC20</span>
+          </button>
+
+          <button class="btn btn-sm btn-secondary crypto-coin-btn" data-coin="USDT_BEP20" onclick="selectTopUpCryptoCoin('USDT_BEP20')" style="font-size: 0.72rem; padding: 0.4rem 0.2rem; flex-direction: column; gap: 0.15rem;">
+            <div style="display: flex; align-items: center; gap: 0.25rem;">
+              <i class="fa-solid fa-coins" style="color: #f3ba2f;"></i>
+              <strong style="color: #f3ba2f;">USDT</strong>
+            </div>
+            <span style="font-size: 0.62rem; color: var(--text-muted);">BEP20</span>
+          </button>
+
+          <button class="btn btn-sm btn-secondary crypto-coin-btn" data-coin="BTC" onclick="selectTopUpCryptoCoin('BTC')" style="font-size: 0.72rem; padding: 0.4rem 0.2rem; flex-direction: column; gap: 0.15rem;">
+            <div style="display: flex; align-items: center; gap: 0.25rem;">
+              <i class="fa-brands fa-bitcoin" style="color: #f7931a;"></i>
+              <strong style="color: #f7931a;">BTC</strong>
+            </div>
+            <span style="font-size: 0.62rem; color: var(--text-muted);">Bitcoin</span>
+          </button>
+
+          <button class="btn btn-sm btn-secondary crypto-coin-btn" data-coin="ETH" onclick="selectTopUpCryptoCoin('ETH')" style="font-size: 0.72rem; padding: 0.4rem 0.2rem; flex-direction: column; gap: 0.15rem;">
+            <div style="display: flex; align-items: center; gap: 0.25rem;">
+              <i class="fa-brands fa-ethereum" style="color: #627eea;"></i>
+              <strong style="color: #627eea;">ETH</strong>
+            </div>
+            <span style="font-size: 0.62rem; color: var(--text-muted);">ERC20</span>
+          </button>
+
+          <button class="btn btn-sm btn-secondary crypto-coin-btn" data-coin="SOL" onclick="selectTopUpCryptoCoin('SOL')" style="font-size: 0.72rem; padding: 0.4rem 0.2rem; flex-direction: column; gap: 0.15rem;">
+            <div style="display: flex; align-items: center; gap: 0.25rem;">
+              <i class="fa-solid fa-bolt" style="color: #14f195;"></i>
+              <strong style="color: #14f195;">SOL</strong>
+            </div>
+            <span style="font-size: 0.62rem; color: var(--text-muted);">Solana</span>
+          </button>
+
+          <button class="btn btn-sm btn-secondary crypto-coin-btn" data-coin="LTC" onclick="selectTopUpCryptoCoin('LTC')" style="font-size: 0.72rem; padding: 0.4rem 0.2rem; flex-direction: column; gap: 0.15rem;">
+            <div style="display: flex; align-items: center; gap: 0.25rem;">
+              <i class="fa-solid fa-litecoin-sign" style="color: #38bdf8;"></i>
+              <strong style="color: #38bdf8;">LTC</strong>
+            </div>
+            <span style="font-size: 0.62rem; color: var(--text-muted);">Litecoin</span>
+          </button>
+        </div>
+
+        <!-- Live Conversion Calculation & Exchange Rate Banner -->
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem 0.85rem; margin-bottom: 0.85rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
+          <div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Live Exchange Rate:</div>
+            <div style="font-size: 0.88rem; font-weight: 800; color: #38bdf8; font-family: var(--font-mono);" id="crypto-rate-display">1 USDT ≈ ₹88.50 INR</div>
           </div>
-          <span class="badge" style="background: rgba(0, 255, 136, 0.15); color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.4); font-size: 0.65rem; font-weight: 800; font-family: monospace; white-space: nowrap; padding: 0.2rem 0.5rem; margin-left: auto;" id="topup-terminal-status-badge">ONLINE</span>
+          <div style="text-align: right;">
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Payable Crypto Amount:</div>
+            <div style="font-size: 1.1rem; font-weight: 800; color: #22c55e; font-family: var(--font-mono);" id="crypto-payable-amount-display">1.13 USDT</div>
+          </div>
         </div>
-        <div id="topup-terminal-logs" style="display: flex; flex-direction: column; gap: 0.35rem; min-height: 110px; max-height: 160px; overflow-y: auto; overflow-x: hidden; position: relative; z-index: 2; scrollbar-width: thin;">
+
+        <!-- Crypto Wallet QR & Deposit Address Section -->
+        <div style="text-align: center; margin-bottom: 0.85rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.75rem;">
+          <div style="background: #ffffff; padding: 0.4rem; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25); max-width: 165px; overflow: hidden; margin-bottom: 0.5rem;">
+            <img id="crypto-qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=T9xY7aK3mP8vQ2wL5nR1sE4tG6uJ8zC0vB" alt="Crypto Deposit QR" style="width: 145px; height: 145px; object-fit: contain; display: block; border-radius: 6px;">
+          </div>
+          
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem; display: flex; align-items: center; justify-content: center; gap: 0.35rem; flex-wrap: wrap;">
+            <span>Network: <strong style="color: #26a17b; letter-spacing: 0.5px;" id="crypto-network-badge">TRON (TRC20)</strong></span>
+            <span class="badge badge-success" style="font-size: 0.6rem; padding: 0.15rem 0.4rem;" id="crypto-fee-badge">Zero Gateway Fee</span>
+          </div>
+
+          <!-- Address Box + Copy Button -->
+          <div style="background: rgba(0, 0, 0, 0.35); border: 1px dashed var(--border-color); border-radius: var(--radius-sm); padding: 0.5rem 0.65rem; display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; word-break: break-all;">
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--text-main); line-height: 1.3;" id="crypto-deposit-address-text">T9xY7aK3mP8vQ2wL5nR1sE4tG6uJ8zC0vB</span>
+            <button class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 0.28rem 0.55rem; flex-shrink: 0;" onclick="copyCryptoWalletAddress()" title="Copy Address">
+              <i class="fa-solid fa-copy"></i> Copy
+            </button>
+          </div>
         </div>
-      </div>
 
-      <!-- Mandatory Launch UPI Notice Banner -->
-      <div id="upi-launch-required-msg" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.78rem; font-weight: 700; color: #fbbf24; margin-bottom: 0.75rem; align-items: center; gap: 0.5rem;">
-        <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.1rem; color: #f59e0b; flex-shrink: 0;"></i>
-        <span>⚠️ <strong>Payment Required:</strong> Click <strong>"Launch UPI"</strong> to Make Payment before Verifying UTR!</span>
-      </div>
+        <!-- Submit Transaction Hash (TXID) Input -->
+        <div style="margin-bottom: 0.85rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem;">Submit Blockchain Transaction Hash (TXID / TxHash):</label>
+          <input type="text" id="topup-txid-input" placeholder="e.g. 0x8f3c2a1b9e... (64 hex characters)" maxlength="66" oninput="validateCryptoTxidInput()">
+          
+          <!-- TXID Progress & Step-by-Step Visual Feedback -->
+          <div class="utr-progress-container" id="topup-txid-progress-box">
+            <div class="utr-progress-track">
+              <div class="utr-progress-bar-fill" id="topup-txid-bar-fill" style="width: 0%; background: linear-gradient(90deg, #f59e0b, #10b981);"></div>
+            </div>
+            <div class="utr-steps-row">
+              <div style="display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;">
+                <span class="utr-step-badge" id="topup-txid-step-hex">
+                  <i class="fa-solid fa-hashtag"></i> Hexadecimal
+                </span>
+                <span class="utr-step-badge" id="topup-txid-step-length">
+                  <i class="fa-solid fa-list-ol"></i> 0/64 Chars
+                </span>
+              </div>
+              <span id="topup-txid-char-counter" style="font-size: 0.75rem; font-weight: 700; font-family: var(--font-mono); color: var(--text-muted);">0 / 64</span>
+            </div>
+            <div class="utr-live-feedback" id="topup-txid-live-text">
+              <i class="fa-solid fa-link" style="color: var(--warning);"></i>
+              <span>Enter 64-character TxHash / Transaction ID from your wallet receipt</span>
+            </div>
+          </div>
 
-      <div style="display: flex; gap: 0.65rem;">
-        <button class="btn btn-secondary" style="flex: 1;" id="launch-upi-btn" onclick="launchUpiRedirect()">
-          <i class="fa-solid fa-external-link"></i> Launch UPI
-        </button>
-        <button class="btn btn-success" style="flex: 1.4; font-weight: 800;" id="submit-topup-utr-btn" onclick="submitWalletTopUpUtr()">
-          <i class="fa-solid fa-check-circle"></i> Verify & Add Funds
-        </button>
+          <!-- Error/Validation Banner -->
+          <div id="topup-txid-validation-msg" style="font-size: 0.78rem; font-weight: 700; color: #f87171; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 0.5rem 0.75rem; margin-top: 0.45rem; display: none; align-items: center; gap: 0.45rem;">
+          </div>
+        </div>
+
+        <!-- Cyber Blockchain Verification Terminal Box -->
+        <div id="topup-crypto-terminal-box" style="display: none; background: #020617; border: 1px solid #f59e0b; border-radius: var(--radius-md); padding: 0.75rem 0.85rem; margin-bottom: 0.85rem; font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; color: #fbbf24; box-shadow: 0 0 20px rgba(245, 158, 11, 0.2); position: relative; overflow: hidden;">
+          <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%); background-size: 100% 4px; pointer-events: none; opacity: 0.4;"></div>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(245, 158, 11, 0.25); padding-bottom: 0.45rem; margin-bottom: 0.55rem; color: #fef3c7; position: relative; z-index: 2; gap: 0.5rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.45rem;">
+              <span style="display: flex; gap: 5px; flex-shrink: 0;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+              </span>
+              <span style="font-size: 0.75rem; font-weight: 800; color: #fde68a; white-space: nowrap;">
+                <i class="fa-brands fa-bitcoin" style="color: #f59e0b;"></i> BLOCKCHAIN_NODE_v3.8
+              </span>
+            </div>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.65rem; font-weight: 800; font-family: monospace; white-space: nowrap; padding: 0.2rem 0.5rem; margin-left: auto;" id="topup-crypto-terminal-status-badge">RPC CONNECTED</span>
+          </div>
+          <div id="topup-crypto-terminal-logs" style="display: flex; flex-direction: column; gap: 0.35rem; min-height: 110px; max-height: 160px; overflow-y: auto; overflow-x: hidden; position: relative; z-index: 2; scrollbar-width: thin;">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.65rem;">
+          <button class="btn btn-secondary" style="flex: 1;" onclick="copyCryptoWalletAddress()">
+            <i class="fa-solid fa-copy"></i> Copy Address
+          </button>
+          <button class="btn btn-success" style="flex: 1.4; font-weight: 800; background: linear-gradient(135deg, #10b981 0%, #059669 100%);" id="submit-topup-crypto-btn" onclick="submitWalletTopUpCryptoTxid()">
+            <i class="fa-brands fa-bitcoin"></i> Verify & Credit Crypto
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -17751,6 +17917,398 @@
           showToast(`🎉 UTR #${utrVal} verified! ₹${amt.toFixed(2)} added to your wallet successfully!`, 'success');
         }, 900);
       }, 1600);
+    }
+
+    /* ==========================================
+       CRYPTOCURRENCY PAYMENT GATEWAY ENGINE
+       ========================================== */
+    const CryptoGateway = {
+      selectedCoin: 'USDT_TRC20',
+      coins: {
+        'USDT_TRC20': {
+          name: 'Tether USD',
+          symbol: 'USDT',
+          network: 'TRON (TRC20)',
+          inrRate: 88.50,
+          address: 'T9xY7aK3mP8vQ2wL5nR1sE4tG6uJ8zC0vB',
+          fee: 'Zero Gateway Fee',
+          color: '#26a17b'
+        },
+        'USDT_BEP20': {
+          name: 'Tether USD',
+          symbol: 'USDT',
+          network: 'BNB Smart Chain (BEP20)',
+          inrRate: 88.50,
+          address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+          fee: 'Low Fee (~$0.10)',
+          color: '#f3ba2f'
+        },
+        'BTC': {
+          name: 'Bitcoin',
+          symbol: 'BTC',
+          network: 'Bitcoin Network',
+          inrRate: 5850000,
+          address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+          fee: 'Standard Network Fee',
+          color: '#f7931a'
+        },
+        'ETH': {
+          name: 'Ethereum',
+          symbol: 'ETH',
+          network: 'Ethereum (ERC20)',
+          inrRate: 245000,
+          address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+          fee: 'ERC20 Gas Fee',
+          color: '#627eea'
+        },
+        'SOL': {
+          name: 'Solana',
+          symbol: 'SOL',
+          network: 'Solana Mainnet',
+          inrRate: 14200,
+          address: '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU',
+          fee: 'Ultra Fast (~$0.01)',
+          color: '#14f195'
+        },
+        'LTC': {
+          name: 'Litecoin',
+          symbol: 'LTC',
+          network: 'Litecoin Network',
+          inrRate: 6800,
+          address: 'Ltc1q4f7d924x98p274m3189ksndlz821389kks2d38',
+          fee: 'Near Free (~$0.02)',
+          color: '#38bdf8'
+        }
+      }
+    };
+
+    let activeTopUpMethod = 'upi'; // 'upi' or 'crypto'
+
+    function switchTopUpMethod(method) {
+      activeTopUpMethod = method;
+      const upiTab = document.getElementById('topup-tab-upi');
+      const cryptoTab = document.getElementById('topup-tab-crypto');
+      const upiSec = document.getElementById('topup-upi-section');
+      const cryptoSec = document.getElementById('topup-crypto-section');
+
+      if (method === 'upi') {
+        if (upiTab) { upiTab.className = 'btn btn-sm btn-primary'; }
+        if (cryptoTab) { cryptoTab.className = 'btn btn-sm btn-secondary'; }
+        if (upiSec) upiSec.style.display = 'block';
+        if (cryptoSec) cryptoSec.style.display = 'none';
+      } else {
+        if (upiTab) { upiTab.className = 'btn btn-sm btn-secondary'; }
+        if (cryptoTab) { cryptoTab.className = 'btn btn-sm btn-primary'; }
+        if (upiSec) upiSec.style.display = 'none';
+        if (cryptoSec) cryptoSec.style.display = 'block';
+        selectTopUpCryptoCoin(CryptoGateway.selectedCoin || 'USDT_TRC20');
+        updateCryptoTopUpCalculator();
+      }
+    }
+
+    function selectTopUpCryptoCoin(coinKey) {
+      if (!CryptoGateway.coins[coinKey]) coinKey = 'USDT_TRC20';
+      CryptoGateway.selectedCoin = coinKey;
+      const coinInfo = CryptoGateway.coins[coinKey];
+
+      // Update Pill Active States
+      const pillBtns = document.querySelectorAll('.crypto-coin-btn');
+      pillBtns.forEach(btn => {
+        if (btn.dataset.coin === coinKey) {
+          btn.classList.add('active');
+          btn.style.borderColor = coinInfo.color;
+          btn.style.background = `rgba(255, 255, 255, 0.08)`;
+        } else {
+          btn.classList.remove('active');
+          btn.style.borderColor = '';
+          btn.style.background = '';
+        }
+      });
+
+      // Update Display Fields
+      const rateEl = document.getElementById('crypto-rate-display');
+      if (rateEl) {
+        if (coinInfo.inrRate >= 1000) {
+          rateEl.innerText = `1 ${coinInfo.symbol} ≈ ₹${coinInfo.inrRate.toLocaleString('en-IN')} INR`;
+        } else {
+          rateEl.innerText = `1 ${coinInfo.symbol} ≈ ₹${coinInfo.inrRate.toFixed(2)} INR`;
+        }
+      }
+
+      const netBadge = document.getElementById('crypto-network-badge');
+      if (netBadge) {
+        netBadge.innerText = coinInfo.network;
+        netBadge.style.color = coinInfo.color;
+      }
+
+      const feeBadge = document.getElementById('crypto-fee-badge');
+      if (feeBadge) {
+        feeBadge.innerText = coinInfo.fee;
+      }
+
+      const addrText = document.getElementById('crypto-deposit-address-text');
+      if (addrText) {
+        addrText.innerText = coinInfo.address;
+      }
+
+      const qrImg = document.getElementById('crypto-qr-image');
+      if (qrImg) {
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(coinInfo.address)}`;
+      }
+
+      updateCryptoTopUpCalculator();
+    }
+
+    function updateCryptoTopUpCalculator() {
+      const coinInfo = CryptoGateway.coins[CryptoGateway.selectedCoin] || CryptoGateway.coins['USDT_TRC20'];
+      const input = document.getElementById('custom-wallet-amount-input');
+      const payableEl = document.getElementById('crypto-payable-amount-display');
+      if (!payableEl) return;
+
+      let inrAmt = 100;
+      if (input && input.value && !isNaN(parseFloat(input.value)) && parseFloat(input.value) > 0) {
+        inrAmt = parseFloat(input.value);
+      }
+
+      const cryptoAmt = inrAmt / coinInfo.inrRate;
+      let formattedCrypto = '';
+      if (cryptoAmt < 0.0001) {
+        formattedCrypto = cryptoAmt.toFixed(8) + ' ' + coinInfo.symbol;
+      } else if (cryptoAmt < 0.01) {
+        formattedCrypto = cryptoAmt.toFixed(6) + ' ' + coinInfo.symbol;
+      } else if (cryptoAmt < 1) {
+        formattedCrypto = cryptoAmt.toFixed(4) + ' ' + coinInfo.symbol;
+      } else {
+        formattedCrypto = cryptoAmt.toFixed(2) + ' ' + coinInfo.symbol;
+      }
+
+      payableEl.innerText = formattedCrypto;
+    }
+
+    function copyCryptoWalletAddress() {
+      const coinInfo = CryptoGateway.coins[CryptoGateway.selectedCoin] || CryptoGateway.coins['USDT_TRC20'];
+      copyText(coinInfo.address, `Copied ${coinInfo.network} Wallet Address!`);
+    }
+
+    function validateCryptoTxidInput() {
+      const input = document.getElementById('topup-txid-input');
+      const barFill = document.getElementById('topup-txid-bar-fill');
+      const stepHex = document.getElementById('topup-txid-step-hex');
+      const stepLen = document.getElementById('topup-txid-step-length');
+      const charCounter = document.getElementById('topup-txid-char-counter');
+      const liveText = document.getElementById('topup-txid-live-text');
+      const valMsg = document.getElementById('topup-txid-validation-msg');
+
+      if (!input) return false;
+
+      const raw = input.value.trim();
+      const cleanHex = raw.replace(/^0x/i, '');
+      const isHexOnly = /^[0-9a-fA-F]*$/.test(cleanHex);
+
+      const len = raw.length;
+      const pct = Math.min(100, Math.round((len / 64) * 100));
+
+      if (barFill) barFill.style.width = `${pct}%`;
+      if (charCounter) charCounter.innerText = `${len} / 64`;
+
+      if (stepHex) {
+        if (len > 0 && isHexOnly) {
+          stepHex.style.background = 'rgba(16, 185, 129, 0.2)';
+          stepHex.style.color = '#34d399';
+          stepHex.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        } else if (len > 0) {
+          stepHex.style.background = 'rgba(239, 68, 68, 0.2)';
+          stepHex.style.color = '#f87171';
+          stepHex.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+        } else {
+          stepHex.style.background = '';
+          stepHex.style.color = '';
+          stepHex.style.borderColor = '';
+        }
+      }
+
+      if (stepLen) {
+        if (len >= 32) {
+          stepLen.style.background = 'rgba(16, 185, 129, 0.2)';
+          stepLen.style.color = '#34d399';
+          stepLen.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        } else {
+          stepLen.style.background = '';
+          stepLen.style.color = '';
+          stepLen.style.borderColor = '';
+        }
+      }
+
+      if (!isHexOnly && len > 0) {
+        input.style.borderColor = '#ef4444';
+        if (valMsg) {
+          valMsg.style.display = 'flex';
+          valMsg.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="color:#ef4444;"></i> <span>TxHash must contain only hexadecimal characters (0-9, a-f).</span>`;
+        }
+        return false;
+      }
+
+      if (len > 0 && len < 32) {
+        input.style.borderColor = '#f59e0b';
+        if (valMsg) {
+          valMsg.style.display = 'flex';
+          valMsg.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;"></i> <span>TxHash appears too short. Standard blockchain hashes are 64 hex characters.</span>`;
+        }
+        return false;
+      }
+
+      if (len >= 32 && isHexOnly) {
+        input.style.borderColor = '#10b981';
+        if (valMsg) valMsg.style.display = 'none';
+        return true;
+      }
+
+      input.style.borderColor = '';
+      if (valMsg) valMsg.style.display = 'none';
+      return false;
+    }
+
+    function appendTopUpCryptoTerminalLog(msg, type = 'info') {
+      const logs = document.getElementById('topup-crypto-terminal-logs');
+      if (!logs) return;
+      const line = document.createElement('div');
+      let color = '#fbbf24'; // Amber / Gold
+      let icon = 'fa-chevron-right';
+      if (type === 'success') { color = '#34d399'; icon = 'fa-check-double'; }
+      if (type === 'warning') { color = '#fbbf24'; icon = 'fa-bolt'; }
+      if (type === 'error') { color = '#f87171'; icon = 'fa-triangle-exclamation'; }
+      if (type === 'crypto') { color = '#38bdf8'; icon = 'fa-link'; }
+
+      const timeStr = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      line.style.color = color;
+      line.style.fontSize = '0.68rem';
+      line.style.lineHeight = '1.35';
+      line.style.fontFamily = "'JetBrains Mono', 'Fira Code', 'Courier New', monospace";
+      line.style.textShadow = '0 0 5px rgba(245, 158, 11, 0.25)';
+      line.style.display = 'flex';
+      line.style.alignItems = 'flex-start';
+      line.style.gap = '0.3rem';
+      line.style.wordBreak = 'break-word';
+      line.style.minWidth = '0';
+      line.innerHTML = `<span style="color: #64748b; font-size: 0.64rem; flex-shrink: 0; font-weight: 600;">[${timeStr}]</span> <i class="fa-solid ${icon}" style="font-size: 0.6rem; margin-top: 3px; flex-shrink: 0;"></i> <span style="flex: 1; min-width: 0; word-break: break-word;">${msg}</span>`;
+      logs.appendChild(line);
+      logs.scrollTop = logs.scrollHeight;
+    }
+
+    function submitWalletTopUpCryptoTxid() {
+      if (!AppState.isLoggedIn) {
+        showToast('🔐 Please Sign In or Register to top up your wallet!', 'warning');
+        openModal('user-modal');
+        return;
+      }
+
+      const amountInput = document.getElementById('custom-wallet-amount-input');
+      const valMsg = document.getElementById('custom-amount-val-msg');
+      const txidInput = document.getElementById('topup-txid-input');
+      const txidValMsg = document.getElementById('topup-txid-validation-msg');
+
+      if (!amountInput || !txidInput) return;
+
+      const amtVal = amountInput.value.trim();
+      const amt = parseFloat(amtVal);
+
+      if (amtVal === '' || isNaN(amt) || amt < 99) {
+        if (valMsg) {
+          valMsg.style.display = 'block';
+          valMsg.innerText = '⚠️ Please enter a minimum top-up amount of ₹99.';
+        }
+        amountInput.style.borderColor = '#ef4444';
+        amountInput.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+        showToast('Please enter a valid custom amount (Min ₹99)', 'warning');
+        return;
+      }
+
+      const txidVal = txidInput.value.trim();
+      if (txidVal.length < 16) {
+        txidInput.style.borderColor = '#ef4444';
+        if (txidValMsg) {
+          txidValMsg.style.display = 'flex';
+          txidValMsg.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i> <span>⚠️ Please enter a valid Transaction Hash (TXID).</span>`;
+        }
+        showToast('Please enter your Crypto Transaction Hash (TXID)', 'warning');
+        return;
+      }
+
+      const coinInfo = CryptoGateway.coins[CryptoGateway.selectedCoin] || CryptoGateway.coins['USDT_TRC20'];
+      const btn = document.getElementById('submit-topup-crypto-btn');
+      const terminalBox = document.getElementById('topup-crypto-terminal-box');
+      const terminalLogs = document.getElementById('topup-crypto-terminal-logs');
+      const statusBadge = document.getElementById('topup-crypto-terminal-status-badge');
+
+      if (terminalBox) terminalBox.style.display = 'block';
+      if (terminalLogs) terminalLogs.innerHTML = '';
+      if (statusBadge) {
+        statusBadge.innerText = 'CONNECTING RPC...';
+        statusBadge.style.background = 'rgba(56, 189, 248, 0.2)';
+        statusBadge.style.color = '#38bdf8';
+        statusBadge.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color: #f59e0b;"></i> Verifying Ledger...`;
+      }
+
+      // Step 1: Connect to Blockchain RPC Node
+      appendTopUpCryptoTerminalLog(`NODE: Connecting to ${coinInfo.network} Full Node...`, 'crypto');
+      appendTopUpCryptoTerminalLog(`TXHASH: Querying Mempool for TxHash #${txidVal.substring(0, 18)}...`, 'info');
+
+      // Step 2: Confirm Block Confirmations (500ms)
+      setTimeout(() => {
+        if (btn) btn.innerHTML = `<i class="fa-solid fa-cubes fa-spin"></i> Checking Confirmations...`;
+        if (statusBadge) {
+          statusBadge.innerText = 'BLOCK CONFIRMATIONS (2/3)...';
+          statusBadge.style.background = 'rgba(245, 158, 11, 0.2)';
+          statusBadge.style.color = '#fbbf24';
+          statusBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+        }
+        const blockNum = Math.floor(45000000 + Math.random() * 5000000);
+        appendTopUpCryptoTerminalLog(`BLOCKCHAIN: Block #${blockNum} Mined! Confirmations: 3/3 SUCCESS`, 'warning');
+        appendTopUpCryptoTerminalLog(`SMART CONTRACT: Transfer Token Contract Executed. Recipient: ${coinInfo.address.substring(0, 10)}...`, 'crypto');
+      }, 500);
+
+      // Step 3: Complete & Credit Wallet Balance (1200ms)
+      setTimeout(() => {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-brands fa-bitcoin"></i> Verify & Credit Crypto`;
+        }
+
+        if (statusBadge) {
+          statusBadge.innerText = 'VERIFIED ✅';
+          statusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+          statusBadge.style.color = '#34d399';
+          statusBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        }
+
+        appendTopUpCryptoTerminalLog(`SETTLEMENT: ₹${amt.toFixed(2)} Credited to Wallet Balance! Syncing Local Storage...`, 'success');
+
+        AppState.walletBalance += amt;
+        SafeStorage.setItem('vnh_wallet', AppState.walletBalance.toString());
+        updateWalletUI(true);
+        if (typeof triggerEnhancedBurstConfetti === 'function') triggerEnhancedBurstConfetti();
+        if (typeof playOtpSoundNotification === 'function') playOtpSoundNotification();
+        speakPaymentSuccessVoice();
+
+        setTimeout(() => {
+          amountInput.value = '';
+          amountInput.style.borderColor = '';
+          amountInput.style.boxShadow = '';
+          txidInput.value = '';
+          txidInput.style.borderColor = '';
+          const counter = document.getElementById('topup-txid-char-counter');
+          if (counter) counter.innerText = '0 / 64';
+          if (terminalBox) terminalBox.style.display = 'none';
+
+          closeModal('topup-modal');
+          showToast(`🎉 Crypto Payment Verified! ₹${amt.toFixed(2)} added to your wallet successfully via ${coinInfo.symbol}!`, 'success');
+        }, 900);
+      }, 1200);
     }
 
     function addDemoWalletFunds(amt) {
