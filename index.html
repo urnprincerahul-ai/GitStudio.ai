@@ -5635,6 +5635,7 @@
         <li><a href="#pricing" class="nav-link" onclick="scrollToSection('pricing', event)"><i class="fa-solid fa-tags"></i> Pricing</a></li>
         <li><a href="#dashboard" class="nav-link" data-dash-tab="purchases" onclick="scrollToSection('dashboard', event); switchDashboardTab('purchases');"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
         <li><a href="#dashboard" data-dash-tab="referrals" onclick="scrollToSection('dashboard', event); switchDashboardTab('referrals');" class="nav-link"><i class="fa-solid fa-gift" style="color: #f59e0b;"></i> Refer & Earn</a></li>
+        <li><a href="#dashboard" data-dash-tab="crypto" onclick="scrollToSection('dashboard', event); switchDashboardTab('crypto');" class="nav-link"><i class="fa-brands fa-bitcoin" style="color: #f59e0b;"></i> Crypto Deposit</a></li>
         <li><a href="#faq" class="nav-link" onclick="scrollToSection('faq', event)"><i class="fa-solid fa-circle-question"></i> FAQ</a></li>
       </ul>
 
@@ -5760,9 +5761,23 @@
         </a>
       </li>
       <li>
+        <a href="#dashboard" class="nav-link mobile-nav-item" data-dash-tab="crypto" onclick="scrollToSection('dashboard', event); switchDashboardTab('crypto'); closeMobileSidebar();">
+          <div class="mobile-nav-icon-badge" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.3); color: #f59e0b;"><i class="fa-brands fa-bitcoin"></i></div>
+          <span>Crypto Deposit</span>
+          <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
+        </a>
+      </li>
+      <li>
         <a href="#faq" class="nav-link mobile-nav-item" onclick="scrollToSection('faq', event); closeMobileSidebar();">
           <div class="mobile-nav-icon-badge"><i class="fa-solid fa-circle-question"></i></div>
           <span>FAQ</span>
+          <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
+        </a>
+      </li>
+      <li>
+        <a href="javascript:void(0)" class="nav-link mobile-nav-item" onclick="openModal('theme-modal'); closeMobileSidebar();">
+          <div class="mobile-nav-icon-badge" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.3); color: #38bdf8;"><i class="fa-solid fa-palette"></i></div>
+          <span>Theme Preferences</span>
           <i class="fa-solid fa-chevron-right mobile-nav-arrow"></i>
         </a>
       </li>
@@ -6299,6 +6314,9 @@
                   <button class="btn btn-secondary btn-sm" id="dash-tab-sms-logs" onclick="switchDashboardTab('sms-logs')">
                     <i class="fa-solid fa-receipt" style="color: #38bdf8;"></i> SMS Logs <span class="badge badge-primary" id="sms-logs-count-badge" style="margin-left: 0.25rem; font-size: 0.65rem;">0</span>
                   </button>
+                  <button class="btn btn-secondary btn-sm" id="dash-tab-crypto" onclick="switchDashboardTab('crypto')">
+                    <i class="fa-brands fa-bitcoin" style="color: #f59e0b;"></i> Crypto Wallet
+                  </button>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%; margin-top: 0.35rem;">
                   <!-- Sound Alert Selector & Unique Play Button -->
@@ -6343,6 +6361,10 @@
 
               <div id="sms-logs-tab-content" style="display: none; flex-direction: column; gap: 1.25rem; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden;">
                 <!-- Dynamically Rendered SMS Logs Section -->
+              </div>
+
+              <div id="crypto-wallet-tab-content" style="display: none; flex-direction: column; gap: 1.25rem; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden;">
+                <!-- Dynamically Rendered Crypto Wallet Section -->
               </div>
             </div>
           </div>
@@ -8342,6 +8364,74 @@
     </div>
   </div>
 
+  <!-- Theme Preference & Appearance Modal -->
+  <div class="modal-backdrop" id="theme-modal">
+    <div class="modal-box" style="max-width: 480px; width: 94vw; padding: 1.25rem; border-radius: 18px; box-sizing: border-box;">
+      <button class="modal-close" onclick="closeModal('theme-modal')"><i class="fa-solid fa-xmark"></i></button>
+
+      <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.25rem;">
+        <div style="width: 38px; height: 38px; border-radius: 50%; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); display: flex; align-items: center; justify-content: center; color: #38bdf8; font-size: 1.1rem;">
+          <i class="fa-solid fa-palette"></i>
+        </div>
+        <div>
+          <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0; color: var(--text-main);">Theme Preferences</h3>
+          <p style="color: var(--text-muted); font-size: 0.78rem; margin: 0;">System auto-detection or manual light / dark selection</p>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.65rem; margin: 1.1rem 0;">
+        <!-- Option 1: Auto System Theme -->
+        <div onclick="applyTheme('system', true)" id="theme-opt-system" style="cursor: pointer; padding: 0.85rem 1rem; border-radius: 12px; border: 1.5px solid var(--border-color); background: rgba(15, 23, 42, 0.4); display: flex; align-items: center; justify-content: space-between; transition: all 0.2s ease;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); display: flex; align-items: center; justify-content: center; color: #38bdf8; font-size: 1.1rem;">
+              <i class="fa-solid fa-desktop"></i>
+            </div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.88rem; color: var(--text-main); display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                Auto-detect System Theme
+                <span class="badge badge-info" style="font-size: 0.62rem; padding: 0.15rem 0.4rem;" id="system-theme-os-status">OS: --</span>
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Syncs automatically with your OS / device preference</div>
+            </div>
+          </div>
+          <div id="theme-radio-system" style="font-size: 1.1rem; color: #38bdf8;"><i class="fa-regular fa-circle"></i></div>
+        </div>
+
+        <!-- Option 2: Light Mode -->
+        <div onclick="applyTheme('light', true)" id="theme-opt-light" style="cursor: pointer; padding: 0.85rem 1rem; border-radius: 12px; border: 1.5px solid var(--border-color); background: rgba(15, 23, 42, 0.4); display: flex; align-items: center; justify-content: space-between; transition: all 0.2s ease;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 1.1rem;">
+              <i class="fa-solid fa-sun"></i>
+            </div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.88rem; color: var(--text-main);">Light Theme ☀️</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Clean, crisp bright daylight interface</div>
+            </div>
+          </div>
+          <div id="theme-radio-light" style="font-size: 1.1rem; color: #f59e0b;"><i class="fa-regular fa-circle"></i></div>
+        </div>
+
+        <!-- Option 3: Dark Mode -->
+        <div onclick="applyTheme('dark', true)" id="theme-opt-dark" style="cursor: pointer; padding: 0.85rem 1rem; border-radius: 12px; border: 1.5px solid var(--border-color); background: rgba(15, 23, 42, 0.4); display: flex; align-items: center; justify-content: space-between; transition: all 0.2s ease;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); display: flex; align-items: center; justify-content: center; color: #a855f7; font-size: 1.1rem;">
+              <i class="fa-solid fa-moon"></i>
+            </div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.88rem; color: var(--text-main);">Dark Theme 🌙</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Midnight obsidian theme, easy on the eyes</div>
+            </div>
+          </div>
+          <div id="theme-radio-dark" style="font-size: 1.1rem; color: #a855f7;"><i class="fa-regular fa-circle"></i></div>
+        </div>
+      </div>
+
+      <div style="text-align: right;">
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('theme-modal')" style="font-weight: 700;">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Area -->
   <div id="toast-container"></div>
 
@@ -8588,7 +8678,7 @@
     }
 
     const AppState = {
-      theme: SafeStorage.getItem('vnh_theme') || 'dark',
+      theme: SafeStorage.getItem('vnh_theme') || 'system',
       selectedTimezone: SafeStorage.getItem('vnh_selected_tz') || 'Asia/Kolkata',
       autoSpeakOtp: SafeStorage.getItem('vnh_auto_speak_otp') !== 'false',
       otpSoundStyle: SafeStorage.getItem('vnh_otp_sound_style') || 'classic',
@@ -9610,33 +9700,39 @@
       const favoritesList = document.getElementById('favorites-tab-list');
       const referralContent = document.getElementById('referral-tab-content');
       const smsLogsContent = document.getElementById('sms-logs-tab-content');
+      const cryptoWalletContent = document.getElementById('crypto-wallet-tab-content');
 
       const tabPurchasesBtn = document.getElementById('dash-tab-purchases');
       const tabFavoritesBtn = document.getElementById('dash-tab-favorites');
       const tabReferralsBtn = document.getElementById('dash-tab-referrals');
       const tabSmsLogsBtn = document.getElementById('dash-tab-sms-logs');
+      const tabCryptoBtn = document.getElementById('dash-tab-crypto');
 
       if (tab === 'purchases') {
         if (purchasesList) purchasesList.style.display = 'flex';
         if (favoritesList) favoritesList.style.display = 'none';
         if (referralContent) referralContent.style.display = 'none';
         if (smsLogsContent) smsLogsContent.style.display = 'none';
+        if (cryptoWalletContent) cryptoWalletContent.style.display = 'none';
 
         if (tabPurchasesBtn) tabPurchasesBtn.className = 'btn btn-primary btn-sm';
         if (tabFavoritesBtn) tabFavoritesBtn.className = 'btn btn-secondary btn-sm';
         if (tabReferralsBtn) tabReferralsBtn.className = 'btn btn-secondary btn-sm';
         if (tabSmsLogsBtn) tabSmsLogsBtn.className = 'btn btn-secondary btn-sm';
+        if (tabCryptoBtn) tabCryptoBtn.className = 'btn btn-secondary btn-sm';
         setActiveMobileBottomNav('mob-nav-active-numbers');
       } else if (tab === 'favorites') {
         if (purchasesList) purchasesList.style.display = 'none';
         if (favoritesList) favoritesList.style.display = 'flex';
         if (referralContent) referralContent.style.display = 'none';
         if (smsLogsContent) smsLogsContent.style.display = 'none';
+        if (cryptoWalletContent) cryptoWalletContent.style.display = 'none';
 
         if (tabPurchasesBtn) tabPurchasesBtn.className = 'btn btn-secondary btn-sm';
         if (tabFavoritesBtn) tabFavoritesBtn.className = 'btn btn-primary btn-sm';
         if (tabReferralsBtn) tabReferralsBtn.className = 'btn btn-secondary btn-sm';
         if (tabSmsLogsBtn) tabSmsLogsBtn.className = 'btn btn-secondary btn-sm';
+        if (tabCryptoBtn) tabCryptoBtn.className = 'btn btn-secondary btn-sm';
         setActiveMobileBottomNav('mob-nav-favorites');
         renderFavoritesTab();
       } else if (tab === 'referrals') {
@@ -9644,23 +9740,40 @@
         if (favoritesList) favoritesList.style.display = 'none';
         if (referralContent) referralContent.style.display = 'flex';
         if (smsLogsContent) smsLogsContent.style.display = 'none';
+        if (cryptoWalletContent) cryptoWalletContent.style.display = 'none';
 
         if (tabPurchasesBtn) tabPurchasesBtn.className = 'btn btn-secondary btn-sm';
         if (tabFavoritesBtn) tabFavoritesBtn.className = 'btn btn-secondary btn-sm';
         if (tabReferralsBtn) tabReferralsBtn.className = 'btn btn-primary btn-sm';
         if (tabSmsLogsBtn) tabSmsLogsBtn.className = 'btn btn-secondary btn-sm';
+        if (tabCryptoBtn) tabCryptoBtn.className = 'btn btn-secondary btn-sm';
         renderReferralTab();
       } else if (tab === 'sms-logs') {
         if (purchasesList) purchasesList.style.display = 'none';
         if (favoritesList) favoritesList.style.display = 'none';
         if (referralContent) referralContent.style.display = 'none';
         if (smsLogsContent) smsLogsContent.style.display = 'flex';
+        if (cryptoWalletContent) cryptoWalletContent.style.display = 'none';
 
         if (tabPurchasesBtn) tabPurchasesBtn.className = 'btn btn-secondary btn-sm';
         if (tabFavoritesBtn) tabFavoritesBtn.className = 'btn btn-secondary btn-sm';
         if (tabReferralsBtn) tabReferralsBtn.className = 'btn btn-secondary btn-sm';
         if (tabSmsLogsBtn) tabSmsLogsBtn.className = 'btn btn-primary btn-sm';
+        if (tabCryptoBtn) tabCryptoBtn.className = 'btn btn-secondary btn-sm';
         renderSmsLogsTab();
+      } else if (tab === 'crypto') {
+        if (purchasesList) purchasesList.style.display = 'none';
+        if (favoritesList) favoritesList.style.display = 'none';
+        if (referralContent) referralContent.style.display = 'none';
+        if (smsLogsContent) smsLogsContent.style.display = 'none';
+        if (cryptoWalletContent) cryptoWalletContent.style.display = 'flex';
+
+        if (tabPurchasesBtn) tabPurchasesBtn.className = 'btn btn-secondary btn-sm';
+        if (tabFavoritesBtn) tabFavoritesBtn.className = 'btn btn-secondary btn-sm';
+        if (tabReferralsBtn) tabReferralsBtn.className = 'btn btn-secondary btn-sm';
+        if (tabSmsLogsBtn) tabSmsLogsBtn.className = 'btn btn-secondary btn-sm';
+        if (tabCryptoBtn) tabCryptoBtn.className = 'btn btn-primary btn-sm';
+        renderCryptoWalletTab();
       }
 
       // Trigger GSAP sequential fade-in & scale-up stagger animation for Dashboard Statistics cards
@@ -16025,28 +16138,47 @@
     }
 
     /* ==========================================
-       THEME MANAGEMENT & SMOOTH CROSS-FADE
+       THEME MANAGEMENT & SYSTEM AUTO-DETECTION
        ========================================== */
-    function applyTheme(theme, animate = false) {
-      AppState.theme = theme;
-      SafeStorage.setItem('vnh_theme', theme);
+    function applyTheme(mode, animate = false) {
+      if (!['system', 'light', 'dark'].includes(mode)) {
+        mode = 'system';
+      }
+
+      AppState.theme = mode;
+      SafeStorage.setItem('vnh_theme', mode);
+
+      // Resolve effective DOM theme (light or dark)
+      let effectiveTheme = mode;
+      if (mode === 'system') {
+        const isDarkOS = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        effectiveTheme = isDarkOS ? 'dark' : 'light';
+      }
 
       const updateDomTheme = () => {
-        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.setAttribute('data-theme', effectiveTheme);
 
-        // Update Theme Button Icon & Title
+        // Update Header Theme Toggle Button
         const themeBtn = document.getElementById('theme-toggle-btn');
         if (themeBtn) {
-          if (theme === 'light') {
+          if (mode === 'system') {
+            const osLabel = effectiveTheme === 'dark' ? 'Dark 🌙' : 'Light ☀️';
+            themeBtn.innerHTML = '<i class="fa-solid fa-desktop" style="color: #38bdf8;"></i>';
+            themeBtn.title = `Theme: Auto-detect System (${osLabel}) — Click to cycle theme`;
+          } else if (mode === 'light') {
             themeBtn.innerHTML = '<i class="fa-solid fa-sun" style="color: #f59e0b;"></i>';
-            themeBtn.title = 'Switch to Dark Theme';
+            themeBtn.title = 'Theme: Light Mode ☀️ — Click to cycle theme';
           } else {
-            themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
-            themeBtn.title = 'Switch to Light Theme';
+            themeBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #a855f7;"></i>';
+            themeBtn.title = 'Theme: Dark Mode 🌙 — Click to cycle theme';
           }
         }
 
-        renderDashboardActivationChart();
+        updateThemeSelectorUI();
+
+        if (typeof renderDashboardActivationChart === 'function') {
+          renderDashboardActivationChart();
+        }
       };
 
       if (!animate) {
@@ -16070,9 +16202,66 @@
     }
 
     function toggleThemeWithCrossFade() {
-      const nextTheme = AppState.theme === 'dark' ? 'light' : 'dark';
+      // Cycle order: 'system' -> 'light' -> 'dark' -> 'system'
+      let nextTheme = 'system';
+      if (AppState.theme === 'system') {
+        nextTheme = 'light';
+      } else if (AppState.theme === 'light') {
+        nextTheme = 'dark';
+      } else {
+        nextTheme = 'system';
+      }
+
       applyTheme(nextTheme, true);
-      showToast(`Switched to ${nextTheme === 'light' ? 'Light ☀️' : 'Dark 🌙'} Theme`, 'info');
+
+      if (nextTheme === 'system') {
+        const osMode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'Dark Mode 🌙' : 'Light Mode ☀️';
+        showToast(`💻 Theme set to Auto-detect System Preference (${osMode})`, 'info');
+      } else if (nextTheme === 'light') {
+        showToast('☀️ Switched to Light Mode', 'info');
+      } else {
+        showToast('🌙 Switched to Dark Mode', 'info');
+      }
+    }
+
+    function updateThemeSelectorUI() {
+      const currentMode = AppState.theme || 'system';
+      const isDarkOS = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const osStatusEl = document.getElementById('system-theme-os-status');
+      if (osStatusEl) {
+        osStatusEl.innerText = `OS: ${isDarkOS ? 'Dark 🌙' : 'Light ☀️'}`;
+      }
+
+      ['system', 'light', 'dark'].forEach(m => {
+        const card = document.getElementById(`theme-opt-${m}`);
+        const radio = document.getElementById(`theme-radio-${m}`);
+        if (!card || !radio) return;
+
+        if (m === currentMode) {
+          card.style.borderColor = (m === 'system' ? '#38bdf8' : m === 'light' ? '#f59e0b' : '#a855f7');
+          card.style.background = 'rgba(255, 255, 255, 0.08)';
+          radio.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+        } else {
+          card.style.borderColor = 'var(--border-color)';
+          card.style.background = 'rgba(15, 23, 42, 0.4)';
+          radio.innerHTML = '<i class="fa-regular fa-circle"></i>';
+        }
+      });
+    }
+
+    // Initialize OS System Preference Change Listener
+    if (window.matchMedia) {
+      const sysThemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleSystemThemeChange = () => {
+        if (AppState.theme === 'system') {
+          applyTheme('system', true);
+        }
+      };
+      if (sysThemeMedia.addEventListener) {
+        sysThemeMedia.addEventListener('change', handleSystemThemeChange);
+      } else if (sysThemeMedia.addListener) {
+        sysThemeMedia.addListener(handleSystemThemeChange);
+      }
     }
 
     function triggerSimulatedPriceDrop() {
@@ -18309,6 +18498,292 @@
           showToast(`🎉 Crypto Payment Verified! ₹${amt.toFixed(2)} added to your wallet successfully via ${coinInfo.symbol}!`, 'success');
         }, 900);
       }, 1200);
+    }
+
+    /* ==========================================
+       DASHBOARD CRYPTO WALLET TAB RENDERER
+       ========================================== */
+    function renderCryptoWalletTab() {
+      const container = document.getElementById('crypto-wallet-tab-content');
+      if (!container) return;
+
+      const currentCoinKey = CryptoGateway.selectedCoin || 'USDT_TRC20';
+      const coinInfo = CryptoGateway.coins[currentCoinKey] || CryptoGateway.coins['USDT_TRC20'];
+
+      // Retrieve stored crypto transactions history if available
+      let txs = [];
+      try {
+        const raw = SafeStorage.getItem('vnh_crypto_txs');
+        if (raw) txs = JSON.parse(raw);
+      } catch(e) { txs = []; }
+
+      let coinCardsHtml = '';
+      Object.keys(CryptoGateway.coins).forEach(key => {
+        const coin = CryptoGateway.coins[key];
+        const isActive = (key === currentCoinKey);
+        const activeStyle = isActive 
+          ? `border-color: ${coin.color}; background: rgba(255, 255, 255, 0.08); box-shadow: 0 0 12px ${coin.color}33;`
+          : `border-color: var(--border-color); background: rgba(15, 23, 42, 0.4);`;
+
+        coinCardsHtml += `
+          <div onclick="selectDashCryptoCoin('${key}')" style="cursor: pointer; padding: 0.65rem 0.75rem; border-radius: var(--radius-md); border: 1px solid; ${activeStyle} transition: all 0.2s ease; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; min-width: 0;">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: ${coin.color}20; border: 1px solid ${coin.color}50; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: ${coin.color}; flex-shrink: 0;">
+                <i class="${key.includes('BTC') ? 'fa-brands fa-bitcoin' : key.includes('ETH') ? 'fa-brands fa-ethereum' : key.includes('SOL') ? 'fa-solid fa-bolt' : key.includes('LTC') ? 'fa-solid fa-litecoin-sign' : 'fa-solid fa-coins'}"></i>
+              </div>
+              <div style="min-width: 0;">
+                <div style="font-weight: 800; font-size: 0.85rem; color: var(--text-main); line-height: 1.2;">${coin.symbol} <span style="font-size: 0.68rem; font-weight: 600; color: var(--text-muted);">(${coin.network.split(' ')[0]})</span></div>
+                <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">1 ${coin.symbol} ≈ ₹${coin.inrRate >= 1000 ? coin.inrRate.toLocaleString('en-IN') : coin.inrRate.toFixed(2)}</div>
+              </div>
+            </div>
+            ${isActive ? `<span style="color: ${coin.color}; font-size: 0.85rem; flex-shrink: 0;"><i class="fa-solid fa-circle-check"></i></span>` : ''}
+          </div>
+        `;
+      });
+
+      // Calculate equivalents for current balance
+      const bal = AppState.walletBalance || 0;
+      const usdtEq = (bal / 88.50).toFixed(2);
+      const btcEq = (bal / 5850000).toFixed(6);
+
+      container.innerHTML = `
+        <!-- Top Card: Wallet Overview Banner -->
+        <div style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.4rem; color: var(--text-muted); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fa-brands fa-bitcoin" style="color: #f59e0b;"></i> Crypto Wallet Balance
+            </div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: #22c55e; margin: 0.25rem 0 0.15rem 0; font-family: var(--font-mono); display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+              ₹${bal.toFixed(2)} INR
+              <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); padding: 0.2rem 0.5rem; background: rgba(255,255,255,0.08); border-radius: 20px;">Available Balance</span>
+            </div>
+            <div style="display: flex; gap: 0.85rem; font-size: 0.75rem; color: #38bdf8; font-weight: 700; font-family: var(--font-mono); flex-wrap: wrap;">
+              <span><i class="fa-solid fa-coins" style="color: #26a17b;"></i> ${usdtEq} USDT</span>
+              <span><i class="fa-brands fa-bitcoin" style="color: #f59e0b;"></i> ${btcEq} BTC</span>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('topup-modal'); switchTopUpMethod('crypto');" style="font-weight: 800; font-size: 0.85rem; padding: 0.6rem 1.1rem; border-radius: 10px; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);">
+            <i class="fa-solid fa-plus-circle" style="margin-right: 0.35rem;"></i> Top Up Crypto Modal
+          </button>
+        </div>
+
+        <!-- Supported Cryptocurrencies Grid -->
+        <div>
+          <div style="font-size: 0.825rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.6rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem;">
+            <span><i class="fa-solid fa-layer-group" style="color: var(--accent); margin-right: 0.35rem;"></i> Supported Deposit Cryptocurrencies:</span>
+            <span class="badge badge-success" style="font-size: 0.65rem;">Instant RPC Verification</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.6rem;">
+            ${coinCardsHtml}
+          </div>
+        </div>
+
+        <!-- Active Deposit Address & QR Code Box -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.1rem; display: flex; flex-direction: column; gap: 0.85rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.6rem; flex-wrap: wrap; gap: 0.4rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <div style="width: 10px; height: 10px; border-radius: 50%; background: ${coinInfo.color}; box-shadow: 0 0 8px ${coinInfo.color};"></div>
+              <strong style="font-size: 0.95rem; color: var(--text-main);">${coinInfo.name} (${coinInfo.symbol}) Deposit Address</strong>
+            </div>
+            <span class="badge" style="background: ${coinInfo.color}20; color: ${coinInfo.color}; border: 1px solid ${coinInfo.color}50; font-weight: 800; font-size: 0.7rem;">
+              ${coinInfo.network}
+            </span>
+          </div>
+
+          <div style="display: flex; gap: 1.1rem; align-items: center; flex-wrap: wrap;">
+            <!-- QR Code -->
+            <div style="background: #ffffff; padding: 0.5rem; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); max-width: 150px; overflow: hidden; flex-shrink: 0;">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(coinInfo.address)}" alt="${coinInfo.symbol} Deposit QR" style="width: 130px; height: 130px; object-fit: contain; display: block; border-radius: 6px;">
+            </div>
+
+            <!-- Address & Details Column -->
+            <div style="flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 0.55rem;">
+              <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700;">Wallet Deposit Address:</div>
+              <div style="background: rgba(0, 0, 0, 0.4); border: 1px dashed var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem 0.75rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; word-break: break-all;">
+                <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: #38bdf8; line-height: 1.35;">${coinInfo.address}</span>
+                <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.35rem 0.65rem; flex-shrink: 0;" onclick="copyText('${coinInfo.address}', 'Copied ${coinInfo.network} Deposit Address!')" title="Copy Address">
+                  <i class="fa-solid fa-copy"></i> Copy
+                </button>
+              </div>
+
+              <div style="display: flex; gap: 0.85rem; font-size: 0.75rem; color: var(--text-muted); flex-wrap: wrap; margin-top: 0.2rem;">
+                <span><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Gateway Fee: <strong style="color: var(--text-main);">${coinInfo.fee}</strong></span>
+                <span><i class="fa-solid fa-calculator" style="color: #38bdf8;"></i> Exchange Rate: <strong style="color: var(--text-main);">1 ${coinInfo.symbol} ≈ ₹${coinInfo.inrRate >= 1000 ? coinInfo.inrRate.toLocaleString('en-IN') : coinInfo.inrRate.toFixed(2)}</strong></span>
+                <span><i class="fa-solid fa-shield-check" style="color: #10b981;"></i> Ledger Credit: <strong style="color: #10b981;">Instant Confirmation</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit TxHash Directly in Tab -->
+          <div style="margin-top: 0.5rem; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem;">
+            <label style="display: block; font-size: 0.825rem; font-weight: 800; margin-bottom: 0.4rem; color: var(--text-main);">
+              <i class="fa-solid fa-file-invoice" style="color: #f59e0b; margin-right: 0.3rem;"></i> Submit Blockchain TxHash / TXID to Claim Deposit:
+            </label>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <input type="number" id="dash-crypto-amount-input" class="search-input" placeholder="Amount (₹) e.g. 500" min="99" style="font-size: 0.85rem; font-weight: 700;" oninput="updateDashCryptoCalc('${currentCoinKey}')">
+              <input type="text" id="dash-crypto-txid-input" placeholder="Paste 64-char TxHash e.g. 0x8f3c..." maxlength="66" style="font-size: 0.85rem; font-weight: 700; font-family: var(--font-mono);">
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
+              <span style="font-size: 0.75rem; color: #38bdf8; font-weight: 700; font-family: var(--font-mono);" id="dash-crypto-calc-preview">
+                Payable Amount: -- ${coinInfo.symbol}
+              </span>
+              <button class="btn btn-success btn-sm" onclick="submitDashCryptoTxid('${currentCoinKey}')" id="dash-crypto-submit-btn" style="font-weight: 800; padding: 0.45rem 1rem;">
+                <i class="fa-solid fa-check-circle"></i> Verify TxHash & Credit Wallet
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Crypto Deposits History List -->
+        <div>
+          <div style="font-size: 0.85rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.6rem; display: flex; align-items: center; justify-content: space-between;">
+            <span><i class="fa-solid fa-clock-rotate-left" style="color: var(--accent); margin-right: 0.35rem;"></i> Recent Crypto Deposits Ledger</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Stored locally on device</span>
+          </div>
+          <div id="crypto-ledger-history-container">
+            ${renderCryptoLedgerItems(txs)}
+          </div>
+        </div>
+      `;
+    }
+
+    function selectDashCryptoCoin(key) {
+      CryptoGateway.selectedCoin = key;
+      renderCryptoWalletTab();
+    }
+
+    function updateDashCryptoCalc(key) {
+      const input = document.getElementById('dash-crypto-amount-input');
+      const preview = document.getElementById('dash-crypto-calc-preview');
+      if (!input || !preview) return;
+
+      const coin = CryptoGateway.coins[key] || CryptoGateway.coins['USDT_TRC20'];
+      const amt = parseFloat(input.value) || 0;
+
+      if (amt <= 0) {
+        preview.innerText = `Payable Amount: -- ${coin.symbol}`;
+        return;
+      }
+
+      const cryptoAmt = amt / coin.inrRate;
+      let formatted = '';
+      if (cryptoAmt < 0.0001) formatted = cryptoAmt.toFixed(8);
+      else if (cryptoAmt < 0.01) formatted = cryptoAmt.toFixed(6);
+      else if (cryptoAmt < 1) formatted = cryptoAmt.toFixed(4);
+      else formatted = cryptoAmt.toFixed(2);
+
+      preview.innerText = `Payable Amount: ${formatted} ${coin.symbol} (≈ ₹${amt.toFixed(2)})`;
+    }
+
+    function submitDashCryptoTxid(key) {
+      if (!AppState.isLoggedIn) {
+        showToast('🔐 Please Sign In or Register to top up your wallet!', 'warning');
+        openModal('user-modal');
+        return;
+      }
+
+      const amtInput = document.getElementById('dash-crypto-amount-input');
+      const txidInput = document.getElementById('dash-crypto-txid-input');
+      const btn = document.getElementById('dash-crypto-submit-btn');
+
+      if (!amtInput || !txidInput) return;
+
+      const amt = parseFloat(amtInput.value);
+      if (isNaN(amt) || amt < 99) {
+        showToast('⚠️ Minimum deposit amount is ₹99.', 'warning');
+        amtInput.style.borderColor = '#ef4444';
+        return;
+      }
+
+      const txid = txidInput.value.trim();
+      if (txid.length < 16) {
+        showToast('⚠️ Please enter a valid Transaction Hash (TxHash).', 'warning');
+        txidInput.style.borderColor = '#ef4444';
+        return;
+      }
+
+      const coin = CryptoGateway.coins[key] || CryptoGateway.coins['USDT_TRC20'];
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying Node...`;
+      }
+
+      setTimeout(() => {
+        AppState.walletBalance += amt;
+        SafeStorage.setItem('vnh_wallet', AppState.walletBalance.toString());
+        updateWalletUI(true);
+
+        // Record in local ledger
+        let txs = [];
+        try {
+          const raw = SafeStorage.getItem('vnh_crypto_txs');
+          if (raw) txs = JSON.parse(raw);
+        } catch(e) { txs = []; }
+
+        const newTx = {
+          id: 'CTX_' + Date.now().toString(36).toUpperCase(),
+          coin: coin.symbol,
+          network: coin.network,
+          inrAmount: amt,
+          cryptoAmount: (amt / coin.inrRate).toFixed(4),
+          txid: txid,
+          timestamp: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+          status: 'CONFIRMED'
+        };
+
+        txs.unshift(newTx);
+        SafeStorage.setItem('vnh_crypto_txs', JSON.stringify(txs));
+
+        if (typeof triggerEnhancedBurstConfetti === 'function') triggerEnhancedBurstConfetti();
+        if (typeof playOtpSoundNotification === 'function') playOtpSoundNotification();
+        if (typeof speakPaymentSuccessVoice === 'function') speakPaymentSuccessVoice();
+
+        showToast(`🎉 Verified! Credited ₹${amt.toFixed(2)} (${newTx.cryptoAmount} ${coin.symbol}) to your wallet!`, 'success');
+
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-check-circle"></i> Verify TxHash & Credit Wallet`;
+        }
+
+        renderCryptoWalletTab();
+      }, 1000);
+    }
+
+    function renderCryptoLedgerItems(txs) {
+      if (!txs || txs.length === 0) {
+        return `
+          <div style="text-align: center; padding: 1.5rem; background: rgba(15, 23, 42, 0.4); border: 1px dashed var(--border-color); border-radius: var(--radius-md); color: var(--text-muted); font-size: 0.825rem;">
+            <i class="fa-brands fa-bitcoin" style="font-size: 2rem; color: #f59e0b; margin-bottom: 0.5rem; display: block; opacity: 0.6;"></i>
+            No Crypto Deposit History Yet.<br>
+            <span style="font-size: 0.75rem;">Select a cryptocurrency above and submit your TxHash to record deposits instantly.</span>
+          </div>
+        `;
+      }
+
+      return txs.map(tx => `
+        <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.75rem 0.85rem; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); display: flex; align-items: center; justify-content: center; color: #34d399; font-size: 1rem; flex-shrink: 0;">
+              <i class="fa-solid fa-arrow-down-left"></i>
+            </div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.85rem; color: var(--text-main); display: flex; align-items: center; gap: 0.35rem;">
+                + ₹${tx.inrAmount.toFixed(2)} INR
+                <span style="font-size: 0.72rem; color: #38bdf8; font-family: var(--font-mono); font-weight: 700;">(${tx.cryptoAmount} ${tx.coin})</span>
+              </div>
+              <div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">
+                TxHash: ${tx.txid.substring(0, 16)}... • ${tx.timestamp}
+              </div>
+            </div>
+          </div>
+          <span class="badge badge-success" style="font-size: 0.68rem; padding: 0.25rem 0.55rem;">
+            <i class="fa-solid fa-check-circle" style="margin-right: 0.25rem;"></i> ${tx.status}
+          </span>
+        </div>
+      `).join('');
     }
 
     function addDemoWalletFunds(amt) {
